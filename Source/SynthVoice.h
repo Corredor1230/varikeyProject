@@ -89,6 +89,5 @@ private:
     float oscModDepth = 0;
     float modOscSample = 0;
     float lfoSample = 0;
-    float test = 0;
     
 };
