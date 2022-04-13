@@ -31,7 +31,7 @@ GlobalComponents::~GlobalComponents()
 void GlobalComponents::paint (juce::Graphics& g)
 {
 
-    g.fillAll (juce::Colour::Colour());
+    g.fillAll (juce::Colour());
 }
 
 void GlobalComponents::resized()
@@ -71,10 +71,10 @@ void GlobalComponents::buildSlider(juce::Slider& thisSlider, sliderType type)
 
 juce::Colour GlobalComponents::setCustomColour(const std::array<juce::uint8, 3> colourArray)
 {
-    return juce::Colour::Colour(colourArray[0], colourArray[1], colourArray[2]);
+    return juce::Colour(colourArray[0], colourArray[1], colourArray[2]);
 }
 
 juce::Colour GlobalComponents::setCustomColourAlpha(std::array<juce::uint8, 3> colourArray, float alpha)
 {
-    return juce::Colour::Colour(colourArray[0], colourArray[1], colourArray[2], alpha);
+    return juce::Colour(colourArray[0], colourArray[1], colourArray[2], alpha);
 }

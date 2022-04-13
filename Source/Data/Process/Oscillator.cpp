@@ -25,6 +25,10 @@ void Oscillator::setFreq(float freq)
 forcedinline void Oscillator::updateAngle() noexcept
 {
     currentAngle += angleDelta;
+    // esto es un caso de branching innecesario
+    // la ventaja es q no calculas las resta cada vez q esto se llama, pero la desventaja es q el calculo en algunas iteraciones es mayor (obviamente es un caso trivial y no hace diferencia en la práctica)
+    // por ejemplo uno podría siempre llamar
+    // currentAngle = mod(currentAngle + angDelta, 2 * M_PI);
     if (currentAngle >= juce::MathConstants<float>::twoPi)
         currentAngle -= juce::MathConstants<float>::twoPi;
 }

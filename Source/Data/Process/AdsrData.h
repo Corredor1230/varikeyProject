@@ -15,6 +15,7 @@
 class AdsrData : public juce::ADSR
 {
 public:
+    // no overrides?
     void updateADSR(const float attack, const float decay, const float sustain, const float release);
 
 private:
