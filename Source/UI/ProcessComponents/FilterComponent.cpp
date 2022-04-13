@@ -38,14 +38,14 @@ FilterComponent::~FilterComponent()
 void FilterComponent::paint (juce::Graphics& g)
 {
 
-    g.fillAll (juce::Colour::Colour());   // clear the background
+    g.fillAll (juce::Colour());   // clear the background
 
 }
 
 void FilterComponent::resized()
 {
-    const auto bounds = getLocalBounds().reduced(10);
-    const auto padding = 10;
+    const auto bounds = getLocalBounds().reduced(10); // esto no se usa
+    const auto padding = 10; // esto no se usa
     const auto labelHeight = getHeight() / 8;
     const auto filterToggle = getHeight() / 8;
     const auto sliderHeight = (getHeight() / 2) - labelHeight;
@@ -83,5 +83,5 @@ void FilterComponent::setSliderParams(juce::Slider& slider, juce::Label& label, 
 
 juce::Colour FilterComponent::setCustomColour(const std::array<int, 3> colourArray)
 {
-    return juce::Colour::Colour(colourArray[0], colourArray[1], colourArray[2]);
+    return juce::Colour(colourArray[0], colourArray[1], colourArray[2]);
 }

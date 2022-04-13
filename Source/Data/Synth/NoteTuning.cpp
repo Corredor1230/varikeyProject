@@ -13,6 +13,7 @@
 
 int NoteTuning::getModulus(const int midiNoteNumber)
 {
+    // usar numNotes en cambio de 12
     int pitchModulus = midiNoteNumber % 12; //Number of different pitches
     return pitchModulus;
 }
@@ -32,12 +33,13 @@ float NoteTuning::alterMidiPitch(int midiPitch)
         }
     }
 
-
+    // cuidado q esto está en el process block supongo
     DBG(newMidi);
 
     return newMidi;
 }
 
+// incluso acá puedes usar numNotes
 void NoteTuning::setTuning(std::array<float, 12>& tuning)
 {
     //for (int i = 0; i < 12; i++)
@@ -50,6 +52,7 @@ void NoteTuning::setTuning(std::array<float, 12>& tuning)
 
 float NoteTuning::midiToHertz(const float midiNoteNumber)
 {
+    // no debería hacer muuuucha diferencia pero existe exp2
     float hertz = 440.f * pow(2.f, (midiNoteNumber - 69.f) / 12.f);
     return hertz;
 }

@@ -50,7 +50,7 @@ TuningComponent::~TuningComponent()
 
 void TuningComponent::paint (juce::Graphics& g)
 {
-    g.fillAll(juce::Colour::Colour());
+    g.fillAll(juce::Colour());
 }
 
 void TuningComponent::resized()
@@ -102,7 +102,7 @@ void TuningComponent::buildSlider(juce::Slider& slider, juce::Label& label, keyC
     slider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
     slider.setRange(-1.0, 1.0, 0.01);
     slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 55, 15);
-    slider.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colour::Colour());
+    slider.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colour());
     switch (color)
     {
     case 0:
@@ -128,10 +128,10 @@ void TuningComponent::buildSlider(juce::Slider& slider, juce::Label& label, keyC
 
 juce::Colour TuningComponent::setCustomColour(const std::array<juce::uint8, 3> colourArray)
 {
-    return juce::Colour::Colour(colourArray[0], colourArray[1], colourArray[2]);
+    return juce::Colour(colourArray[0], colourArray[1], colourArray[2]);
 }
 
 juce::Colour TuningComponent::setCustomColourAlpha(std::array<juce::uint8, 3> colourArray, float alpha)
 {
-    return juce::Colour::Colour(colourArray[0], colourArray[1], colourArray[2], alpha);
+    return juce::Colour(colourArray[0], colourArray[1], colourArray[2], alpha);
 }

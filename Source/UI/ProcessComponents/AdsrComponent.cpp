@@ -36,7 +36,7 @@ AdsrComponent::~AdsrComponent()
 
 void AdsrComponent::paint (juce::Graphics& g)
 {
-    g.fillAll(juce::Colour::Colour());
+    g.fillAll(juce::Colour());
 }
 
 void AdsrComponent::resized()
@@ -80,5 +80,5 @@ void AdsrComponent::setSliderParams(juce::Slider& slider, juce::Label& label, co
 
 juce::Colour AdsrComponent::setCustomColour(const std::array<int, 3> colourArray)
 {
-    return juce::Colour::Colour(colourArray[0], colourArray[1], colourArray[2]);
+    return juce::Colour(colourArray[0], colourArray[1], colourArray[2]);
 }

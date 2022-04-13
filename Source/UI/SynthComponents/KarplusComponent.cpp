@@ -40,7 +40,7 @@ KarplusComponent::~KarplusComponent()
 
 void KarplusComponent::paint (juce::Graphics& g)
 {
-    g.fillAll (juce::Colour::Colour());
+    g.fillAll (juce::Colour());
 }
 
 void KarplusComponent::resized()
@@ -112,5 +112,5 @@ void KarplusComponent::sliderParams(juce::Slider& slider, styleEnum style, juce:
 
 juce::Colour KarplusComponent::setCustomColour(const std::array<juce::uint8, 3> colourArray)
 {
-    return juce::Colour::Colour(colourArray[0], colourArray[1], colourArray[2]); 
+    return juce::Colour(colourArray[0], colourArray[1], colourArray[2]); 
 }

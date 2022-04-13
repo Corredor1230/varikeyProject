@@ -14,6 +14,8 @@
 class OscData : public juce::dsp::Oscillator<float>
 {
 public:
+    // humm... me sorprende q no haya overrides aca
+    // también me pregunto porque usar un audio Block y no un audio Buffer
     void prepareToPlay(juce::dsp::ProcessSpec& spec);
     void setWaveType(const int choice);
     void setWaveFrequency(const float frequency);

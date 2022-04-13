@@ -16,7 +16,7 @@ JuceSynthAudioProcessorEditor::JuceSynthAudioProcessorEditor (JuceSynthAudioProc
     , adsr("AmpAdsr", audioProcessor.vts, "Att", "Dec", "Sus", "Rel")
     , tuning(audioProcessor.vts)
     , karplus(audioProcessor.vts)
-    , global(audioProcessor.vts)
+    , global(audioProcessor.vts) // el orden de inicialización de esto no corresponde con lo q está en el header
     , modAdsr("ModAdsr", audioProcessor.vts, "modAtt", "modDec", "modSus", "modRel")
     , filter(audioProcessor.vts)
     , lfo(audioProcessor.vts)
@@ -41,12 +41,15 @@ JuceSynthAudioProcessorEditor::~JuceSynthAudioProcessorEditor()
 void JuceSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     g.setFont(josefinSans.getJosefinSans());
-    g.fillAll (juce::Colour::Colour(0,0,0));
+    g.fillAll (juce::Colour(0,0,0));
 
 }
 
 void JuceSynthAudioProcessorEditor::resized()
 {
+    // mira esto
+    // https://www.youtube.com/watch?v=xsCZoE1s_uw
+    
     filter.setBounds(0, 0, getWidth() / 4, getHeight() / 3);
     lfo.setBounds(filter.getRight(), 0, getWidth() / 4, getHeight() / 3);
     adsr.setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight() / 3);

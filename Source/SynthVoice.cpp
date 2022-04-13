@@ -19,6 +19,7 @@ bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
 
 void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition)
 {
+    // recuerda los problemas de imprimir en el process block, creo q acá esta bien sin embargo
     DBG("Start Note Called");
 
     //Gate for karplus synth window
@@ -110,6 +111,8 @@ void SynthVoice::updateGeneric(std::array<int, 1> integers, std::array<float, 1>
 */
 void SynthVoice::updateKarplus(float kFeed, std::array<int, 5> integers)
 {
+    // no me suena q esto sea conceptualmente un array...
+    // son los parámetros pero creo q conceptualmente no debería ser un array
     karpCtrl.setParamValue("kFeed", kFeed);
     karpCtrl.setParamValue("kAtt", integers[0]);
     karpCtrl.setParamValue("kRel", integers[1]);
@@ -130,6 +133,7 @@ void SynthVoice::updateKarplus(float kFeed, std::array<int, 5> integers)
 */
 void SynthVoice::updateFilter(int cutoff, float q)
 {
+    // creo q conceptualmente cutoff no deberia ser int
     float tempCutoff = cutoff * modAdsrSample;
     float cutoffFreq = std::max(tempCutoff, 20.f);
     filtCtrl.setParamValue("cutoff", cutoffFreq);
@@ -166,20 +170,21 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     //SETUP
     //-------------------------------------------------------------
+    // muy bien esto!
     if (!isVoiceActive())
         return;
 
+    // esto aun no me convence XD
     synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     lfoBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
 
     //We need to include our modAdsr in the buffer for it to work
-//but at this stage of the buffer, it does no processing!
+    //but at this stage of the buffer, it does no processing!
     modAdsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());
     //Gets modAdsr next value to control other parameters in real time
     modAdsrSample = modAdsr.getNextSample();
 
     //Just like with modAdsr we need to pass it our buffer for it to work
-
     for (int i = 0; i < lfoBuffer.getNumSamples(); i++)
     {
         lfoSample = lfoMod.getNextSample();
@@ -190,6 +195,10 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
 
     //Creating an AudioBlock type object to use the dsp::gain.process function
+    // No se necesita la sintaxis con brackets {, obvio no hace diferencia pero
+    // estas diciendo q vas a hacer un list initializer con el audio block cuando
+    // en realidad hay un constructor dedicado para un AudioBuffer
+    //    juce::dsp::AudioBlock<float> audioBlock( synthBuffer );
     juce::dsp::AudioBlock<float> audioBlock{ synthBuffer };
 
     //Updating our tuning in real time
@@ -205,13 +214,20 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     {
     case 0:
         karpCtrl.setParamValue("freq", oscFreq);
+        // creo q en varias partes estás llamando getArrayOfWritePointers() pero
+        // sería más facil de leer si arriba de todo esto hubiera un
+        // float** synthData = synthBuffer.getArrayOfWritePoints();
+        // int numSamples = synthBuffer.getNumSamples();
         karplusSynth.compute(synthBuffer.getNumSamples(), nullptr, synthBuffer.getArrayOfWritePointers());
         break;
     case 1:
         ctrl.setParamValue("freq", oscFreq);
+        // creo q esoto es innecesario
         juce::dsp::Gain<float> sawGain;
         sawGain.setGainLinear(0.2);
         test.compute(synthBuffer.getNumSamples(), nullptr, synthBuffer.getArrayOfWritePointers());
+        // podrías escribir esto
+        // synthBuffer.applyGain(0.2);
         sawGain.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
         break;
     }
@@ -228,6 +244,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     }
 
     //Gain control
+    // otra vez innecesario existiendo buffer.applyGain()
     gain.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
 
     //Amp adsr control

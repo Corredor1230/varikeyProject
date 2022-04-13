@@ -94,6 +94,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout JuceSynthAudioProcessor::bui
         1, 8, 500));
 
     //Filter Params
+    // el valor de skew debe ser como 0.3
     params.push_back(std::make_unique<juce::AudioParameterFloat>("cutoff", "Cutoff", 
         juce::NormalisableRange<float>(40.f, 20000.f, 1.f, 3.f), 1000.f));
     //juce::AudioParameterFloat("cutoff", "Cutoff", juce::NormalisableRange<float>(40.f, 20000.f, 1.f, 3.f), 1000.f);
@@ -246,8 +247,8 @@ bool JuceSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 void JuceSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
+    auto totalNumInputChannels  = getTotalNumInputChannels(); // esto no se usa
+    auto totalNumOutputChannels = getTotalNumOutputChannels(); // esto no se usa
 
 
     //for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
@@ -265,7 +266,7 @@ void JuceSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
             auto& decay = *vts.getRawParameterValue("Dec");
             auto& sustain = *vts.getRawParameterValue("Sus");
             auto& release = *vts.getRawParameterValue("Rel");
-            auto& gain = *vts.getRawParameterValue("Gain");
+            auto& gain = *vts.getRawParameterValue("Gain"); // esta variable no se usa
 
     //        //noteTuning.setTuning(NoteTuning::c, vts.getParameterAsValue("c").getValue());
     //        //noteTuning.setTuning(NoteTuning::ces, vts.getParameterAsValue("ces").getValue());

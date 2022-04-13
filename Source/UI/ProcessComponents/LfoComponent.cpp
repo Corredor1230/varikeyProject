@@ -35,7 +35,7 @@ LfoComponent::~LfoComponent()
 void LfoComponent::paint (juce::Graphics& g)
 {
 
-    g.fillAll(juce::Colour::Colour());
+    g.fillAll(juce::Colour());
 }
 
 void LfoComponent::resized()
