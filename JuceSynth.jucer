@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="iArxaU" name="JuceSynth" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              pluginManufacturer="Corredor">
+  <MAINGROUP id="kg8Mon" name="JuceSynth">
+    <GROUP id="{6A3ECC49-3364-F7FC-B737-023B003418B3}" name="Source">
+      <FILE id="RHNt1K" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="cCFVSg" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="NKPMMR" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="dA3qBv" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="hGWAN1" name="SynthVoice.cpp" compile="1" resource="0" file="Source/SynthVoice.cpp"/>
+      <FILE id="wwwlsg" name="SynthVoice.h" compile="0" resource="0" file="Source/SynthVoice.h"/>
+      <FILE id="eJee3R" name="SynthSound.h" compile="0" resource="0" file="Source/SynthSound.h"/>
+      <GROUP id="{4CE2F70F-7DAB-089B-AA47-BBB9E2387E11}" name="Data">
+        <GROUP id="{8B3D16AE-0726-7E6A-DDC3-06D5CC7A28BE}" name="Synth">
+          <FILE id="Yqfsvq" name="Test.h" compile="0" resource="0" file="Source/Data/Synth/Test.h"/>
+          <FILE id="BmeKMP" name="Karplus.h" compile="0" resource="0" file="Source/Data/Synth/Karplus.h"/>
+          <FILE id="WlNy7c" name="SimpleSynth.h" compile="0" resource="0" file="Source/Data/Synth/SimpleSynth.h"/>
+          <FILE id="uBBPqD" name="OscData.cpp" compile="1" resource="0" file="Source/Data/Synth/OscData.cpp"/>
+          <FILE id="KYHMv8" name="OscData.h" compile="0" resource="0" file="Source/Data/Synth/OscData.h"/>
+          <FILE id="htkSZf" name="NoteTuning.cpp" compile="1" resource="0" file="Source/Data/Synth/NoteTuning.cpp"/>
+          <FILE id="ltDxf6" name="NoteTuning.h" compile="0" resource="0" file="Source/Data/Synth/NoteTuning.h"/>
+        </GROUP>
+        <GROUP id="{1A7F3F64-312B-F847-7422-9AE8A1650139}" name="Process">
+          <FILE id="ZJ6BR3" name="AdsrData.cpp" compile="1" resource="0" file="Source/Data/Process/AdsrData.cpp"/>
+          <FILE id="RHKMIB" name="AdsrData.h" compile="0" resource="0" file="Source/Data/Process/AdsrData.h"/>
+          <FILE id="vs3gyz" name="Filter.h" compile="0" resource="0" file="Source/Data/Process/Filter.h"/>
+          <FILE id="thLIVi" name="Oscillator.cpp" compile="1" resource="0" file="Source/Data/Process/Oscillator.cpp"/>
+          <FILE id="q2u6WM" name="Oscillator.h" compile="0" resource="0" file="Source/Data/Process/Oscillator.h"/>
+        </GROUP>
+      </GROUP>
+      <GROUP id="{3B3C7765-6C2F-F06F-6497-6CF34D531BDE}" name="UI">
+        <GROUP id="{1A5CD592-0B85-3759-4598-E61595FCF148}" name="LookAndFeel">
+          <FILE id="OvJ8jL" name="EmbeddedFonts.cpp" compile="1" resource="0"
+                file="Source/UI/LookAndFeel/EmbeddedFonts.cpp"/>
+          <FILE id="jf9GCA" name="EmbeddedFonts.h" compile="0" resource="0" file="Source/UI/LookAndFeel/EmbeddedFonts.h"/>
+          <FILE id="TUCa2M" name="JosefinSans-VariableFont_wght.ttf" compile="0"
+                resource="1" file="Source/UI/LookAndFeel/JosefinSans-VariableFont_wght.ttf"/>
+        </GROUP>
+        <GROUP id="{76315D64-AE70-9BDC-2E5D-BD881ED2507B}" name="ProcessComponents">
+          <FILE id="NBR8pS" name="AdsrComponent.cpp" compile="1" resource="0"
+                file="Source/UI/ProcessComponents/AdsrComponent.cpp"/>
+          <FILE id="crbkOj" name="AdsrComponent.h" compile="0" resource="0" file="Source/UI/ProcessComponents/AdsrComponent.h"/>
+          <FILE id="P7khAX" name="FilterComponent.cpp" compile="1" resource="0"
+                file="Source/UI/ProcessComponents/FilterComponent.cpp"/>
+          <FILE id="IEvVlQ" name="FilterComponent.h" compile="0" resource="0"
+                file="Source/UI/ProcessComponents/FilterComponent.h"/>
+          <FILE id="o5SnyO" name="LfoComponent.cpp" compile="1" resource="0"
+                file="Source/UI/ProcessComponents/LfoComponent.cpp"/>
+          <FILE id="KpWUAY" name="LfoComponent.h" compile="0" resource="0" file="Source/UI/ProcessComponents/LfoComponent.h"/>
+        </GROUP>
+        <GROUP id="{B2A2D851-2394-3A48-C694-FCF6B3A5B99A}" name="SynthComponents">
+          <FILE id="PwJIbK" name="TuningComponent.cpp" compile="1" resource="0"
+                file="Source/UI/SynthComponents/TuningComponent.cpp"/>
+          <FILE id="b9js60" name="TuningComponent.h" compile="0" resource="0"
+                file="Source/UI/SynthComponents/TuningComponent.h"/>
+          <FILE id="KrrZ8d" name="KarplusComponent.cpp" compile="1" resource="0"
+                file="Source/UI/SynthComponents/KarplusComponent.cpp"/>
+          <FILE id="zpVOtP" name="KarplusComponent.h" compile="0" resource="0"
+                file="Source/UI/SynthComponents/KarplusComponent.h"/>
+        </GROUP>
+        <FILE id="WZCrbs" name="GlobalComponents.cpp" compile="1" resource="0"
+              file="Source/UI/GlobalComponents.cpp"/>
+        <FILE id="pRWiv3" name="GlobalComponents.h" compile="0" resource="0"
+              file="Source/UI/GlobalComponents.h"/>
+      </GROUP>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2019 targetFolder="Builds/VisualStudio2019" externalLibraries="faust.lib">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="JuceSynth" headerPath="&quot;C:\Program Files\Faust\include&quot;"
+                       libraryPath="&quot;C:\Program Files\Faust\lib&quot;"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="JuceSynth"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="C:/Users/User/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="C:/Users/User/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2019>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+</JUCERPROJECT>
