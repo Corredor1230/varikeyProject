@@ -203,7 +203,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     //Updating our tuning in real time
     float newMidi = tuningRef.alterMidiPitch(getCurrentlyPlayingNote());
-    float oscFreq = tuningRef.midiToHertz(newMidi + (1*lfoSample));
+    float oscFreq = tuningRef.midiToHertz(newMidi + (1 * lfoSample));
     //-------------------------------------------------------------
 
 

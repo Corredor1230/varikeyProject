@@ -118,7 +118,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout JuceSynthAudioProcessor::bui
     params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoFreq", "Frequency",
         juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f, 0.3f, false), 1.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoDepth", "Depth",
-        juce::NormalisableRange<float>(0.0f, 10.0f, 0.001f, 0.3f, false), 1.0f));
+        juce::NormalisableRange<float>(0.0f, 12.0f, 0.001f, 0.3f, false), 1.0f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoWave", "Wave",
         juce::NormalisableRange<float>(1.0f, 100.0f, 0.1f, 0.3f, false), 1.0f));
 
@@ -256,45 +256,61 @@ void JuceSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     //    buffer.clear(i, 0, buffer.getNumSamples());
     //}
 
+
     buffer.clear();
+
 
     for (int i = 0; i < synth.getNumVoices(); ++i)
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
+
             auto& attack = *vts.getRawParameterValue("Att");
             auto& decay = *vts.getRawParameterValue("Dec");
             auto& sustain = *vts.getRawParameterValue("Sus");
             auto& release = *vts.getRawParameterValue("Rel");
             auto& gain = *vts.getRawParameterValue("Gain"); // esta variable no se usa
 
-    //        //noteTuning.setTuning(NoteTuning::c, vts.getParameterAsValue("c").getValue());
-    //        //noteTuning.setTuning(NoteTuning::ces, vts.getParameterAsValue("ces").getValue());
-    //        //noteTuning.setTuning(NoteTuning::d, vts.getParameterAsValue("d").getValue());
-    //        //noteTuning.setTuning(NoteTuning::des, vts.getParameterAsValue("des").getValue());
-    //        //noteTuning.setTuning(NoteTuning::e, vts.getParameterAsValue("e").getValue());
-    //        //noteTuning.setTuning(NoteTuning::f, vts.getParameterAsValue("f").getValue());
-    //        //noteTuning.setTuning(NoteTuning::fes, vts.getParameterAsValue("fes").getValue());
-    //        //noteTuning.setTuning(NoteTuning::g, vts.getParameterAsValue("g").getValue());
-    //        //noteTuning.setTuning(NoteTuning::ges, vts.getParameterAsValue("ges").getValue());
-    //        //noteTuning.setTuning(NoteTuning::a, vts.getParameterAsValue("a").getValue());
-    //        //noteTuning.setTuning(NoteTuning::aes, vts.getParameterAsValue("aes").getValue());
-    //        //noteTuning.setTuning(NoteTuning::b, vts.getParameterAsValue("b").getValue());
+            auto& cTuning = *vts.getRawParameterValue("c");
+            auto& cesTuning = *vts.getRawParameterValue("ces");
+            auto& dTuning = *vts.getRawParameterValue("d");
+            auto& desTuning = *vts.getRawParameterValue("des");
+            auto& eTuning = *vts.getRawParameterValue("e");
+            auto& fTuning = *vts.getRawParameterValue("f");
+            auto& fesTuning = *vts.getRawParameterValue("fes");
+            auto& gTuning = *vts.getRawParameterValue("g");
+            auto& gesTuning = *vts.getRawParameterValue("ges");
+            auto& aTuning = *vts.getRawParameterValue("a");
+            auto& aesTuning = *vts.getRawParameterValue("aes");
+            auto& bTuning = *vts.getRawParameterValue("b");
 
-
-            tuning[0] = vts.getParameterAsValue("c").getValue();
-            tuning[1] = vts.getParameterAsValue("ces").getValue();
-            tuning[2] = vts.getParameterAsValue("d").getValue();
-            tuning[3] = vts.getParameterAsValue("des").getValue();
-            tuning[4] = vts.getParameterAsValue("e").getValue();
-            tuning[5] = vts.getParameterAsValue("f").getValue();
-            tuning[6] = vts.getParameterAsValue("fes").getValue();
-            tuning[7] = vts.getParameterAsValue("g").getValue();
-            tuning[8] = vts.getParameterAsValue("ges").getValue();
-            tuning[9] = vts.getParameterAsValue("a").getValue();
-            tuning[10] = vts.getParameterAsValue("aes").getValue();
-            tuning[11] = vts.getParameterAsValue("b").getValue();
+            tuning[0] = cTuning.load();
+            tuning[1] = cesTuning.load();
+            tuning[2] = dTuning.load();
+            tuning[3] = desTuning.load();
+            tuning[4] = eTuning.load();
+            tuning[5] = fTuning.load();
+            tuning[6] = fesTuning.load();
+            tuning[7] = gTuning.load();
+            tuning[8] = gesTuning.load();
+            tuning[9] = aTuning.load();
+            tuning[10] = aesTuning.load();
+            tuning[11] = bTuning.load();
             noteTuning.setTuning(tuning);
+
+            //tuning[0] = vts.getParameterAsValue("c").getValue();
+            //tuning[1] = vts.getParameterAsValue("ces").getValue();
+            //tuning[2] = vts.getParameterAsValue("d").getValue();
+            //tuning[3] = vts.getParameterAsValue("des").getValue();
+            //tuning[4] = vts.getParameterAsValue("e").getValue();
+            //tuning[5] = vts.getParameterAsValue("f").getValue();
+            //tuning[6] = vts.getParameterAsValue("fes").getValue();
+            //tuning[7] = vts.getParameterAsValue("g").getValue();
+            //tuning[8] = vts.getParameterAsValue("ges").getValue();
+            //tuning[9] = vts.getParameterAsValue("a").getValue();
+            //tuning[10] = vts.getParameterAsValue("aes").getValue();
+            //tuning[11] = vts.getParameterAsValue("b").getValue();
+            //noteTuning.setTuning(tuning);
 
             //Karplus Parameters
             float kFeed = vts.getParameterAsValue("kFeed").getValue();
