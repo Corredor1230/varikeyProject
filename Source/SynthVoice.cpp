@@ -178,14 +178,13 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //Gets modAdsr next value to control other parameters in real time
     modAdsrSample = modAdsr.getNextSample();
 
-    //Just like with modAdsr we need to pass it our buffer for it to work
 
+    //Gets modOsc next value to control other parameters in real time
     for (int i = 0; i < lfoBuffer.getNumSamples(); i++)
     {
         lfoSample = lfoMod.getNextSample();
     }
 
-    //Gets modOsc next value to control other parameters in real time
     synthBuffer.clear();
 
 
