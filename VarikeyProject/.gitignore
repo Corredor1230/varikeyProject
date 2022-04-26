@@ -1,0 +1,52 @@
+**/JuceLibraryCode/**
+**/Builds/**
+**/bin/**
+
+# Xcode noise
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+**/xcuserdata/
+
+# OS generated files #
+######################
+**/.DS_Store
+**/.DS_Store?
+**/._*
+**/.Spotlight-V100
+**/.Trashes
+**/ehthumbs.db
+**/Thumbs.db
+*~
+
+# Mac OS X
+# Xcode
+**.pbxuser
+**.mode1v3
+**.mode2v3
+**.perspectivev3
+**.xcuserstate
+project.xcuserdata/
+xcworkspace/
+
+# Clang dSYM
+**.dSYM/
+
+# MATLAB
+**.asv
+
+# Media Files
+**.wav
+**.aiff
+**.aif
+**.mp3
+**.mp4
+**.m4a
+**.flac
+**.avi
+
+# Library (Ignore unless explicitly added)
+**.a
+**.dylib
