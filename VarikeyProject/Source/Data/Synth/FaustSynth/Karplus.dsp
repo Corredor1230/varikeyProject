@@ -3,16 +3,28 @@ import("stdfaust.lib");
 freq = nentry("freq",500,200,1000,0.01) : max(20);
 gain = vslider("gain",0.5,0,1,0.001) : si.smoo;
 gate = button("gate");
-vol = vslider("volume", -20, -60, 0, 1) : si.smoo : ba.db2linear;
-att = 10;
-fmDepth = vslider("fmDepth[scale:log]",500,100,8000,1):si.smoo:max(100);
-fmIndex = vslider("fmIndex",2,1,8,1);
+globalGain = 1.0;
 
+kAtt = vslider("kAtt", 0.001, 0.0001, 1, 0.0001);
+kFeed = vslider("kFeed", 0.5, 0, 1, 0.001);
+kRel = vslider("kRel", 0.001, 0.0001, 1, 0.0001);
+kSwitch = hslider("kSwitch[style:knob]", 0, 0, 1, 1);
 
-kAtt = vslider("kAtt[scale:log]", 1, 1, 48000, 1);
-kFeed = (vslider("kFeed", 0.5, 0, 1, 0.001) / 5) + 0.799;
-kRel = vslider("kRel[scale:log]", 10, 1, 48000, 1);
-kSwitch = hslider("kSwitch[style:knob]", 1, 1, 3, 1);
+/*These calculations are done to create
+an inverted logarithmic relationship
+for the feedback slider, since most
+noticeable change occurs within the
+very last portion of the slider.*/
+fbInv = (kFeed - 1) * (-1);
+fbInvDb = (fbInv - 1) * 60;
+kFeedInv = ba.db2linear(fbInvDb); 
+kLinearFeed = (kFeedInv - 1) * (-1);
+
+kRelInv = ((kRel - 1) * (-1)) - 1;
+kRelDb = kRelInv * 5;
+normalizeRel = ba.db2linear(kRelDb);
+ 
+
 
 envelope(att, dec, sus, rel, gate) = _ * en.adsr(attack, decay, sustain, release, gate) with{
     attack = att : _ / ma.SR : max (0.001);
@@ -21,32 +33,28 @@ envelope(att, dec, sus, rel, gate) = _ * en.adsr(attack, decay, sustain, release
     release = rel : _ / ma.SR : max (0);
 };
 
-karplus(thisFreq) = karplusSource : + ~ de.fdelay(ma.SR, del) * kFeed with{
-    fixedClose = envelope(kAtt, kRel, 0, 0, gate);
+synth(thisFreq) = (karplusSource : + ~ de.fdelay(ma.SR, del) * kLinearFeed) * normalizeRel / 2 with{
+    fixedClose = envelope(kAtt*ma.SR, kRel*ma.SR, 0, 0, gate);
 
-    noiseGen = ((no.noise : fi.highpass(6, 20)): fixedClose) * correction / 2.5 with {
-        correction = ((kAtt - 1)*(-2)):max(1);
+    noiseGen = ((no.noise : fi.highpass(6, 20)): fixedClose) * correction / 4 with {
+        correction = (((kAtt*ma.SR) - 1)*(-2)):max(1);
     };
-    fmGen = os.osc(fmFreq) : fixedClose * correction / 32 with {
-        fmFreq = thisFreq+os.osc(thisFreq*fmIndex)*fmDepth:min(18000);
-        correction = ((kAtt - 1)*(-4)):max(1); 
-    };
+
     pinkGen = ((no.pink_noise : fi.highpass(6, 20)): fixedClose) * 2.25 * correction with{
-        correction = ((kAtt - 1)*(-2)):max(1);
+        correction = (((kAtt*ma.SR) - 1)*(-2)):max(1);
     };
 
     karplusSource = 
-        noiseGen * (kSwitch == 1) + 
-        fmGen * (kSwitch == 2) + 
-        pinkGen * (kSwitch == 3);
+        noiseGen * (kSwitch == 0) + 
+        pinkGen * (kSwitch == 1);
 
-    del = (ma.SR) / thisFreq; 
+    /*These values change SR and freq calculations 
+    for delay to prevent >1000sample bug from occuring*/
+    isBelowThousandth = (ba.hz2midikey(freq) < 31) + 1;
+    isBelowNineteen = (ba.hz2midikey(freq) < 19) + 1;
+    del = (isBelowNineteen * isBelowThousandth * ma.SR) / 
+    ((isBelowNineteen * isBelowThousandth * thisFreq) : max (20)); 
 };
 
 
-
-masterGain(gain) = _ , _: par(i,2, _*gain/13);
-
-process = 
-		karplus(freq) <:
-		_ / 2,_ / 2;
+process = synth(freq) * gate * globalGain <: _,_;
