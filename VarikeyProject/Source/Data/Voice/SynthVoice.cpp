@@ -57,9 +57,15 @@ void SynthVoice::pitchWheelMoved(int newPitchWheelValue)
 
 void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels)
 {
-    adsr.setSampleRate(sampleRate);
-    test.init(sampleRate);
-    test.buildUserInterface(&ctrl);
+
+    genSynth.init(sampleRate);
+    genSynth.buildUserInterface(&genCtrl);
+
+    additiveSynth.init(sampleRate);
+    additiveSynth.buildUserInterface(&additiveCtrl);
+
+    noiseSynth.init(sampleRate);
+    noiseSynth.buildUserInterface(&noiseCtrl);
 
     karplusSynth.init(sampleRate);
     karplusSynth.buildUserInterface(&karpCtrl);
@@ -67,13 +73,14 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
     filter.init(sampleRate);
     filter.buildUserInterface(&filtCtrl);
 
+    adsr.setSampleRate(sampleRate);
+    modAdsr.setSampleRate(sampleRate);
+    lfoMod.init(sampleRate);
+
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
     spec.sampleRate = sampleRate;
     spec.numChannels = outputChannels;
-    lfoMod.init(sampleRate);
-    gain.prepare(spec);
-
 
 }
 
@@ -98,8 +105,7 @@ void SynthVoice::updateModAdsr(const float attack, const float decay, const floa
 void SynthVoice::updateGeneric(std::array<int, 1> integers, std::array<float, 1> floats)
 {
     synthSelector = integers[0];
-    float finalGain = tempVelocity * floats[0];
-    gain.setGainLinear(finalGain);
+    finalGain = tempVelocity * floats[0];
 }
 
 
@@ -119,7 +125,6 @@ void SynthVoice::updateKarplus(float kFeed, std::array<int, 5> integers)
     karpCtrl.setParamValue("kSwitch", integers[2]);
     karpCtrl.setParamValue("fmDepth", integers[3]);
     karpCtrl.setParamValue("fmIndex", integers[4]);
-
 }
 
 /*
@@ -224,14 +229,9 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         karplusSynth.compute(synthBuffer.getNumSamples(), nullptr, synthBuffer.getArrayOfWritePointers());
         break;
     case 1:
-        ctrl.setParamValue("freq", oscFreq);
-        // creo q esoto es innecesario
-        juce::dsp::Gain<float> sawGain;
-        sawGain.setGainLinear(0.2);
-        test.compute(synthBuffer.getNumSamples(), nullptr, synthBuffer.getArrayOfWritePointers());
-        // podrías escribir esto
-        // synthBuffer.applyGain(0.2);
-        sawGain.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
+        genCtrl.setParamValue("freq", oscFreq);
+        genSynth.compute(synthBuffer.getNumSamples(), nullptr, synthBuffer.getArrayOfWritePointers());
+        synthBuffer.applyGain(0.2);
         break;
     }
 
@@ -248,7 +248,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     //Gain control
     // otra vez innecesario existiendo buffer.applyGain()
-    gain.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
+    synthBuffer.applyGain(finalGain);
 
     //Amp adsr control
     adsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());

@@ -21,7 +21,114 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
                      #endif
                        )
 #endif
+, vts(*this, nullptr, "Params", buildParams())
 {
+    int numVoices = 8;
+    synth.addSound(new SynthSound());
+    for (int i = 0; i < numVoices; i++)
+    {
+        auto ptr = new SynthVoice(noteTuning, vts);
+        /*ptr->setNoteTunner(&noteTuning);*/
+        synth.addVoice(ptr);
+    }
+    juce::Decibels::decibelsToGain(10);
+}
+
+//PARAMETER RANGES AND ADDITION TO VTS
+juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor::buildParams()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+    //ADSR Params
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Att", "Attack",
+        juce::NormalisableRange<float> {0.001f, 1.0f, }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Dec", "Decay",
+        juce::NormalisableRange<float> {0.01f, 1.0f, }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Sus", "Sustain",
+        juce::NormalisableRange<float> {0.0f, 1.0f, }, 0.6f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Rel", "Release",
+        juce::NormalisableRange<float> {0.01f, 5.0f, }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain", "Gain",
+        juce::NormalisableRange<float> {0.0f, 1.0f, }, 0.1f));
+
+
+    //Tuning Params
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("c", "cNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("ces", "cesNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("d", "dNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("des", "desNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("e", "eNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("f", "fNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("fes", "fesNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("g", "gNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("ges", "gesNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("a", "aNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("aes", "aesNote",
+        -1.0f, 1.0f, 0.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("b", "bNote",
+        -1.0f, 1.0f, 0.0f));
+
+    //Karplus Params
+    params.push_back(std::make_unique<juce::AudioParameterInt>("kAtt", "kAtt",
+        1, 48000, 10));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("kSwitch", "kSwitch",
+        1, 3, 1));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("kRel", "kRel",
+        1, 48000, 48000));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("kFeed", "kFeed",
+        juce::NormalisableRange<float>{0.0, 1.0, }, 1.0));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("fmDepth", "fmDepth",
+        juce::NormalisableRange<float>{100, 8000, }, 500));
+    params.push_back(std::make_unique<juce::AudioParameterInt>("fmIndex", "fmIndex",
+        1, 8, 500));
+
+    //Filter Params
+    // el valor de skew debe ser como 0.3
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("cutoff", "Cutoff",
+        juce::NormalisableRange<float>(40.f, 20000.f, 1.f, 3.f), 1000.f));
+    //juce::AudioParameterFloat("cutoff", "Cutoff", juce::NormalisableRange<float>(40.f, 20000.f, 1.f, 3.f), 1000.f);
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("q", "Q",
+        juce::NormalisableRange<float>{1, 10, }, 2));
+    params.push_back(std::make_unique<juce::AudioParameterBool>("filterOnOff", "OnOff", 1));
+
+
+    //Mod Adsr Params
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("modAtt", "Attack",
+        juce::NormalisableRange<float> {0.01f, 1.0f, }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("modDec", "Decay",
+        juce::NormalisableRange<float> {0.01f, 1.0f, }, 0.1f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("modSus", "Sustain",
+        juce::NormalisableRange<float> {0.0f, 1.0f, }, 0.6f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("modRel", "Release",
+        juce::NormalisableRange<float> {0.01f, 5.0f, }, 0.1f));
+
+
+    //Lfo Params
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoFreq", "Frequency",
+        juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f, 0.3f, false), 1.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoDepth", "Depth",
+        juce::NormalisableRange<float>(0.0f, 12.0f, 0.001f, 0.3f, false), 1.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoWave", "Wave",
+        juce::NormalisableRange<float>(1.0f, 100.0f, 0.1f, 0.3f, false), 1.0f));
+
+
+    //Global Params
+    params.push_back((std::make_unique<juce::AudioParameterFloat>("gain", "gain",
+        0, 1, 0.5)));
+    params.push_back((std::make_unique<juce::AudioParameterInt>("selector", "selector",
+        0, 2, 0)));
+
+    return { params.begin(), params.end() };
 }
 
 VarikeyProjectAudioProcessor::~VarikeyProjectAudioProcessor()

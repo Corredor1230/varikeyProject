@@ -87,11 +87,11 @@ private:
 
     NoteTuning& tuningRef;
     juce::AudioProcessorValueTreeState& vts;
-    juce::dsp::Gain<float> gain;
 
     bool isPrepared{ false };
 
     float tempVelocity = 0;
+    float finalGain = 0;
     int synthSelector = 0;
     float modAdsrSample = 0;
     float oscModShape = 0;
