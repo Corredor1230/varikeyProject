@@ -14,11 +14,11 @@
           </GROUP>
           <FILE id="jmU894" name="AdsrData.cpp" compile="1" resource="0" file="Source/Data/Process/AdsrData.cpp"/>
           <FILE id="busYld" name="AdsrData.h" compile="0" resource="0" file="Source/Data/Process/AdsrData.h"/>
-          <FILE id="Gg5UnS" name="Filter.h" compile="0" resource="0" file="Source/Data/Process/Filter.h"/>
           <FILE id="GwtUMw" name="NoteTuning.cpp" compile="1" resource="0" file="Source/Data/Process/NoteTuning.cpp"/>
           <FILE id="TJLBKd" name="NoteTuning.h" compile="0" resource="0" file="Source/Data/Process/NoteTuning.h"/>
           <FILE id="TeAC1Y" name="Oscillator.cpp" compile="1" resource="0" file="Source/Data/Process/Oscillator.cpp"/>
           <FILE id="eyRbeF" name="Oscillator.h" compile="0" resource="0" file="Source/Data/Process/Oscillator.h"/>
+          <FILE id="eJHJ9B" name="HipLopFilter.h" compile="0" resource="0" file="Source/Data/Process/HipLopFilter.h"/>
         </GROUP>
         <GROUP id="{1C33791A-BEC2-88ED-EABA-9973DD45AA15}" name="Synth">
           <GROUP id="{6BA4A958-48DA-C598-DEAD-4B3B9B71F7AC}" name="FaustSynth">
@@ -29,7 +29,10 @@
             <FILE id="qvdkqO" name="osc.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/osc.dsp"/>
             <FILE id="EQWULW" name="test.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/test.dsp"/>
           </GROUP>
+          <FILE id="xyUboR" name="Generator.h" compile="0" resource="0" file="Source/Data/Synth/Generator.h"/>
+          <FILE id="cny7sT" name="Additive.h" compile="0" resource="0" file="Source/Data/Synth/Additive.h"/>
           <FILE id="ufUeK8" name="Karplus.h" compile="0" resource="0" file="Source/Data/Synth/Karplus.h"/>
+          <FILE id="oym5pw" name="NoiseSynth.h" compile="0" resource="0" file="Source/Data/Synth/NoiseSynth.h"/>
         </GROUP>
         <GROUP id="{9188FAD9-8511-AA3D-6B40-FC4B10964FF0}" name="Voice">
           <FILE id="EQe8c9" name="SynthSound.h" compile="0" resource="0" file="Source/Data/Voice/SynthSound.h"/>
@@ -118,8 +121,10 @@
   <EXPORTFORMATS>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="VarikeyProject"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="VarikeyProject"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="VarikeyProject" headerPath="&quot;C:\Program Files\Faust\include&quot;"
+                       libraryPath="&quot;C:\Program Files\Faust\lib&quot;"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="VarikeyProject" libraryPath="&quot;C:\Program Files\Faust\lib&quot;"
+                       headerPath="&quot;C:\Program Files\Faust\include&quot;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../../../../../Users/juanp/Downloads/JUCE-master/JUCE-master/modules"/>
@@ -134,6 +139,7 @@
         <MODULEPATH id="juce_graphics" path="../../../../../../../Users/juanp/Downloads/JUCE-master/JUCE-master/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../../../../Users/juanp/Downloads/JUCE-master/JUCE-master/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../../../../Users/juanp/Downloads/JUCE-master/JUCE-master/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../../../../Users/juanp/Downloads/JUCE-master/JUCE-master/modules"/>
       </MODULEPATHS>
     </VS2019>
   </EXPORTFORMATS>
@@ -147,6 +153,7 @@
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

@@ -11,7 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../Source/LookAndFeelElements/Fonts/EmbeddedFonts.h"
+#include "../LookAndFeelElements/Fonts/EmbeddedFonts.h"
 #include "../VarikeyLookAndFeel.h"
 
 //==============================================================================

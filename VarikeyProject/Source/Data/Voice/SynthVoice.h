@@ -11,18 +11,18 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "SynthSound.h"
-#include "Data/Process/AdsrData.h"
-#include "Data/Synth/OscData.h"
-#include "Data/Synth/NoteTuning.h"
 #include <faust/misc.h>
 #include <faust/dsp/dsp.h>
 #include <faust/gui/MapUI.h>
-#include "Data/Synth/SimpleSynth.h"
-#include "Data/Synth/Test.h"
-#include "Data/Synth/Karplus.h"
-#include "Data/Process/Filter.h"
-#include "Data/Process/Oscillator.h"
+#include "SynthSound.h"
+#include "../Source/Data/Process/AdsrData.h"
+#include "../Source/Data/Process/NoteTuning.h"
+#include "../Source/Data/Process/Oscillator.h"
+#include "../Source/Data/Process/HipLopFilter.h"
+#include "../Source/Data/Synth/Additive.h"
+#include "../Source/Data/Synth/Generator.h"
+#include "../Source/Data/Synth/Karplus.h"
+#include "../Source/Data/Synth/NoiseSynth.h"
 
 //class myVector {
 //    int numElements;
@@ -61,15 +61,24 @@ public:
     void updateLfo(float freq, float wave, float depth);
 
 private:
+
+    Generator genSynth;
+    MapUI genCtrl;
+
+    Additive additiveSynth;
+    MapUI additiveCtrl;
+
+    NoiseSynth noiseSynth;
+    MapUI noiseCtrl;
+
     Karplus karplusSynth;
-    Test test;
-    MapUI ctrl;
     MapUI karpCtrl;
+
+    HipLopFilter filter;
     MapUI filtCtrl;
 
     AdsrData adsr;
     AdsrData modAdsr;
-    Filter filter;
     Oscillator lfoMod;
 
 

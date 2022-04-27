@@ -1,0 +1,137 @@
+Synths
+Left Synth
+	
+Generator
+	
+	1   "leftGenShape"
+	2   "leftGenNoiseLevel"
+	3   "leftGenNoiseShape"
+	    
+	4   "rightGenShape"
+	5   "rightGenNoiseLevel"
+	6   "rightGenNoiseShape"
+	
+Additive
+	
+	7   "additiveLeft0"
+	8   "additiveLeft1"
+	9   "additiveLeft2"
+	10  "additiveLeft3"
+	11  "additiveLeft4"
+	12  "additiveLeft5"
+	13  "additiveLeft6"
+	14  "additiveLeft7"
+	15  "additiveLeft8"
+	    
+	16  "additiveRight0"
+	17  "additiveRight1"
+	18  "additiveRight2"
+	19  "additiveRight3"
+	20  "additiveRight4"
+	21  "additiveRight5"
+	22  "additiveRight6"
+	23  "additiveRight7"
+	24  "additiveRight8"
+	
+Karplus
+
+	25  "leftKarpAtt"
+	26  "leftKarpRel"
+	27  "leftKarpFB"
+	28  "leftKarpNoise"
+	    
+	29  "rightKarpAtt"
+	30  "rightKarpRel"
+    31  "rightKarpFB"
+    32  "rightKarpNoise"
+	
+NoiseSynth
+
+	33  "leftNoiseTone"
+	34  "rightNoiseTone"
+	
+FM Mod
+
+	35  "leftFmRatio"
+	36  "leftFmDepth"
+	37  "rightFmRatio"
+	38  "rightFamDepth"
+	
+Choice
+
+	39  "leftSynthChoice"
+	40  "rightSynthChoice
+	41  "synthMix"
+	
+Filter
+
+	42  "lopOnOff"
+	43  "lopCutoff"
+	44  "lopQ"
+	45  "hipOnOff"
+	46  "hipCutoff"
+	47  "hipQ"
+	
+Adsr
+
+	48  "ampAdsrAtt"
+	49  "ampAdsrDec"
+	50  "ampAdsrSus"
+	51  "ampAdsrRel"
+	52  "modAdsrAtt"  
+    53  "modAdsrDec"
+    54  "modAdsrSus"
+    55  "modAdsrRel"
+	56  "modAdsrRoute"
+	
+LFO
+
+	57  "lfo1Freq"
+	58  "lfo1Depth"
+	59  "lfo1Shape"
+	60  "lfo1Route"
+	
+	61  "lfo2Freq"
+	62  "lfo2Depth"
+	63  "lfo2Shape"
+	64  "lfo2Route"
+	
+	65  "lfo3Freq"
+	66  "lfo3Depth"
+	67  "lfo3Shape"
+	68  "lfo3Route"
+	
+	69  "lfo4Freq"
+	70  "lfo4Depth"
+	71  "lfo4Shape"
+	72  "lfo4Route"
+	
+Other controls
+
+	73  "detune"
+	74  "vibFreq"
+	75  "vibDepth"
+	
+Note Tuning
+
+	76  "bassControlsTuning"
+	77  "keyboardBreak"
+	
+	78  "tuning0"
+	79  "tuning1"
+	80  "tuning2"
+	81  "tuning3"
+	82  "tuning4"
+	83  "tuning5"
+	84  "tuning6"
+	85  "tuning7"
+	86  "tuning8"
+	87  "tuning9"
+	88  "tuning10"
+	89  "tuning11"
+	
+	90  "scaleCenter"
+	
+Volume
+
+	91 "volume"
