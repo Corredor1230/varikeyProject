@@ -21,7 +21,7 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
                      #endif
                        )
 #endif
-, vts(*this, nullptr, "Params", buildParams())
+: vts(*this, nullptr, "Params", buildParams())
 {
     int numVoices = 8;
     synth.addSound(new SynthSound());
@@ -200,8 +200,16 @@ void VarikeyProjectAudioProcessor::changeProgramName (int index, const juce::Str
 //==============================================================================
 void VarikeyProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    synth.setCurrentPlaybackSampleRate(sampleRate);
+
+    for (int i = 0; i < synth.getNumVoices(); i++)
+    {
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        {
+            voice->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+        }
+
+    }
 }
 
 void VarikeyProjectAudioProcessor::releaseResources()
@@ -239,30 +247,109 @@ bool VarikeyProjectAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
 void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
+    auto totalNumInputChannels = getTotalNumInputChannels(); // esto no se usa
+    auto totalNumOutputChannels = getTotalNumOutputChannels(); // esto no se usa
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    //for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+    //{
+    //    buffer.clear(i, 0, buffer.getNumSamples());
+    //}
+
+
+    buffer.clear();
+
+
+    for (int i = 0; i < synth.getNumVoices(); ++i)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        {
 
-        // ..do something to the data...
+            auto& attack = *vts.getRawParameterValue("Att");
+            auto& decay = *vts.getRawParameterValue("Dec");
+            auto& sustain = *vts.getRawParameterValue("Sus");
+            auto& release = *vts.getRawParameterValue("Rel");
+            auto& gain = *vts.getRawParameterValue("Gain"); // esta variable no se usa
+
+            auto& cTuning = *vts.getRawParameterValue("c");
+            auto& cesTuning = *vts.getRawParameterValue("ces");
+            auto& dTuning = *vts.getRawParameterValue("d");
+            auto& desTuning = *vts.getRawParameterValue("des");
+            auto& eTuning = *vts.getRawParameterValue("e");
+            auto& fTuning = *vts.getRawParameterValue("f");
+            auto& fesTuning = *vts.getRawParameterValue("fes");
+            auto& gTuning = *vts.getRawParameterValue("g");
+            auto& gesTuning = *vts.getRawParameterValue("ges");
+            auto& aTuning = *vts.getRawParameterValue("a");
+            auto& aesTuning = *vts.getRawParameterValue("aes");
+            auto& bTuning = *vts.getRawParameterValue("b");
+
+            tuning[0] = cTuning.load();
+            tuning[1] = cesTuning.load();
+            tuning[2] = dTuning.load();
+            tuning[3] = desTuning.load();
+            tuning[4] = eTuning.load();
+            tuning[5] = fTuning.load();
+            tuning[6] = fesTuning.load();
+            tuning[7] = gTuning.load();
+            tuning[8] = gesTuning.load();
+            tuning[9] = aTuning.load();
+            tuning[10] = aesTuning.load();
+            tuning[11] = bTuning.load();
+            noteTuning.setTuning(tuning);
+
+            //tuning[0] = vts.getParameterAsValue("c").getValue();
+            //tuning[1] = vts.getParameterAsValue("ces").getValue();
+            //tuning[2] = vts.getParameterAsValue("d").getValue();
+            //tuning[3] = vts.getParameterAsValue("des").getValue();
+            //tuning[4] = vts.getParameterAsValue("e").getValue();
+            //tuning[5] = vts.getParameterAsValue("f").getValue();
+            //tuning[6] = vts.getParameterAsValue("fes").getValue();
+            //tuning[7] = vts.getParameterAsValue("g").getValue();
+            //tuning[8] = vts.getParameterAsValue("ges").getValue();
+            //tuning[9] = vts.getParameterAsValue("a").getValue();
+            //tuning[10] = vts.getParameterAsValue("aes").getValue();
+            //tuning[11] = vts.getParameterAsValue("b").getValue();
+            //noteTuning.setTuning(tuning);
+
+            //Karplus Parameters
+            float kFeed = vts.getParameterAsValue("kFeed").getValue();
+            integers[0] = vts.getParameterAsValue("kAtt").getValue();
+            integers[1] = vts.getParameterAsValue("kRel").getValue();
+            integers[2] = vts.getParameterAsValue("kSwitch").getValue();
+            integers[3] = vts.getParameterAsValue("fmDepth").getValue();
+            integers[4] = vts.getParameterAsValue("fmIndex").getValue();
+
+            //Gen Parameters
+            std::array<int, 1> genIntegers;
+            genIntegers[0] = vts.getParameterAsValue("selector").getValue();
+            std::array<float, 1> genFloats;
+            genFloats[0] = vts.getParameterAsValue("gain").getValue();
+
+            //Filter Parameters
+            int cutoff = vts.getParameterAsValue("cutoff").getValue();
+            float q = vts.getParameterAsValue("q").getValue();
+
+            //Lfo Parameters
+            lfoFreq = vts.getParameterAsValue("lfoFreq").getValue();
+            lfoDepth = vts.getParameterAsValue("lfoDepth").getValue();
+            lfoWave = vts.getParameterAsValue("lfoWave").getValue();
+
+            voice->updateFilter(cutoff, q);
+            voice->updateGeneric(genIntegers, genFloats);
+            voice->updateKarplus(kFeed, integers);
+            voice->updateAdsr(attack.load(), decay.load(), sustain.load(), release.load());
+            voice->updateLfo(lfoFreq, lfoWave, lfoDepth);
+            voice->updateModAdsr(vts.getParameterAsValue("modAtt").getValue(),
+                vts.getParameterAsValue("modDec").getValue(),
+                vts.getParameterAsValue("modSus").getValue(),
+                vts.getParameterAsValue("modRel").getValue());
+        }
+
     }
+
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    
 }
 
 //==============================================================================
