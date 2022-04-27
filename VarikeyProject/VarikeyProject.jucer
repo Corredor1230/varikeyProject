@@ -7,6 +7,104 @@
               pluginManufacturerCode="Cdor" pluginCode="Vkey" pluginChannelConfigs="{0, 1}, {0, 2}">
   <MAINGROUP id="VjCV97" name="Varikey">
     <GROUP id="{79EFCDB8-C09C-192D-39C4-D3063783B926}" name="Source">
+      <GROUP id="{E3CCB533-0377-37A1-32A4-9A6317C848F5}" name="Data">
+        <GROUP id="{0F045F1A-89B9-7B2D-8C06-2794901EE706}" name="Process">
+          <GROUP id="{F2ABF179-44FB-1A21-1163-29478ACE931F}" name="FaustProcess">
+            <FILE id="F9ON63" name="Filter.dsp" compile="0" resource="1" file="Source/Data/Process/FaustProcess/Filter.dsp"/>
+          </GROUP>
+          <FILE id="jmU894" name="AdsrData.cpp" compile="1" resource="0" file="Source/Data/Process/AdsrData.cpp"/>
+          <FILE id="busYld" name="AdsrData.h" compile="0" resource="0" file="Source/Data/Process/AdsrData.h"/>
+          <FILE id="Gg5UnS" name="Filter.h" compile="0" resource="0" file="Source/Data/Process/Filter.h"/>
+          <FILE id="GwtUMw" name="NoteTuning.cpp" compile="1" resource="0" file="Source/Data/Process/NoteTuning.cpp"/>
+          <FILE id="TJLBKd" name="NoteTuning.h" compile="0" resource="0" file="Source/Data/Process/NoteTuning.h"/>
+          <FILE id="TeAC1Y" name="Oscillator.cpp" compile="1" resource="0" file="Source/Data/Process/Oscillator.cpp"/>
+          <FILE id="eyRbeF" name="Oscillator.h" compile="0" resource="0" file="Source/Data/Process/Oscillator.h"/>
+        </GROUP>
+        <GROUP id="{1C33791A-BEC2-88ED-EABA-9973DD45AA15}" name="Synth">
+          <GROUP id="{6BA4A958-48DA-C598-DEAD-4B3B9B71F7AC}" name="FaustSynth">
+            <FILE id="XZTZsd" name="Additive.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/Additive.dsp"/>
+            <FILE id="onoA54" name="Generator.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/Generator.dsp"/>
+            <FILE id="pasMmj" name="Karplus.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/Karplus.dsp"/>
+            <FILE id="d8W15s" name="NoiseSynth.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/NoiseSynth.dsp"/>
+            <FILE id="qvdkqO" name="osc.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/osc.dsp"/>
+            <FILE id="EQWULW" name="test.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/test.dsp"/>
+          </GROUP>
+          <FILE id="ufUeK8" name="Karplus.h" compile="0" resource="0" file="Source/Data/Synth/Karplus.h"/>
+        </GROUP>
+        <GROUP id="{9188FAD9-8511-AA3D-6B40-FC4B10964FF0}" name="Voice">
+          <FILE id="EQe8c9" name="SynthSound.h" compile="0" resource="0" file="Source/Data/Voice/SynthSound.h"/>
+          <FILE id="plTd3T" name="SynthVoice.cpp" compile="1" resource="0" file="Source/Data/Voice/SynthVoice.cpp"/>
+          <FILE id="Y548cP" name="SynthVoice.h" compile="0" resource="0" file="Source/Data/Voice/SynthVoice.h"/>
+        </GROUP>
+      </GROUP>
+      <GROUP id="{B177FE03-6A10-92CF-C7FF-F74E149E2FEA}" name="UI">
+        <GROUP id="{8B2483A4-1418-E2C1-CC76-75F8761C5480}" name="Global">
+          <FILE id="rzbey5" name="PitchwheelComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Global/PitchwheelComponent.cpp"/>
+          <FILE id="ApEfdj" name="PitchwheelComponent.h" compile="0" resource="0"
+                file="Source/UI/Global/PitchwheelComponent.h"/>
+          <FILE id="iEBARV" name="TuningComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Global/TuningComponent.cpp"/>
+          <FILE id="AnxNwK" name="TuningComponent.h" compile="0" resource="0"
+                file="Source/UI/Global/TuningComponent.h"/>
+        </GROUP>
+        <GROUP id="{6474D229-5D0C-761C-989F-2DD1AD975AA5}" name="LookAndFeelElements">
+          <GROUP id="{4C36C976-5F02-3368-C2A1-A3D43C6B0584}" name="Fonts">
+            <FILE id="GzDwBG" name="EmbeddedFonts.cpp" compile="1" resource="0"
+                  file="Source/UI/LookAndFeelElements/Fonts/EmbeddedFonts.cpp"/>
+            <FILE id="XshRUv" name="EmbeddedFonts.h" compile="0" resource="0" file="Source/UI/LookAndFeelElements/Fonts/EmbeddedFonts.h"/>
+            <FILE id="kVfbzC" name="JosefinSans-Bold.ttf" compile="0" resource="1"
+                  file="Source/UI/LookAndFeelElements/Fonts/JosefinSans-Bold.ttf"/>
+            <FILE id="QlCFck" name="JosefinSans-Italic.ttf" compile="0" resource="1"
+                  file="Source/UI/LookAndFeelElements/Fonts/JosefinSans-Italic.ttf"/>
+            <FILE id="bHUEJl" name="JosefinSans-Medium.ttf" compile="0" resource="1"
+                  file="Source/UI/LookAndFeelElements/Fonts/JosefinSans-Medium.ttf"/>
+            <FILE id="NlbQzy" name="JosefinSans-Regular.ttf" compile="0" resource="1"
+                  file="Source/UI/LookAndFeelElements/Fonts/JosefinSans-Regular.ttf"/>
+            <FILE id="JumDCK" name="JosefinSans-SemiBold.ttf" compile="0" resource="1"
+                  file="Source/UI/LookAndFeelElements/Fonts/JosefinSans-SemiBold.ttf"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{D3FBD07E-06C6-0D25-6A3B-0F0BE5A425C3}" name="Osc">
+          <FILE id="smuAUV" name="AdditiveComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Osc/AdditiveComponent.cpp"/>
+          <FILE id="ox8f2E" name="AdditiveComponent.h" compile="0" resource="0"
+                file="Source/UI/Osc/AdditiveComponent.h"/>
+          <FILE id="inBKRr" name="GenComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Osc/GenComponent.cpp"/>
+          <FILE id="TA8KtN" name="GenComponent.h" compile="0" resource="0" file="Source/UI/Osc/GenComponent.h"/>
+          <FILE id="STAZ7V" name="KarplusComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Osc/KarplusComponent.cpp"/>
+          <FILE id="MUJI6s" name="KarplusComponent.h" compile="0" resource="0"
+                file="Source/UI/Osc/KarplusComponent.h"/>
+          <FILE id="sHEieH" name="NoiseComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Osc/NoiseComponent.cpp"/>
+          <FILE id="hPFgXo" name="NoiseComponent.h" compile="0" resource="0"
+                file="Source/UI/Osc/NoiseComponent.h"/>
+        </GROUP>
+        <GROUP id="{07C3C4A9-2474-C2B4-D1D9-D827F936D0D2}" name="Process">
+          <FILE id="qAepxi" name="AdsrComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Process/AdsrComponent.cpp"/>
+          <FILE id="U4TjfR" name="AdsrComponent.h" compile="0" resource="0" file="Source/UI/Process/AdsrComponent.h"/>
+          <FILE id="Tqj3SL" name="FilterComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Process/FilterComponent.cpp"/>
+          <FILE id="ZiEPT2" name="FilterComponent.h" compile="0" resource="0"
+                file="Source/UI/Process/FilterComponent.h"/>
+          <FILE id="EFwNnz" name="FmComponent.cpp" compile="1" resource="0" file="Source/UI/Process/FmComponent.cpp"/>
+          <FILE id="JpZMwH" name="FmComponent.h" compile="0" resource="0" file="Source/UI/Process/FmComponent.h"/>
+          <FILE id="GaWUYw" name="LfoComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Process/LfoComponent.cpp"/>
+          <FILE id="J3XEF2" name="LfoComponent.h" compile="0" resource="0" file="Source/UI/Process/LfoComponent.h"/>
+          <FILE id="JFlUDH" name="ModAdsrComponent.cpp" compile="1" resource="0"
+                file="Source/UI/Process/ModAdsrComponent.cpp"/>
+          <FILE id="lpBUnv" name="ModAdsrComponent.h" compile="0" resource="0"
+                file="Source/UI/Process/ModAdsrComponent.h"/>
+        </GROUP>
+        <FILE id="pEN1Ul" name="VarikeyLookAndFeel.cpp" compile="1" resource="0"
+              file="Source/UI/VarikeyLookAndFeel.cpp"/>
+        <FILE id="l0wqX2" name="VarikeyLookAndFeel.h" compile="0" resource="0"
+              file="Source/UI/VarikeyLookAndFeel.h"/>
+      </GROUP>
       <FILE id="kXL7jZ" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="gwU2ww" name="PluginProcessor.h" compile="0" resource="0"
