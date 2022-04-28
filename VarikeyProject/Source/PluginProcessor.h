@@ -56,27 +56,15 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     juce::AudioProcessorValueTreeState vts;
 
-    void createFloatParameter(std::vector < std::unique_ptr<juce::RangedAudioParameter>> params,
+    void createFloatParameter(std::vector < std::unique_ptr<juce::RangedAudioParameter>>& params,
         const juce::String& paramID, const juce::String& paramName, float minValue, float maxValue, float interval,
-        float initValue, float skewValue);
-    void createIntParameter(std::vector<std::unique_ptr<juce::RangedAudioParameter>> params,
+        float initValue, float skewValue = 1.0f);
+    void createIntParameter(std::vector<std::unique_ptr<juce::RangedAudioParameter>>& params,
         const juce::String& paramID, const juce::String& paramName, int minVal, int maxVal, int defaultVal);
 
 private:
 
-    std::initializer_list<const char*> synthList
-    {
-        "none",
-        "gen1Noise", "gen2Noise",
-        "noise1Tone", "noise2Tone",
-        "mix",
-        "fm1Ratio", "fm1Depth",
-        "fm2Ratio", "fm2Depth",
-        "lopCutoff", "lopQ",
-        "hipCutoff", "hipQ",
-        "detune", "vibFreq", "vibDepth",
-        "volume"
-    };
+
 
     juce::AudioProcessorValueTreeState::ParameterLayout buildParams();
     juce::Synthesiser synth;
