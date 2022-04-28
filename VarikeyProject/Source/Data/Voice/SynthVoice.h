@@ -58,7 +58,7 @@ public:
     void updateGeneric(std::array<int, 1> integers, std::array<float, 1> floats);
     void updateFilter(int cutoff, float q);
     void updateOscMod(float freq, float shape, float depth);
-    void updateLfo(float freq, float wave, float depth);
+    void updateLfo1(float freq, float wave, float depth);
 
 private:
 
@@ -79,7 +79,10 @@ private:
 
     AdsrData adsr;
     AdsrData modAdsr;
-    Oscillator lfoMod;
+    Oscillator lfo1Mod;
+    Oscillator lfo2Mod;
+    Oscillator lfo3Mod;
+    Oscillator lfo4Mod;
 
 
     juce::AudioBuffer<float> synthBuffer;

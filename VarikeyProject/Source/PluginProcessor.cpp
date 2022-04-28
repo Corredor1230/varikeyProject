@@ -39,94 +39,54 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
-    //ADSR Params
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Att", "Attack",
-        juce::NormalisableRange<float> {0.001f, 1.0f, }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Dec", "Decay",
-        juce::NormalisableRange<float> {0.01f, 1.0f, }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Sus", "Sustain",
-        juce::NormalisableRange<float> {0.0f, 1.0f, }, 0.6f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Rel", "Release",
-        juce::NormalisableRange<float> {0.01f, 5.0f, }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain", "Gain",
-        juce::NormalisableRange<float> {0.0f, 1.0f, }, 0.1f));
+    //GENERATOR
+        //Left
+        createIntParameter(params, "leftGenShape", "Wave Shape 1", 0, 3, 0);
+        createFloatParameter(params, "leftGenNoiseLevel", "Noise Level 1", 0.f, 1.f, 0.01f, 0.f);
+        createIntParameter(params, "leftGenNoiseShape", "Noise Shape 1", 0, 1, 1);
+
+        //Right
+        createIntParameter(params, "rightGenShape", "Wave Shape 2", 0, 3, 0);
+        createFloatParameter(params, "rightGenNoiseLevel", "Noise Level 2", 0.f, 1.f, 0.01f, 0.f);
+        createIntParameter(params, "rightGenNoiseShape", "Noise Shape 2", 0, 1, 1);
+
+    //ADDITIVE
+        //Left
+        std::string additiveLeft = "additiveLeft";
+        createFloatParameter(params, "additiveLeft0", "0 Left", 0.f, 8.f, 1.f, 8.f);
+        for (int i = 1; i < 9; i++)
+        {
+            createFloatParameter(params, additiveLeft + std::to_string(i), std::to_string(i) + "Left", 0.f, 8.f, 1.f, 0.f);
+        }
+
+        //Right
+        std::string additiveRight = "additiveRight";
+        createFloatParameter(params, "additiveRight0", "0 Right", 0.f, 8.f, 1.f, 8.f);
+        for (int i = 1; i < 9; i++)
+        {
+            createFloatParameter(params, additiveRight + std::to_string(i), std::to_string(i) + "Right", 0.f, 8.f, 1.f, 0.f);
+        }
+
+    //KARPLUS
+        //Left
+        createFloatParameter(params, "leftKarpAtt", "Karplus Attack 1", 0.f, 1.f, 0.0001, 0.01, 0.4);
+        createFloatParameter(params, "leftKarpRel", "Karplus Release 1", 0.f, 1.f, 0.0001, 1.f, 0.4);
+        createFloatParameter(params, "leftKarpFb", "Karplus Feedback 1", 0.f, 1.f, 0.001, 0.95f);
+        createIntParameter(params, "leftKarpNoise", "Karplus Noise 1", 0, 1, 1);
+
+        //Right
+        createFloatParameter(params, "rightKarpAtt", "Karplus Attack 2", 0.f, 1.f, 0.0001, 0.01, 0.4);
+        createFloatParameter(params, "rightKarpRel", "Karplus Release 2", 0.f, 1.f, 0.0001, 1.f, 0.4);
+        createFloatParameter(params, "rightKarpFb", "Karplus Feedback 2", 0.f, 1.f, 0.001, 0.95f);
+        createIntParameter(params, "rightKarpNoise", "Karplus Noise 2", 0, 1, 1);
+
+    //NOISE
+        //Left
+        createFloatParameter(params, "leftNoiseTone", "Noise Tone 1", 0.0f, )
 
 
-    //Tuning Params
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("c", "cNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("ces", "cesNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("d", "dNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("des", "desNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("e", "eNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("f", "fNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("fes", "fesNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("g", "gNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("ges", "gesNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("a", "aNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("aes", "aesNote",
-        -1.0f, 1.0f, 0.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("b", "bNote",
-        -1.0f, 1.0f, 0.0f));
-
-    //Karplus Params
-    params.push_back(std::make_unique<juce::AudioParameterInt>("kAtt", "kAtt",
-        1, 48000, 10));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("kSwitch", "kSwitch",
-        1, 3, 1));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("kRel", "kRel",
-        1, 48000, 48000));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("kFeed", "kFeed",
-        juce::NormalisableRange<float>{0.0, 1.0, }, 1.0));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("fmDepth", "fmDepth",
-        juce::NormalisableRange<float>{100, 8000, }, 500));
-    params.push_back(std::make_unique<juce::AudioParameterInt>("fmIndex", "fmIndex",
-        1, 8, 500));
-
-    //Filter Params
-    // el valor de skew debe ser como 0.3
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("cutoff", "Cutoff",
-        juce::NormalisableRange<float>(40.f, 20000.f, 1.f, 3.f), 1000.f));
-    //juce::AudioParameterFloat("cutoff", "Cutoff", juce::NormalisableRange<float>(40.f, 20000.f, 1.f, 3.f), 1000.f);
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("q", "Q",
-        juce::NormalisableRange<float>{1, 10, }, 2));
-    params.push_back(std::make_unique<juce::AudioParameterBool>("filterOnOff", "OnOff", 1));
 
 
-    //Mod Adsr Params
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("modAtt", "Attack",
-        juce::NormalisableRange<float> {0.01f, 1.0f, }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("modDec", "Decay",
-        juce::NormalisableRange<float> {0.01f, 1.0f, }, 0.1f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("modSus", "Sustain",
-        juce::NormalisableRange<float> {0.0f, 1.0f, }, 0.6f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("modRel", "Release",
-        juce::NormalisableRange<float> {0.01f, 5.0f, }, 0.1f));
-
-
-    //Lfo Params
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoFreq", "Frequency",
-        juce::NormalisableRange<float>(0.0f, 20.0f, 0.01f, 0.3f, false), 1.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoDepth", "Depth",
-        juce::NormalisableRange<float>(0.0f, 12.0f, 0.001f, 0.3f, false), 1.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("lfoWave", "Wave",
-        juce::NormalisableRange<float>(1.0f, 100.0f, 0.1f, 0.3f, false), 1.0f));
-
-
-    //Global Params
-    params.push_back((std::make_unique<juce::AudioParameterFloat>("gain", "gain",
-        0, 1, 0.5)));
-    params.push_back((std::make_unique<juce::AudioParameterInt>("selector", "selector",
-        0, 2, 0)));
 
     return { params.begin(), params.end() };
 }
@@ -298,19 +258,6 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             tuning[11] = bTuning.load();
             noteTuning.setTuning(tuning);
 
-            //tuning[0] = vts.getParameterAsValue("c").getValue();
-            //tuning[1] = vts.getParameterAsValue("ces").getValue();
-            //tuning[2] = vts.getParameterAsValue("d").getValue();
-            //tuning[3] = vts.getParameterAsValue("des").getValue();
-            //tuning[4] = vts.getParameterAsValue("e").getValue();
-            //tuning[5] = vts.getParameterAsValue("f").getValue();
-            //tuning[6] = vts.getParameterAsValue("fes").getValue();
-            //tuning[7] = vts.getParameterAsValue("g").getValue();
-            //tuning[8] = vts.getParameterAsValue("ges").getValue();
-            //tuning[9] = vts.getParameterAsValue("a").getValue();
-            //tuning[10] = vts.getParameterAsValue("aes").getValue();
-            //tuning[11] = vts.getParameterAsValue("b").getValue();
-            //noteTuning.setTuning(tuning);
 
             //Karplus Parameters
             float kFeed = vts.getParameterAsValue("kFeed").getValue();
@@ -339,7 +286,7 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             voice->updateGeneric(genIntegers, genFloats);
             voice->updateKarplus(kFeed, integers);
             voice->updateAdsr(attack.load(), decay.load(), sustain.load(), release.load());
-            voice->updateLfo(lfoFreq, lfoWave, lfoDepth);
+            voice->updateLfo1(lfoFreq, lfoWave, lfoDepth);
             voice->updateModAdsr(vts.getParameterAsValue("modAtt").getValue(),
                 vts.getParameterAsValue("modDec").getValue(),
                 vts.getParameterAsValue("modSus").getValue(),
@@ -377,9 +324,23 @@ void VarikeyProjectAudioProcessor::setStateInformation (const void* data, int si
     // whose contents will have been created by the getStateInformation() call.
 }
 
+void VarikeyProjectAudioProcessor::createFloatParameter(std::vector < std::unique_ptr<juce::RangedAudioParameter>> params,
+    const juce::String& paramID, const juce::String& paramName, float minValue, float maxValue, float interval,
+    float initValue, float skewValue = 1.0)
+{
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(paramID, paramName, juce::NormalisableRange<float>(minValue, maxValue, interval, skewValue), initValue));
+}
+
+void VarikeyProjectAudioProcessor::createIntParameter(std::vector<std::unique_ptr<juce::RangedAudioParameter>> params,
+    const juce::String& paramID, const juce::String& paramName, int minVal, int maxVal, int defaultVal)
+{
+    params.push_back(std::make_unique<juce::AudioParameterInt>(paramID, paramName, minVal, maxVal, defaultVal));
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new VarikeyProjectAudioProcessor();
 }
+

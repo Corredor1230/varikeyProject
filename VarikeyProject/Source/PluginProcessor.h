@@ -56,6 +56,12 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     juce::AudioProcessorValueTreeState vts;
 
+    void createFloatParameter(std::vector < std::unique_ptr<juce::RangedAudioParameter>> params,
+        const juce::String& paramID, const juce::String& paramName, float minValue, float maxValue, float interval,
+        float initValue, float skewValue);
+    void createIntParameter(std::vector<std::unique_ptr<juce::RangedAudioParameter>> params,
+        const juce::String& paramID, const juce::String& paramName, int minVal, int maxVal, int defaultVal);
+
 private:
 
     juce::AudioProcessorValueTreeState::ParameterLayout buildParams();

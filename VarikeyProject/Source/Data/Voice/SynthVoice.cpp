@@ -75,7 +75,7 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
 
     adsr.setSampleRate(sampleRate);
     modAdsr.setSampleRate(sampleRate);
-    lfoMod.init(sampleRate);
+    lfo1Mod.init(sampleRate);
 
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
@@ -163,10 +163,10 @@ void SynthVoice::updateOscMod(float freq, float shape, float depth)
 }
 
 
-void SynthVoice::updateLfo(float freq, float wave, float depth)
+void SynthVoice::updateLfo1(float freq, float wave, float depth)
 {
-    lfoMod.setFreq(freq);
-    lfoMod.updateLfo(wave, depth);
+    lfo1Mod.setFreq(freq);
+    lfo1Mod.updateLfo(wave, depth);
 }
 
 
@@ -196,7 +196,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //Just like with modAdsr we need to pass it our buffer for it to work
     for (int i = 0; i < lfoBuffer.getNumSamples(); i++)
     {
-        lfoSample = lfoMod.getNextSample();
+        lfoSample = lfo1Mod.getNextSample();
     }
 
     synthBuffer.clear();

@@ -1,6 +1,5 @@
 Synths
-Left Synth
-	
+
 Generator
 	
 	1   "leftGenShape"
