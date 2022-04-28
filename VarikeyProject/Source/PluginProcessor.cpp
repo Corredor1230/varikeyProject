@@ -71,7 +71,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         createFloatParameter(params, "additiveLeft0", "0 Left", 0.f, 8.f, 1.f, 8.f);
         for (int i = 1; i < 9; i++)
         {
-            createFloatParameter(params, additiveLeft + std::to_string(i), std::to_string(i) + "Left", 0.f, 8.f, 1.f, 0.f);
+            createFloatParameter(params, additiveLeft + std::to_string(i), std::to_string(i) + " Left", 0.f, 8.f, 1.f, 0.f);
         }
 
         //Right
@@ -79,7 +79,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         createFloatParameter(params, "additiveRight0", "0 Right", 0.f, 8.f, 1.f, 8.f);
         for (int i = 1; i < 9; i++)
         {
-            createFloatParameter(params, additiveRight + std::to_string(i), std::to_string(i) + "Right", 0.f, 8.f, 1.f, 0.f);
+            createFloatParameter(params, additiveRight + std::to_string(i), std::to_string(i) + " Right", 0.f, 8.f, 1.f, 0.f);
         }
 
     //KARPLUS
@@ -308,90 +308,194 @@ bool VarikeyProjectAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
 void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels = getTotalNumInputChannels(); // esto no se usa
-    auto totalNumOutputChannels = getTotalNumOutputChannels(); // esto no se usa
-
-
-    //for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-    //{
-    //    buffer.clear(i, 0, buffer.getNumSamples());
-    //}
-
 
     buffer.clear();
-
-
+    
     for (int i = 0; i < synth.getNumVoices(); ++i)
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
+            //auto& attack = *vts.getRawParameterValue("Att");
+            //GENERATOR
+            auto& leftGenShape = *vts.getRawParameterValue("leftGenShape");
+            auto& leftGenNoiseLevel = *vts.getRawParameterValue("leftGenNoiseLevel");
+            auto& leftGenNoiseShape = *vts.getRawParameterValue("leftGenNoiseShape");
 
-            auto& attack = *vts.getRawParameterValue("Att");
-            auto& decay = *vts.getRawParameterValue("Dec");
-            auto& sustain = *vts.getRawParameterValue("Sus");
-            auto& release = *vts.getRawParameterValue("Rel");
-            auto& gain = *vts.getRawParameterValue("Gain"); // esta variable no se usa
+            auto& rightGenShape = *vts.getRawParameterValue("rightGenShape");
+            auto& rightGenNoiseLevel = *vts.getRawParameterValue("rightGenNoiseLevel");
+            auto& rightGenNoiseShape = *vts.getRawParameterValue("rightGenNoiseShape");
 
-            auto& cTuning = *vts.getRawParameterValue("c");
-            auto& cesTuning = *vts.getRawParameterValue("ces");
-            auto& dTuning = *vts.getRawParameterValue("d");
-            auto& desTuning = *vts.getRawParameterValue("des");
-            auto& eTuning = *vts.getRawParameterValue("e");
-            auto& fTuning = *vts.getRawParameterValue("f");
-            auto& fesTuning = *vts.getRawParameterValue("fes");
-            auto& gTuning = *vts.getRawParameterValue("g");
-            auto& gesTuning = *vts.getRawParameterValue("ges");
-            auto& aTuning = *vts.getRawParameterValue("a");
-            auto& aesTuning = *vts.getRawParameterValue("aes");
-            auto& bTuning = *vts.getRawParameterValue("b");
+            //ADDITIVE
+            std::array<float, 9> additiveLeft;
+            std::array<float, 9> additiveRight;
 
-            tuning[0] = cTuning.load();
-            tuning[1] = cesTuning.load();
-            tuning[2] = dTuning.load();
-            tuning[3] = desTuning.load();
-            tuning[4] = eTuning.load();
-            tuning[5] = fTuning.load();
-            tuning[6] = fesTuning.load();
-            tuning[7] = gTuning.load();
-            tuning[8] = gesTuning.load();
-            tuning[9] = aTuning.load();
-            tuning[10] = aesTuning.load();
-            tuning[11] = bTuning.load();
-            noteTuning.setTuning(tuning);
+            auto& additiveLeft0 = *vts.getRawParameterValue("additiveLeft0");
+            auto& additiveLeft1 = *vts.getRawParameterValue("additiveLeft1");
+            auto& additiveLeft2 = *vts.getRawParameterValue("additiveLeft2");
+            auto& additiveLeft3 = *vts.getRawParameterValue("additiveLeft3");
+            auto& additiveLeft4 = *vts.getRawParameterValue("additiveLeft4");
+            auto& additiveLeft5 = *vts.getRawParameterValue("additiveLeft5");
+            auto& additiveLeft6 = *vts.getRawParameterValue("additiveLeft6");
+            auto& additiveLeft7 = *vts.getRawParameterValue("additiveLeft7");
+            auto& additiveLeft8 = *vts.getRawParameterValue("additiveLeft8");
+            additiveLeft[0] = additiveLeft0.load();
+            additiveLeft[1] = additiveLeft1.load();
+            additiveLeft[2] = additiveLeft2.load();
+            additiveLeft[3] = additiveLeft3.load();
+            additiveLeft[4] = additiveLeft4.load();
+            additiveLeft[5] = additiveLeft5.load();
+            additiveLeft[6] = additiveLeft6.load();
+            additiveLeft[7] = additiveLeft7.load();
+            additiveLeft[8] = additiveLeft8.load();
+
+            auto& additiveRight0 = *vts.getRawParameterValue("additiveRight0");
+            auto& additiveRight1 = *vts.getRawParameterValue("additiveRight1");
+            auto& additiveRight2 = *vts.getRawParameterValue("additiveRight2");
+            auto& additiveRight3 = *vts.getRawParameterValue("additiveRight3");
+            auto& additiveRight4 = *vts.getRawParameterValue("additiveRight4");
+            auto& additiveRight5 = *vts.getRawParameterValue("additiveRight5");
+            auto& additiveRight6 = *vts.getRawParameterValue("additiveRight6");
+            auto& additiveRight7 = *vts.getRawParameterValue("additiveRight7");
+            auto& additiveRight8 = *vts.getRawParameterValue("additiveRight8");
+            additiveRight[0] = additiveRight0.load();
+            additiveRight[1] = additiveRight1.load();
+            additiveRight[2] = additiveRight2.load();
+            additiveRight[3] = additiveRight3.load();
+            additiveRight[4] = additiveRight4.load();
+            additiveRight[5] = additiveRight5.load();
+            additiveRight[6] = additiveRight6.load();
+            additiveRight[7] = additiveRight7.load();
+            additiveRight[8] = additiveRight8.load();
+
+            //KARPLUS
+            auto& leftKarpAtt = *vts.getRawParameterValue("leftKarpAtt");
+            auto& leftKarpRel = *vts.getRawParameterValue("leftKarpRel");
+            auto& leftKarpFb = *vts.getRawParameterValue("leftKarpFb");
+            auto& leftKarpNoise = *vts.getRawParameterValue("leftKarpNoise");
+
+            auto& rightKarpAtt = *vts.getRawParameterValue("rightKarpAtt");
+            auto& rightKarpRel = *vts.getRawParameterValue("rightKarpRel");
+            auto& rightKarpFb = *vts.getRawParameterValue("rightKarpFb");
+            auto& rightKarpNoise = *vts.getRawParameterValue("rightKarpNoise");
 
 
-            //Karplus Parameters
-            float kFeed = vts.getParameterAsValue("kFeed").getValue();
-            integers[0] = vts.getParameterAsValue("kAtt").getValue();
-            integers[1] = vts.getParameterAsValue("kRel").getValue();
-            integers[2] = vts.getParameterAsValue("kSwitch").getValue();
-            integers[3] = vts.getParameterAsValue("fmDepth").getValue();
-            integers[4] = vts.getParameterAsValue("fmIndex").getValue();
+            //NOISE
+            auto& leftNoiseTone = *vts.getRawParameterValue("leftNoiseTone");
+            auto& rightNoiseTone = *vts.getRawParameterValue("rightNoiseTone");
 
-            //Gen Parameters
-            std::array<int, 1> genIntegers;
-            genIntegers[0] = vts.getParameterAsValue("selector").getValue();
-            std::array<float, 1> genFloats;
-            genFloats[0] = vts.getParameterAsValue("gain").getValue();
+            //FM
+            auto& leftFmRatio = *vts.getRawParameterValue("leftFmRatio");
+            auto& leftFmDepth = *vts.getRawParameterValue("leftFmDepth");
 
-            //Filter Parameters
-            int cutoff = vts.getParameterAsValue("cutoff").getValue();
-            float q = vts.getParameterAsValue("q").getValue();
+            auto& rightFmRatio = *vts.getRawParameterValue("rightFmRatio");
+            auto& rightFmDepth = *vts.getRawParameterValue("rightFmDepth");
 
-            //Lfo Parameters
-            lfoFreq = vts.getParameterAsValue("lfoFreq").getValue();
-            lfoDepth = vts.getParameterAsValue("lfoDepth").getValue();
-            lfoWave = vts.getParameterAsValue("lfoWave").getValue();
+            //CHOICE
+            auto& leftSynthChoice = *vts.getRawParameterValue("leftSynthChoice");
+            auto& rightSynthChoice = *vts.getRawParameterValue("rightSynthChoice");
+            auto& synthMix = *vts.getRawParameterValue("synthMix");
 
-            voice->updateFilter(cutoff, q);
-            voice->updateGeneric(genIntegers, genFloats);
-            voice->updateKarplus(kFeed, integers);
-            voice->updateAdsr(attack.load(), decay.load(), sustain.load(), release.load());
-            voice->updateLfo1(lfoFreq, lfoWave, lfoDepth);
-            voice->updateModAdsr(vts.getParameterAsValue("modAtt").getValue(),
-                vts.getParameterAsValue("modDec").getValue(),
-                vts.getParameterAsValue("modSus").getValue(),
-                vts.getParameterAsValue("modRel").getValue());
+            //FILTER
+            auto& lopOnOff = *vts.getRawParameterValue("lopOnOff");
+            auto& lopCutoff = *vts.getRawParameterValue("lopCutoff");
+            auto& lopQ = *vts.getRawParameterValue("lopQ");
+            auto& hipOnOff = *vts.getRawParameterValue("hipOnOff");
+            auto& hipCutoff = *vts.getRawParameterValue("hipCutoff");
+            auto& hipQ = *vts.getRawParameterValue("hipQ");
+
+            //ADSR
+            auto& ampAdsrAtt = *vts.getRawParameterValue("ampAdsrAtt");
+            auto& ampAdsrDec = *vts.getRawParameterValue("ampAdsrDec");
+            auto& ampAdsrSus = *vts.getRawParameterValue("ampAdsrSus");
+            auto& ampAdsrRel = *vts.getRawParameterValue("ampAdsrRel");
+
+            auto& modAdsrAtt = *vts.getRawParameterValue("modAdsrAtt");
+            auto& modAdsrDec = *vts.getRawParameterValue("modAdsrDec");
+            auto& modAdsrSus = *vts.getRawParameterValue("modAdsrSus");
+            auto& modAdsrRel = *vts.getRawParameterValue("modAdsrRel");
+            auto& modAdsrRoute = *vts.getRawParameterValue("modAdsrRoute");
+
+            //LFO
+            auto& lfo1Freq = *vts.getRawParameterValue("lfo1Freq");
+            auto& lfo1Depth = *vts.getRawParameterValue("lfo1Depth");
+            auto& lfo1Shape = *vts.getRawParameterValue("lfo1Shape");
+            auto& lfo1Route = *vts.getRawParameterValue("lfo1Route");
+
+            auto& lfo2Freq = *vts.getRawParameterValue("lfo2Freq");
+            auto& lfo2Depth = *vts.getRawParameterValue("lfo2Depth");
+            auto& lfo2Shape = *vts.getRawParameterValue("lfo2Shape");
+            auto& lfo2Route = *vts.getRawParameterValue("lfo2Route");
+
+            auto& lfo3Freq = *vts.getRawParameterValue("lfo3Freq");
+            auto& lfo3Depth = *vts.getRawParameterValue("lfo3Depth");
+            auto& lfo3Shape = *vts.getRawParameterValue("lfo3Shape");
+            auto& lfo3Route = *vts.getRawParameterValue("lfo3Route");
+
+            auto& lfo4Freq = *vts.getRawParameterValue("lfo4Freq");
+            auto& lfo4Depth = *vts.getRawParameterValue("lfo4Depth");
+            auto& lfo4Shape = *vts.getRawParameterValue("lfo4Shape");
+            auto& lfo4Route = *vts.getRawParameterValue("lfo4Route");
+
+            //GLOBAL
+            auto& detune = *vts.getRawParameterValue("detune");
+            auto& vibFreq = *vts.getRawParameterValue("vibFreq");
+            auto& vibDepth = *vts.getRawParameterValue("vibDepth");
+            auto& volume = *vts.getRawParameterValue("volume");
+
+            //TUNING
+            std::array<float, 12> tuningArray;
+            auto& bassControlsTuning = *vts.getRawParameterValue("bassControlsTuning");
+            auto& keyboardBreak = *vts.getRawParameterValue("keyboardBreak");
+
+            auto& tuning0 = *vts.getRawParameterValue("tuning0");
+            auto& tuning1 = *vts.getRawParameterValue("tuning1");
+            auto& tuning2 = *vts.getRawParameterValue("tuning2");
+            auto& tuning3 = *vts.getRawParameterValue("tuning3");
+            auto& tuning4 = *vts.getRawParameterValue("tuning4");
+            auto& tuning5 = *vts.getRawParameterValue("tuning5");
+            auto& tuning6 = *vts.getRawParameterValue("tuning6");
+            auto& tuning7 = *vts.getRawParameterValue("tuning7");
+            auto& tuning8 = *vts.getRawParameterValue("tuning8");
+            auto& tuning9 = *vts.getRawParameterValue("tuning9");
+            auto& tuning10 = *vts.getRawParameterValue("tuning10");
+            auto& tuning11 = *vts.getRawParameterValue("tuning11");
+            tuningArray[0] = tuning0.load();
+            tuningArray[1] = tuning1.load();
+            tuningArray[2] = tuning2.load();
+            tuningArray[3] = tuning3.load();
+            tuningArray[4] = tuning4.load();
+            tuningArray[5] = tuning5.load();
+            tuningArray[6] = tuning6.load();
+            tuningArray[7] = tuning7.load();
+            tuningArray[8] = tuning8.load();
+            tuningArray[9] = tuning9.load();
+            tuningArray[10] = tuning10.load();
+            tuningArray[11] = tuning11.load();
+
+            auto& scaleCenter = *vts.getRawParameterValue("scaleCenter");
+
+            voice->updateLeftGenerator(leftGenShape.load(), leftGenNoiseLevel.load(), leftGenNoiseShape.load());
+            voice->updateRightGenerator(rightGenShape.load(), rightGenNoiseLevel.load(), rightGenNoiseShape.load());
+            voice->updateLeftAdditive(additiveLeft);
+            voice->updateRightAdditive(additiveRight);
+            voice->updateLeftKarplus(leftKarpAtt.load(), leftKarpRel.load(), leftKarpFb.load(), leftKarpNoise.load());
+            voice->updateRightKarplus(rightKarpAtt.load(), rightKarpRel.load(), rightKarpFb.load(), rightKarpNoise.load());
+            voice->updateLeftNoise(leftNoiseTone.load());
+            voice->updateRightNoise(rightNoiseTone.load());
+            voice->updateChoice(leftSynthChoice.load(), rightSynthChoice.load(), synthMix.load());
+
+            voice->updateLeftFm(leftFmRatio.load(), leftFmDepth.load());
+            voice->updateRightFm(rightFmRatio.load(), rightFmDepth.load());
+            voice->updateLopFilter(lopOnOff.load(), lopCutoff.load(), lopQ.load());
+            voice->updateHipFilter(hipOnOff.load(), hipCutoff.load(), hipQ.load());
+            voice->updateAmpAdsr(ampAdsrAtt.load(), ampAdsrDec.load(), ampAdsrSus.load(), ampAdsrRel.load());
+            voice->updateModAdsr(modAdsrAtt.load(), modAdsrDec.load(), modAdsrSus.load(), modAdsrRel.load(), modAdsrRoute.load());
+            voice->updateLfo1(lfo1Freq.load(), lfo1Depth.load(), lfo1Shape.load(), lfo1Route.load());
+            voice->updateLfo2(lfo2Freq.load(), lfo2Depth.load(), lfo2Shape.load(), lfo2Route.load());
+            voice->updateLfo3(lfo3Freq.load(), lfo3Depth.load(), lfo3Shape.load(), lfo3Route.load());
+            voice->updateLfo4(lfo4Freq.load(), lfo4Depth.load(), lfo4Shape.load(), lfo4Route.load());
+            voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load());
+            voice->updateTuner(tuningArray, bassControlsTuning.load(), keyboardBreak.load(), scaleCenter.load());
         }
 
     }

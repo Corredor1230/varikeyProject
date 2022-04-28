@@ -52,27 +52,56 @@ public:
     void pitchWheelMoved(int newPitchWheelValue) override;
     void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels);
     void renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override;
-    void updateKarplus(float kFeed, std::array<int, 5> integers);
-    void updateAdsr(const float attack, const float decay, const float sustain, const float release);
-    void updateModAdsr(const float attack, const float decay, const float sustain, const float release);
-    void updateGeneric(std::array<int, 1> integers, std::array<float, 1> floats);
-    void updateFilter(int cutoff, float q);
-    void updateOscMod(float freq, float shape, float depth);
-    void updateLfo1(float freq, float wave, float depth);
+
+    //Synth updaters
+    void updateLeftGenerator(int genShape, float noiseLevel, int noiseShape);
+    void updateRightGenerator(int genShape, float noiseLevel, int noiseShape);
+    void updateLeftAdditive(std::array<float, 9> additiveLeft);
+    void updateRightAdditive(std::array<float, 9> additiveRight);
+    void updateLeftKarplus(float karpAttack, float karpRelease, float karpFeedback, int karpNoise);
+    void updateRightKarplus(float karpAttack, float karpRelease, float karpFeedback, int karpNoise);
+    void updateLeftNoise(float synthTone);
+    void updateRightNoise(float synthTone);
+    void updateChoice(int leftChoice, int rightChoice, float synthMix);
+
+    //Process updaters
+    void updateLeftFm(float ratio, float depth);
+    void updateRightFm(float ratio, float depth);
+    void updateLopFilter(bool isEnabled, float cutoff, float q);
+    void updateHipFilter(bool isEnabled, float cutoff, float q);
+    void updateAmpAdsr(float attack, float decay, float sustain, float release);
+    void updateModAdsr(float attack, float decay, float sustain, float release, int route);
+    void updateLfo1(float freq, float depth, float shape, int route);
+    void updateLfo2(float freq, float depth, float shape, int route);
+    void updateLfo3(float freq, float depth, float shape, int route);
+    void updateLfo4(float freq, float depth, float shape, int route);
+    void updateGlobal(float detune, float vibFreq, float vibDepth, float volume);
+    void updateTuner(std::array<float, 12> tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
 
 private:
 
     Generator genSynth;
+    Generator genSynthRight;
     MapUI genCtrl;
+    MapUI genCtrlRight;
 
     Additive additiveSynth;
+    Additive additiveSynthRight;
     MapUI additiveCtrl;
-
-    NoiseSynth noiseSynth;
-    MapUI noiseCtrl;
+    MapUI additiveCtrlRight;
 
     Karplus karplusSynth;
+    Karplus karplusSynthRight;
     MapUI karpCtrl;
+    MapUI karpCtrlRight;
+
+    NoiseSynth noiseSynth;
+    NoiseSynth noiseSynthRight;
+    MapUI noiseCtrl;
+    MapUI noiseCtrlRight;
+
+    Oscillator fmLeft;
+    Oscillator fmRight;
 
     HipLopFilter filter;
     MapUI filtCtrl;
@@ -83,6 +112,7 @@ private:
     Oscillator lfo2Mod;
     Oscillator lfo3Mod;
     Oscillator lfo4Mod;
+    Oscillator vibrato;
 
 
     juce::AudioBuffer<float> synthBuffer;

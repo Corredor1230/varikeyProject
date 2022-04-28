@@ -22,8 +22,19 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
     // recuerda los problemas de imprimir en el process block, creo q acá esta bien sin embargo
     DBG("Start Note Called");
 
-    //Gate for karplus synth window
+    //Note on for all synths
+    //By passing a note on to all of them at the same time,
+    //it's possible to switch between synths in real time.
+    genCtrl.setParamValue("gate", true);
+    additiveCtrl.setParamValue("gate", true);
     karpCtrl.setParamValue("gate", true);
+    noiseCtrl.setParamValue("gate", true);
+
+    genCtrlRight.setParamValue("gate", true);
+    additiveCtrlRight.setParamValue("gate", true);
+    karpCtrlRight.setParamValue("gate", true);
+    noiseCtrlRight.setParamValue("gate", false);
+
     adsr.noteOn();
     modAdsr.noteOn();
 
@@ -36,9 +47,19 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
 {
     adsr.noteOff();
     modAdsr.noteOff();
-    karpCtrl.setParamValue("gate", false);
+
     if (!allowTailOff || !adsr.isActive())
     {
+        genCtrl.setParamValue("gate", false);
+        additiveCtrl.setParamValue("gate", false);
+        karpCtrl.setParamValue("gate", false);
+        noiseCtrl.setParamValue("gate", false);
+
+        genCtrlRight.setParamValue("gate", false);
+        additiveCtrlRight.setParamValue("gate", false);
+        karpCtrlRight.setParamValue("gate", false);
+        noiseCtrlRight.setParamValue("gate", false);
+
         clearCurrentNote();
     }
 }
@@ -70,6 +91,26 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
     karplusSynth.init(sampleRate);
     karplusSynth.buildUserInterface(&karpCtrl);
 
+    genSynthRight.init(sampleRate);
+    genSynthRight.buildUserInterface(&genCtrlRight);
+
+    additiveSynthRight.init(sampleRate);
+    additiveSynthRight.buildUserInterface(&additiveCtrlRight);
+
+    noiseSynthRight.init(sampleRate);
+    noiseSynthRight.buildUserInterface(&noiseCtrlRight);
+
+    karplusSynthRight.init(sampleRate);
+    karplusSynthRight.buildUserInterface(&karpCtrlRight);
+
+    fmLeft.init(sampleRate);
+    fmRight.init(sampleRate);
+    lfo1Mod.init(sampleRate);
+    lfo2Mod.init(sampleRate);
+    lfo3Mod.init(sampleRate);
+    lfo4Mod.init(sampleRate);
+    vibrato.init(sampleRate);
+
     filter.init(sampleRate);
     filter.buildUserInterface(&filtCtrl);
 
@@ -84,89 +125,56 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
 
 }
 
-void SynthVoice::updateAdsr(const float attack, const float decay, const float sustain, const float release)
+void SynthVoice::updateLeftGenerator(int genShape, float noiseLevel, int noiseShape)
 {
-    adsr.updateADSR(attack, decay, sustain, release);
+    genCtrl.setParamValue("waveShape", genShape);
 }
 
-void SynthVoice::updateModAdsr(const float attack, const float decay, const float sustain, const float release)
+void SynthVoice::updateRightGenerator(int genShape, float noiseLevel, int noiseShape)
 {
-    modAdsr.updateADSR(attack, decay, sustain, release);
+
 }
 
-
-/*
-    updateGeneric updates general synth control parameters
-    this includes gain and synth selector controls.
-    Function receives integer and float parameter arrays
-    in order to remain viable even if further parameters
-    are added in future versions.
-*/
-void SynthVoice::updateGeneric(std::array<int, 1> integers, std::array<float, 1> floats)
+void SynthVoice::updateLeftAdditive(std::array<float, 9> additiveLeft)
 {
-    synthSelector = integers[0];
-    finalGain = tempVelocity * floats[0];
+
 }
 
-
-/*
-    updateKarplus updates the Karplus synth parameters
-    it takes a feedback parameter, as well as an integer array
-    containing its window Attack and Release parameters
-    as well as its FM Synth depth and index parameters.
-*/
-void SynthVoice::updateKarplus(float kFeed, std::array<int, 5> integers)
+void SynthVoice::updateRightAdditive(std::array<float, 9> additiveRight)
 {
-    // no me suena q esto sea conceptualmente un array...
-    // son los parámetros pero creo q conceptualmente no debería ser un array
-    karpCtrl.setParamValue("kFeed", kFeed);
-    karpCtrl.setParamValue("kAtt", integers[0]);
-    karpCtrl.setParamValue("kRel", integers[1]);
-    karpCtrl.setParamValue("kSwitch", integers[2]);
-    karpCtrl.setParamValue("fmDepth", integers[3]);
-    karpCtrl.setParamValue("fmIndex", integers[4]);
+
 }
 
-/*
-    updateFilter takes a cutoff and q argument
-    Cutoff controls the filter's cutoff frequency in real time
-    Q controls its quality factor in real time
-    There are also fixed distGain and distOut parameters
-    These can be changed from the code directly but not controlled.
-    They shape the sound of the filter and add color
-    to the instrument.
-*/
-void SynthVoice::updateFilter(int cutoff, float q)
+void SynthVoice::updateLeftKarplus(float karpAttack, float karpRelease, float karpFeedback, int karpNoise)
 {
-    // creo q conceptualmente cutoff no deberia ser int
-    float tempCutoff = cutoff * modAdsrSample;
-    float cutoffFreq = std::max(tempCutoff, 20.f);
-    filtCtrl.setParamValue("cutoff", cutoffFreq);
-    filtCtrl.setParamValue("q", q);
-    filtCtrl.setParamValue("distGain", 0.1);
-    filtCtrl.setParamValue("distOut", 0.7);
+
 }
 
-/*
-* updateOscMod sets the default wave shape as sin(x)
-* while also updating its shape and depth parameters
-* to a member variable for further use in other
-* methods. 
-* 
-*/
-void SynthVoice::updateOscMod(float freq, float shape, float depth)
+void SynthVoice::updateRightKarplus(float karpAttack, float karpRelease, float karpFeedback, int karpNoise)
 {
-    //modOsc.setWaveType(0);
-    //modOsc.setWaveFrequency(freq);
-    oscModShape = shape;
-    oscModDepth = depth;
+
+}
+
+void SynthVoice::updateLeftNoise(float synthTone)
+{
+
+}
+
+void SynthVoice::updateRightNoise(float synthTone)
+{
+
+}
+
+void SynthVoice::updateChoice(int leftChoice, int rightChoice, float synthMix)
+{
+
 }
 
 
-void SynthVoice::updateLfo1(float freq, float wave, float depth)
+
+void SynthVoice::update()
 {
-    lfo1Mod.setFreq(freq);
-    lfo1Mod.updateLfo(wave, depth);
+
 }
 
 

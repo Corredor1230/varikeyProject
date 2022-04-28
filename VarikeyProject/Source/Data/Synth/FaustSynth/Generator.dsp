@@ -5,6 +5,12 @@ gate = button("gate");
 gain = vslider("gain", 1, 0, 1, 0.01);
 globalGain = 1.0;
 waveShape = hslider("shape", 0, 0, 3, 1);
+noiseLevel = vslider("noiseLevel", 0, 0, 1, 0.001):si.smoo;
+noiseShape = hslider("noiseShape", 0, 0, 1, 1);
+noiseDb = (noiseLevel - 1) * 40;
+noiseLog = ba.db2linear(noiseDb);
+
+//saw, square, sine, triangle :¨selector(4, waveShape) :¨
 
 synth(frequency) = (saw + square + sine + triangle) / 8.5
 with{
@@ -14,4 +20,6 @@ with{
     triangle = os.triangle(frequency) * (waveShape == 3) * 1.25;
 };
 
-process = synth(freq) * gate *globalGain <: _,_;
+noise = (((no.noise * (noiseShape == 0) * 0.1) + (no.pink_noise * (noiseShape == 1) * 2)) * noiseLog * 0.75) : fi.highpass(6, 40);
+
+process = (synth(freq) + noise) * gate *globalGain <: _,_;
