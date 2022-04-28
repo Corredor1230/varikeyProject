@@ -64,6 +64,20 @@ public:
 
 private:
 
+    std::initializer_list<const char*> synthList
+    {
+        "none",
+        "gen1Noise", "gen2Noise",
+        "noise1Tone", "noise2Tone",
+        "mix",
+        "fm1Ratio", "fm1Depth",
+        "fm2Ratio", "fm2Depth",
+        "lopCutoff", "lopQ",
+        "hipCutoff", "hipQ",
+        "detune", "vibFreq", "vibDepth",
+        "volume"
+    };
+
     juce::AudioProcessorValueTreeState::ParameterLayout buildParams();
     juce::Synthesiser synth;
     std::array<float, 12> tuning;

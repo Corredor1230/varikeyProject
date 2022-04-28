@@ -38,7 +38,7 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
 juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor::buildParams()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
-
+//SYNTHS
     //GENERATOR
         //Left
         createIntParameter(params, "leftGenShape", "Wave Shape 1", 0, 3, 0);
@@ -82,8 +82,23 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 
     //NOISE
         //Left
-        createFloatParameter(params, "leftNoiseTone", "Noise Tone 1", 0.0f, )
+        createFloatParameter(params, "leftNoiseTone", "Noise Tone 1", 0.0f, 1.0f, 0.001f, 1.0f);
+        //Right
+        createFloatParameter(params, "rightNoiseTone", "Noise Tone 2", 0.0f, 1.0f, 0.001f, 1.0f);
 
+    //FM MOD
+        //Left
+        createFloatParameter(params, "leftFmRatio", "FM Ratio 1", 0.0f, 8.0f, 0.1, 1.0f);
+        createFloatParameter(params, "leftFmDepth", "FM Depth 1", 0.0f, 24.0f, 0.1f, 0.0f);
+
+        //Right
+        createFloatParameter(params, "rightFmRatio", "FM Ratio 2", 0.0f, 8.0f, 0.1, 1.0f);
+        createFloatParameter(params, "rightFmDepth", "FM Depth 2", 0.0f, 24.0f, 0.1f, 0.0f);
+
+    //CHOICE
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("leftSynthChoice", "Left Synth", synthList, 1));
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "Left Synth", synthList, 1));
+        createFloatParameter(params, "synthMix", "Synth Mix", -1.0f, 1.0f, 0.01f, 0.0f);
 
 
 

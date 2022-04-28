@@ -17,7 +17,7 @@ FmComponent::FmComponent()
     setSliderParams(ratioSlider, ratioLabel, "Ratio", rotary);
     setSliderParams(depthSlider, depthLabel, "Depth", rotary);
     addAndMakeVisible(titleLabel);
-    ratioSlider.setRange(1.0, 8.0, 0.1);
+    ratioSlider.setRange(0.0, 8.0, 0.1);
     depthSlider.setRange(0.0, 24.0, 0.1);
 
 }
