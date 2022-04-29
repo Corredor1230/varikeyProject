@@ -25,7 +25,7 @@ public:
         horizontal
     };
 
-    AdditiveComponent();
+    AdditiveComponent(juce::AudioProcessorValueTreeState& vts, juce::StringArray& paramIDs);
     ~AdditiveComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -37,6 +37,8 @@ public:
 
 
 private:
+
+    juce::AudioProcessorValueTreeState& vts;
 
     juce::Label titleLabel;
     juce::String regionTitle = "Osc 1: ";
@@ -59,6 +61,17 @@ private:
     juce::Label label5;
     juce::Label label6;
     juce::Label label7;
+
+    typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+
+    SliderAttachment attachment0;
+    SliderAttachment attachment1;
+    SliderAttachment attachment2;
+    SliderAttachment attachment3;
+    SliderAttachment attachment4;
+    SliderAttachment attachment5;
+    SliderAttachment attachment6;
+    SliderAttachment attachment7;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AdditiveComponent)
 };

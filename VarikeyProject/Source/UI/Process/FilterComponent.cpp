@@ -12,7 +12,13 @@
 #include "FilterComponent.h"
 
 //==============================================================================
-FilterComponent::FilterComponent()
+FilterComponent::FilterComponent(juce::AudioProcessorValueTreeState& vts) : vts(vts)
+, lopCutoffAttachment(vts, "lopCutoff", lopCutoffSlider)
+, hipCutoffAttachment(vts, "hipCutoff", hipCutoffSlider)
+, lopQAttachment(vts, "lopQ", lopQSlider)
+, hipQAttachment(vts, "hipQ", hipQSlider)
+, lopToggleAttachment(vts, "lopOnOff", lopToggle)
+, hipToggleAttachment(vts, "hipOnOff", hipToggle)
 {
     addAndMakeVisible(titleLabel);
     titleLabel.setText("Filter", juce::dontSendNotification);

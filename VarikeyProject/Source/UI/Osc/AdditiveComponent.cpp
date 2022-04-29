@@ -12,7 +12,15 @@
 #include "AdditiveComponent.h"
 
 //==============================================================================
-AdditiveComponent::AdditiveComponent()
+AdditiveComponent::AdditiveComponent(juce::AudioProcessorValueTreeState& vts, juce::StringArray& paramIDs) : vts(vts)
+, attachment0(vts, paramIDs[0], slider0)
+, attachment1(vts, paramIDs[1], slider1)
+, attachment2(vts, paramIDs[2], slider2)
+, attachment3(vts, paramIDs[3], slider3)
+, attachment4(vts, paramIDs[4], slider4)
+, attachment5(vts, paramIDs[5], slider5)
+, attachment6(vts, paramIDs[6], slider6)
+, attachment7(vts, paramIDs[7], slider7)
 {
     setSliderParams(slider0, label0, "0", vertical);
     setSliderParams(slider1, label1, "1", vertical);

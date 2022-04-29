@@ -21,7 +21,7 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
                      #endif
                        )
 #endif
-: vts(*this, nullptr, "Params", buildParams())
+, vts(*this, nullptr, "Params", buildParams())
 {
     int numVoices = 8;
     synth.addSound(new SynthSound());
@@ -77,7 +77,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         //Right
         std::string additiveRight = "additiveRight";
         createFloatParameter(params, "additiveRight0", "0 Right", 0.f, 8.f, 1.f, 8.f);
-        for (int i = 1; i < 9; i++)
+        for (int i = 1; i < 8; i++)
         {
             createFloatParameter(params, additiveRight + std::to_string(i), std::to_string(i) + " Right", 0.f, 8.f, 1.f, 0.f);
         }
@@ -119,7 +119,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
     //FILTER
         //LOP
         createFloatParameter(params, "lopCutoff", "Cutoff LOP", 20.0f, 20000.0f, 1.0f, 1000.0f, 0.3);
-        params.push_back(std::make_unique<juce::AudioParameterBool>("lopOnOff", "On/Off", false));
+        params.push_back(std::make_unique<juce::AudioParameterBool>("lopOnOff", "On/Off", true));
         createFloatParameter(params, "lopQ", "Q LOP", 1.0f, 10.0f, 0.01f, 1.0f);
 
         //HIP
@@ -305,16 +305,19 @@ bool VarikeyProjectAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
 }
 #endif
 
-void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
+    auto totalNumInputChannels = getTotalNumInputChannels(); // esto no se usa
+    auto totalNumOutputChannels = getTotalNumOutputChannels();
 
     buffer.clear();
-    
+
     for (int i = 0; i < synth.getNumVoices(); ++i)
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
+
             //auto& attack = *vts.getRawParameterValue("Att");
             //GENERATOR
             auto& leftGenShape = *vts.getRawParameterValue("leftGenShape");
@@ -326,8 +329,8 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             auto& rightGenNoiseShape = *vts.getRawParameterValue("rightGenNoiseShape");
 
             //ADDITIVE
-            std::array<float, 9> additiveLeft;
-            std::array<float, 9> additiveRight;
+            std::array<float, 8> additiveLeft;
+            std::array<float, 8> additiveRight;
 
             auto& additiveLeft0 = *vts.getRawParameterValue("additiveLeft0");
             auto& additiveLeft1 = *vts.getRawParameterValue("additiveLeft1");
@@ -337,7 +340,6 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             auto& additiveLeft5 = *vts.getRawParameterValue("additiveLeft5");
             auto& additiveLeft6 = *vts.getRawParameterValue("additiveLeft6");
             auto& additiveLeft7 = *vts.getRawParameterValue("additiveLeft7");
-            auto& additiveLeft8 = *vts.getRawParameterValue("additiveLeft8");
             additiveLeft[0] = additiveLeft0.load();
             additiveLeft[1] = additiveLeft1.load();
             additiveLeft[2] = additiveLeft2.load();
@@ -346,7 +348,7 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             additiveLeft[5] = additiveLeft5.load();
             additiveLeft[6] = additiveLeft6.load();
             additiveLeft[7] = additiveLeft7.load();
-            additiveLeft[8] = additiveLeft8.load();
+
 
             auto& additiveRight0 = *vts.getRawParameterValue("additiveRight0");
             auto& additiveRight1 = *vts.getRawParameterValue("additiveRight1");
@@ -356,7 +358,6 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             auto& additiveRight5 = *vts.getRawParameterValue("additiveRight5");
             auto& additiveRight6 = *vts.getRawParameterValue("additiveRight6");
             auto& additiveRight7 = *vts.getRawParameterValue("additiveRight7");
-            auto& additiveRight8 = *vts.getRawParameterValue("additiveRight8");
             additiveRight[0] = additiveRight0.load();
             additiveRight[1] = additiveRight1.load();
             additiveRight[2] = additiveRight2.load();
@@ -365,7 +366,6 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             additiveRight[5] = additiveRight5.load();
             additiveRight[6] = additiveRight6.load();
             additiveRight[7] = additiveRight7.load();
-            additiveRight[8] = additiveRight8.load();
 
             //KARPLUS
             auto& leftKarpAtt = *vts.getRawParameterValue("leftKarpAtt");
@@ -471,6 +471,7 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             tuningArray[9] = tuning9.load();
             tuningArray[10] = tuning10.load();
             tuningArray[11] = tuning11.load();
+            noteTuning.setTuning(tuningArray);
 
             auto& scaleCenter = *vts.getRawParameterValue("scaleCenter");
 
@@ -496,12 +497,13 @@ void VarikeyProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             voice->updateLfo4(lfo4Freq.load(), lfo4Depth.load(), lfo4Shape.load(), lfo4Route.load());
             voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load());
             voice->updateTuner(tuningArray, bassControlsTuning.load(), keyboardBreak.load(), scaleCenter.load());
+
+
         }
 
-    }
 
-    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-    
+    }
+        synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
 //==============================================================================

@@ -151,8 +151,8 @@ class Additive : public dsp {
 		fConst2 = (1.0f - fConst1);
 		fConst3 = (3.0f / fConst0);
 		fConst4 = (4.0f / fConst0);
-		fConst5 = (2.0f / fConst0);
-		fConst6 = (1.0f / fConst0);
+		fConst5 = (1.0f / fConst0);
+		fConst6 = (2.0f / fConst0);
 		fConst7 = (5.0f / fConst0);
 		fConst8 = (6.0f / fConst0);
 		fConst9 = (7.0f / fConst0);
@@ -164,8 +164,8 @@ class Additive : public dsp {
 		fVslider0 = FAUSTFLOAT(0.0f);
 		fEntry0 = FAUSTFLOAT(500.0f);
 		fVslider1 = FAUSTFLOAT(0.0f);
-		fVslider2 = FAUSTFLOAT(0.0f);
-		fVslider3 = FAUSTFLOAT(8.0f);
+		fVslider2 = FAUSTFLOAT(8.0f);
+		fVslider3 = FAUSTFLOAT(0.0f);
 		fVslider4 = FAUSTFLOAT(0.0f);
 		fVslider5 = FAUSTFLOAT(0.0f);
 		fVslider6 = FAUSTFLOAT(0.0f);
@@ -246,9 +246,9 @@ class Additive : public dsp {
 		ui_interface->openHorizontalBox("Harmonics");
 		ui_interface->addVerticalSlider("eigth", &fVslider7, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
 		ui_interface->addVerticalSlider("fifth", &fVslider4, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
-		ui_interface->addVerticalSlider("first", &fVslider3, FAUSTFLOAT(8.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
+		ui_interface->addVerticalSlider("first", &fVslider2, FAUSTFLOAT(8.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
 		ui_interface->addVerticalSlider("fourth", &fVslider1, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
-		ui_interface->addVerticalSlider("second", &fVslider2, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
+		ui_interface->addVerticalSlider("second", &fVslider3, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
 		ui_interface->addVerticalSlider("seventh", &fVslider6, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
 		ui_interface->addVerticalSlider("sixth", &fVslider5, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
 		ui_interface->addVerticalSlider("third", &fVslider0, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(8.0f), FAUSTFLOAT(1.0f));
@@ -304,7 +304,7 @@ class Additive : public dsp {
 			fRec15[0] = (fSlow16 + (fConst2 * fRec15[1]));
 			float fTemp7 = std::pow(10.0f, (3.0f * ((0.125f * fRec15[0]) + -1.0f)));
 			fRec16[0] = (fSlow17 + (fRec16[1] - std::floor((fSlow17 + fRec16[1]))));
-			float fTemp8 = (fSlow0 * (((((fTemp0 * ftbl0AdditiveSIG0[int((65536.0f * fRec2[0]))]) + ((fTemp1 * ftbl0AdditiveSIG0[int((65536.0f * fRec4[0]))]) + ((fTemp2 * ftbl0AdditiveSIG0[int((65536.0f * fRec6[0]))]) + ((fTemp3 * ftbl0AdditiveSIG0[int((65536.0f * fRec8[0]))]) + ((fTemp4 * ftbl0AdditiveSIG0[int((65536.0f * fRec10[0]))]) + (fTemp5 * ftbl0AdditiveSIG0[int((65536.0f * fRec12[0]))])))))) + (fTemp6 * ftbl0AdditiveSIG0[int((65536.0f * fRec14[0]))])) + (fTemp7 * ftbl0AdditiveSIG0[int((65536.0f * fRec16[0]))])) / ((fTemp6 + (fTemp7 + (fTemp1 + (fTemp4 + (fTemp2 + (fTemp0 + (fTemp3 + fTemp5))))))) + 1.0f)));
+			float fTemp8 = (fSlow0 * (((((fTemp0 * ftbl0AdditiveSIG0[int((65536.0f * fRec2[0]))]) + ((fTemp1 * ftbl0AdditiveSIG0[int((65536.0f * fRec4[0]))]) + ((fTemp2 * ftbl0AdditiveSIG0[int((65536.0f * fRec6[0]))]) + ((fTemp3 * ftbl0AdditiveSIG0[int((65536.0f * fRec8[0]))]) + ((fTemp4 * ftbl0AdditiveSIG0[int((65536.0f * fRec10[0]))]) + (fTemp5 * ftbl0AdditiveSIG0[int((65536.0f * fRec12[0]))])))))) + (fTemp6 * ftbl0AdditiveSIG0[int((65536.0f * fRec14[0]))])) + (fTemp7 * ftbl0AdditiveSIG0[int((65536.0f * fRec16[0]))])) / ((fTemp7 + (fTemp6 + (fTemp1 + (fTemp3 + (fTemp0 + (fTemp2 + (fTemp4 + fTemp5))))))) + 1.0f)));
 			output0[i0] = FAUSTFLOAT(fTemp8);
 			output1[i0] = FAUSTFLOAT(fTemp8);
 			fRec0[1] = fRec0[0];

@@ -12,7 +12,11 @@
 #include "GenComponent.h"
 
 //==============================================================================
-GenComponent::GenComponent()
+GenComponent::GenComponent(juce::AudioProcessorValueTreeState& vts, juce::String shapeID,
+    juce::String noiseLevelID, juce::String noiseShapeID) : vts(vts)
+, shapeAttachment(vts, shapeID, waveShape)
+, noiseLevelAttachment(vts, noiseLevelID, noiseLevel)
+, noiseShapeAttachment(vts, noiseShapeID, noiseShape)
 {
     setSliderParams(waveShape, waveLabel, "Wave Shape", rotary);
     setSliderParams(noiseLevel, noiseLabel, "Noise Level", vertical);

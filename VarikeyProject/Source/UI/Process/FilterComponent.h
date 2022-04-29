@@ -25,7 +25,7 @@ public:
         horizontal
     };
 
-    FilterComponent();
+    FilterComponent(juce::AudioProcessorValueTreeState& vts);
     ~FilterComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -35,6 +35,8 @@ public:
     void setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel);
 
 private:
+
+    juce::AudioProcessorValueTreeState& vts;
 
     juce::Label titleLabel;
 
@@ -53,6 +55,16 @@ private:
     juce::Label hipQLabel;
     juce::Label lopToggleLabel;
     juce::Label hipToggleLabel;
+
+    typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+    typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
+
+    SliderAttachment lopCutoffAttachment;
+    SliderAttachment hipCutoffAttachment;
+    SliderAttachment lopQAttachment;
+    SliderAttachment hipQAttachment;
+    ButtonAttachment lopToggleAttachment;
+    ButtonAttachment hipToggleAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterComponent)
 };

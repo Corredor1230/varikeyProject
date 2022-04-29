@@ -25,7 +25,8 @@ public:
         horizontal
     };
 
-    GenComponent();
+    GenComponent(juce::AudioProcessorValueTreeState& vts, juce::String shapeID,
+        juce::String noiseLevelID, juce::String noiseShapeID);
     ~GenComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -36,6 +37,8 @@ public:
     void setRegionTitle(juce::String& region);
 
 private:
+
+    juce::AudioProcessorValueTreeState& vts;
 
     juce::Label titleLabel;
     juce::String regionTitle = "Osc 1: ";
@@ -52,6 +55,12 @@ private:
     juce::Label noiseShapeLabel;
     juce::Label pinkLabel;
     juce::Label whiteLabel;
+
+    typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+
+    SliderAttachment shapeAttachment;
+    SliderAttachment noiseLevelAttachment;
+    SliderAttachment noiseShapeAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GenComponent)
 };

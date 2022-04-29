@@ -12,6 +12,13 @@
 //==============================================================================
 VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor (VarikeyProjectAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
+    , filters(audioProcessor.vts)
+    , genLeft(audioProcessor.vts, "leftGenShape", "leftGenNoiseLevel", "leftGenNoiseShape")
+    , genRight(audioProcessor.vts, "rightGenShape", "rightGenNoiseLevel", "rightGenNoiseShape")
+    , leftOscAttachment(audioProcessor.vts, "leftSynthChoice", leftOscChoice)
+    , rightOscAttachment(audioProcessor.vts, "rightSynthChoice", rightOscChoice)
+    , additiveLeft(audioProcessor.vts, leftAdditiveIDs)
+    , additiveRight(audioProcessor.vts, rightAdditiveIDs)
 {
     varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
     setLookAndFeel(&varikeyLookAndFeel);

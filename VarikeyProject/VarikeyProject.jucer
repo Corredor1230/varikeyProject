@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               companyName="Corredor" companyEmail="juanpablocorredor97@gmail.com"
               pluginFormats="buildAU,buildStandalone,buildVST3" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
-              pluginManufacturerCode="Cdor" pluginCode="Vkey" pluginChannelConfigs="{0, 1}, {0, 2}">
+              pluginManufacturerCode="Cdor" pluginCode="Vkey">
   <MAINGROUP id="VjCV97" name="Varikey">
     <GROUP id="{79EFCDB8-C09C-192D-39C4-D3063783B926}" name="Source">
       <GROUP id="{E3CCB533-0377-37A1-32A4-9A6317C848F5}" name="Data">
@@ -26,8 +26,6 @@
             <FILE id="onoA54" name="Generator.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/Generator.dsp"/>
             <FILE id="pasMmj" name="Karplus.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/Karplus.dsp"/>
             <FILE id="d8W15s" name="NoiseSynth.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/NoiseSynth.dsp"/>
-            <FILE id="qvdkqO" name="osc.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/osc.dsp"/>
-            <FILE id="EQWULW" name="test.dsp" compile="0" resource="1" file="Source/Data/Synth/FaustSynth/test.dsp"/>
           </GROUP>
           <FILE id="xyUboR" name="Generator.h" compile="0" resource="0" file="Source/Data/Synth/Generator.h"/>
           <FILE id="cny7sT" name="Additive.h" compile="0" resource="0" file="Source/Data/Synth/Additive.h"/>

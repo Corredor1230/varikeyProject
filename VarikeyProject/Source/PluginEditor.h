@@ -39,6 +39,31 @@ public:
     int getComboBoxIndex(juce::String& string);
 
 private:
+    juce::String leftString{ "additiveLeft" };
+    juce::StringArray leftAdditiveIDs
+    {
+        leftString + "0", 
+        leftString + "1", 
+        leftString + "2",
+        leftString + "3", 
+        leftString + "4", 
+        leftString + "5",
+        leftString + "6", 
+        leftString + "7"
+    };
+    juce::String rightString{ "additiveRight" };
+    juce::StringArray rightAdditiveIDs
+    {
+        rightString + "0",
+        rightString + "1",
+        rightString + "2",
+        rightString + "3",
+        rightString + "4",
+        rightString + "5",
+        rightString + "6",
+        rightString + "7"
+    };
+
     //==============================================================================
     // Your private member variables go here...
 
@@ -52,6 +77,9 @@ private:
     std::array<int, 3> purp{ 105, 98, 212 };
     std::array<int, 3> pink{ 253, 169, 247 };
     std::array<int, 3> pale{ 234, 246, 242 };
+
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment leftOscAttachment;
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment rightOscAttachment;
 
     juce::ComboBox leftOscChoice;
     juce::ComboBox rightOscChoice;

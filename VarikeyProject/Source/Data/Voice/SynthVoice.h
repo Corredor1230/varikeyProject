@@ -11,10 +11,10 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "SynthSound.h"
 #include <faust/misc.h>
 #include <faust/dsp/dsp.h>
 #include <faust/gui/MapUI.h>
-#include "SynthSound.h"
 #include "../Source/Data/Process/AdsrData.h"
 #include "../Source/Data/Process/NoteTuning.h"
 #include "../Source/Data/Process/Oscillator.h"
@@ -56,8 +56,8 @@ public:
     //Synth updaters
     void updateLeftGenerator(int genShape, float noiseLevel, int noiseShape);
     void updateRightGenerator(int genShape, float noiseLevel, int noiseShape);
-    void updateLeftAdditive(std::array<float, 9> additiveLeft);
-    void updateRightAdditive(std::array<float, 9> additiveRight);
+    void updateLeftAdditive(std::array<float, 8> additiveLeft);
+    void updateRightAdditive(std::array<float, 8> additiveRight);
     void updateLeftKarplus(float karpAttack, float karpRelease, float karpFeedback, int karpNoise);
     void updateRightKarplus(float karpAttack, float karpRelease, float karpFeedback, int karpNoise);
     void updateLeftNoise(float synthTone);
@@ -122,6 +122,48 @@ private:
     juce::AudioProcessorValueTreeState& vts;
 
     bool isPrepared{ false };
+
+    //CHOICE VARIABLES
+    int leftSynthChoice = 1;
+    int rightSynthChoice = 1;
+
+    float leftRightMix = -1.f;
+
+    //FM VARIABLES
+    float leftFmRatio = 1.f;
+    float leftFmDepth = 0.f;
+    float rightFmRatio = 1.f;
+    float rightFmDepth = 0.f;
+
+    //LFO
+    float lfo1Freq = 0.0f;
+    float lfo1Depth = 0.0f;
+    float lfo1Shape = 1.0f;
+
+    float lfo2Freq = 0.0f;
+    float lfo2Depth = 0.0f;
+    float lfo2Shape = 1.0f;
+
+    float lfo3Freq = 0.0f;
+    float lfo3Depth = 0.0f;
+    float lfo3Shape = 1.0f;
+
+    float lfo4Freq = 0.0f;
+    float lfo4Depth = 0.0f;
+    float lfo4Shape = 1.0f;
+
+    //ROUTE
+    int modAdsrRoute = 1;
+    int lfo1Route = 1;
+    int lfo2Route = 1;
+    int lfo3Route = 1;
+    int lfo4Route = 1;
+
+    //GLOBAL
+    float synthDetune = 0;
+    float vibratoFrequency = 0;
+    float vibratoDepth = 0;
+    float synthVolume = 0.7;
 
     float tempVelocity = 0;
     float finalGain = 0;
