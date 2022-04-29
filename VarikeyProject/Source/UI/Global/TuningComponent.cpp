@@ -12,7 +12,22 @@
 #include "TuningComponent.h"
 
 //==============================================================================
-TuningComponent::TuningComponent()
+TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(vts)
+, attachment0(vts, "tuning0", slider0)
+, attachment1(vts, "tuning1", slider1)
+, attachment2(vts, "tuning2", slider2)
+, attachment3(vts, "tuning3", slider3)
+, attachment4(vts, "tuning4", slider4)
+, attachment5(vts, "tuning5", slider5)
+, attachment6(vts, "tuning6", slider6)
+, attachment7(vts, "tuning7", slider7)
+, attachment8(vts, "tuning8", slider8)
+, attachment9(vts, "tuning9", slider9)
+, attachment10(vts, "tuning10", slider10)
+, attachment11(vts, "tuning11", slider11)
+, transposeAttachment(vts, "scaleCenter", transposeSlider)
+, keyAttachment(vts, "bassControlsTuning", keyBreakToggle)
+
 {
     //transposeTextBoxWidth = getWidth() / 12;
     //transposeTextBoxHeight = getHeight() / 6;

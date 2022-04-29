@@ -124,7 +124,7 @@ private:
     bool isPrepared{ false };
 
     //CHOICE VARIABLES
-    int leftSynthChoice = 1;
+    int leftSynthChoice = 0;
     int rightSynthChoice = 1;
 
     float leftRightMix = -1.f;

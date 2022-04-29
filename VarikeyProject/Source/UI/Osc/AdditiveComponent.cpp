@@ -22,14 +22,14 @@ AdditiveComponent::AdditiveComponent(juce::AudioProcessorValueTreeState& vts, ju
 , attachment6(vts, paramIDs[6], slider6)
 , attachment7(vts, paramIDs[7], slider7)
 {
-    setSliderParams(slider0, label0, "0", vertical);
-    setSliderParams(slider1, label1, "1", vertical);
-    setSliderParams(slider2, label2, "2", vertical);
-    setSliderParams(slider3, label3, "3", vertical);
-    setSliderParams(slider4, label4, "4", vertical);
-    setSliderParams(slider5, label5, "5", vertical);
-    setSliderParams(slider6, label6, "6", vertical);
-    setSliderParams(slider7, label7, "7", vertical);
+    setSliderParams(slider0, label0, "1", vertical);
+    setSliderParams(slider1, label1, "2", vertical);
+    setSliderParams(slider2, label2, "3", vertical);
+    setSliderParams(slider3, label3, "4", vertical);
+    setSliderParams(slider4, label4, "5", vertical);
+    setSliderParams(slider5, label5, "6", vertical);
+    setSliderParams(slider6, label6, "7", vertical);
+    setSliderParams(slider7, label7, "8", vertical);
     addAndMakeVisible(titleLabel);
 }
 

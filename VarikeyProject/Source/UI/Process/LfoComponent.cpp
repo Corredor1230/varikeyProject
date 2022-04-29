@@ -74,7 +74,17 @@ void LfoLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
     g.fillPath(thumbTick, AffineTransform::rotation(toAngle).translated(bounds.getCentreX(), bounds.getCentreY()));
 }
 
-LfoComponent::LfoComponent()
+LfoComponent::LfoComponent(juce::AudioProcessorValueTreeState& vts, juce::String freq1ID,
+    juce::String freq2ID, juce::String depth1ID, juce::String depth2ID,
+    juce::String shape1ID, juce::String shape2ID, juce::String route1ID, juce::String route2ID) : vts(vts)
+    , freq1Attachment(vts, freq1ID, freq1Slider)
+    , freq2Attachment(vts, freq2ID, freq2Slider)
+    , depth1Attachment(vts, depth1ID, depth1Slider)
+    , depth2Attachment(vts, depth2ID, depth2Slider)
+    , shape1Attachment(vts, shape1ID, shape1Slider)
+    , shape2Attachment(vts, shape2ID, shape2Slider)
+    , route1Attachment(vts, route1ID, routeBox)
+    , route2Attachment(vts, route2ID, routeBox2)
 {
     setSliderParams(freq1Slider, freq1Label, "Freq", rotary);
     setSliderParams(depth1Slider, depth1Label, "Depth", rotary);

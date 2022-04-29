@@ -15,10 +15,23 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor (VarikeyP
     , filters(audioProcessor.vts)
     , genLeft(audioProcessor.vts, "leftGenShape", "leftGenNoiseLevel", "leftGenNoiseShape")
     , genRight(audioProcessor.vts, "rightGenShape", "rightGenNoiseLevel", "rightGenNoiseShape")
-    //, leftOscAttachment(audioProcessor.vts, "leftSynthChoice", leftOscChoice)
-    //, rightOscAttachment(audioProcessor.vts, "rightSynthChoice", rightOscChoice)
+    , leftOscAttachment(audioProcessor.vts, "leftSynthChoice", leftOscChoice)
+    , rightOscAttachment(audioProcessor.vts, "rightSynthChoice", rightOscChoice)
     , additiveLeft(audioProcessor.vts, leftAdditiveIDs)
     , additiveRight(audioProcessor.vts, rightAdditiveIDs)
+    , karpLeft(audioProcessor.vts, "leftKarpAtt", "leftKarpRel", "leftKarpFb", "leftKarpNoise")
+    , karpRight(audioProcessor.vts, "rightKarpAtt", "rightKarpRel", "rightKarpFb", "rightKarpNoise")
+    , noiseLeft(audioProcessor.vts, "leftNoiseTone")
+    , noiseRight(audioProcessor.vts, "rightNoiseTone")
+    , ampAdsr(audioProcessor.vts)
+    , fmLeft(audioProcessor.vts, "leftFmRatio", "leftFmDepth")
+    , fmRight(audioProcessor.vts, "rightFmRatio", "rightFmDepth")
+    , lfo1(audioProcessor.vts, "lfo1Freq", "lfo2Freq", "lfo1Depth", 
+        "lfo2Depth", "lfo1Shape", "lfo2Shape", "lfo1Route", "lfo2Route")
+    , lfo2(audioProcessor.vts, "lfo3Freq", "lfo4Freq", "lfo3Depth", 
+        "lfo4Depth", "lfo3Shape", "lfo4Shape", "lfo3Route", "lfo4Route")
+    , modAdsr(audioProcessor.vts)
+    , tuner(audioProcessor.vts)
 {
     varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
     setLookAndFeel(&varikeyLookAndFeel);

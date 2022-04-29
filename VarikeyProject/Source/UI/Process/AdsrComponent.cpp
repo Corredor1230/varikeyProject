@@ -12,7 +12,11 @@
 #include "AdsrComponent.h"
 
 //==============================================================================
-AdsrComponent::AdsrComponent()
+AdsrComponent::AdsrComponent(juce::AudioProcessorValueTreeState& vts) : vts(vts)
+, attackAttachment(vts, "ampAdsrAtt", attackSlider)
+, decayAttachment(vts, "ampAdsrDec", decaySlider)
+, sustainAttachment(vts, "ampAdsrSus", sustainSlider)
+, releaseAttachment(vts, "ampAdsrRel", releaseSlider)
 {
     setSliderParams(attackSlider, attackLabel, "A", vertical);
     setSliderParams(decaySlider, decayLabel, "D", vertical);

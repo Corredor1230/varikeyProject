@@ -12,7 +12,12 @@
 #include "ModAdsrComponent.h"
 
 //==============================================================================
-ModAdsrComponent::ModAdsrComponent()
+ModAdsrComponent::ModAdsrComponent(juce::AudioProcessorValueTreeState& vts) : vts(vts)
+, attackAttachment(vts, "modAdsrAtt", attackSlider)
+, decayAttachment(vts, "modAdsrDec", decaySlider)
+, sustainAttachment(vts, "modAdsrSus", sustainSlider)
+, releaseAttachment(vts, "modAdsrRel", releaseSlider)
+, routeAttachment(vts, "modAdsrRoute", routeBox)
 {
     setSliderParams(attackSlider, attackLabel, "A", vertical);
     setSliderParams(decaySlider, decayLabel, "D", vertical);

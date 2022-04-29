@@ -12,7 +12,11 @@
 #include "FmComponent.h"
 
 //==============================================================================
-FmComponent::FmComponent()
+FmComponent::FmComponent(juce::AudioProcessorValueTreeState& vts, juce::String ratioID,
+    juce::String depthID) : vts(vts)
+, ratioAttachment(vts, ratioID, ratioSlider)
+, depthAttachment(vts, depthID, depthSlider)
+
 {
     setSliderParams(ratioSlider, ratioLabel, "Ratio", rotary);
     setSliderParams(depthSlider, depthLabel, "Depth", rotary);

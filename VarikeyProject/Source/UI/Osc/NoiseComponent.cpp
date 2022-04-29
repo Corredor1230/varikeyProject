@@ -12,7 +12,8 @@
 #include "NoiseComponent.h"
 
 //==============================================================================
-NoiseComponent::NoiseComponent()
+NoiseComponent::NoiseComponent(juce::AudioProcessorValueTreeState& vts, juce::String toneID) : vts(vts)
+, toneAttachment(vts, toneID, toneSlider)
 {
     addAndMakeVisible(titleLabel);
     addAndMakeVisible(toneSlider);

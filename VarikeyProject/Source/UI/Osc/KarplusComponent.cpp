@@ -12,7 +12,12 @@
 #include "KarplusComponent.h"
 
 //==============================================================================
-KarplusComponent::KarplusComponent()
+KarplusComponent::KarplusComponent(juce::AudioProcessorValueTreeState& vts, juce::String attID,
+    juce::String relID, juce::String feedID, juce::String noiseID) : vts(vts)
+    , kAttAttachment(vts, attID, kAttSlider)
+    , kRelAttachment(vts, relID, kRelSlider)
+    , kFeedAttachment(vts, feedID, kFeedSlider)
+    , kNoiseAttachment(vts, noiseID, kNoiseSlider)
 {
     setSliderParams(kAttSlider, kAttLabel, "Atk", vertical);
     setSliderParams(kRelSlider, kRelLabel, "Rel", vertical);
@@ -27,17 +32,17 @@ KarplusComponent::KarplusComponent()
     kPinkLabel.setText("Pink", juce::sendNotification);
     kPinkLabel.setJustificationType(juce::Justification::centred);
 
-    kAttSlider.setRange(1.0, 48000.0, 1.0);
-    kAttSlider.setValue(1000.0);
-    kAttSlider.setSkewFactor(0.5);
-    kRelSlider.setRange(1.0, 48000.0, 1.0);
-    kRelSlider.setValue(48000.0);
-    kRelSlider.setSkewFactor(0.5);
-    kFeedSlider.setRange(0.0, 1.0, 0.01);
-    kFeedSlider.setValue(0.95);
-    kFeedSlider.setSkewFactor(2.0);
-    kNoiseSlider.setRange(0.0, 1.0, 1.0);
-    kNoiseSlider.setValue(0.0);
+    //kAttSlider.setRange(1.0, 48000.0, 1.0);
+    //kAttSlider.setValue(1000.0);
+    //kAttSlider.setSkewFactor(0.5);
+    //kRelSlider.setRange(1.0, 48000.0, 1.0);
+    //kRelSlider.setValue(48000.0);
+    //kRelSlider.setSkewFactor(0.5);
+    //kFeedSlider.setRange(0.0, 1.0, 0.01);
+    //kFeedSlider.setValue(0.95);
+    //kFeedSlider.setSkewFactor(2.0);
+    //kNoiseSlider.setRange(0.0, 1.0, 1.0);
+    //kNoiseSlider.setValue(0.0);
 
 
 }

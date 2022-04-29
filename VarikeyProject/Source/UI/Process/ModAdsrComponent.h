@@ -25,7 +25,7 @@ public:
         horizontal
     };
 
-    ModAdsrComponent();
+    ModAdsrComponent(juce::AudioProcessorValueTreeState& vts);
     ~ModAdsrComponent() override;
 
     void paint(juce::Graphics&) override;
@@ -34,6 +34,9 @@ public:
     void setSliderParams(juce::Slider& slider, juce::Label& label, std::string name, int style);
     void setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel);
 private:
+
+    juce::AudioProcessorValueTreeState& vts;
+    typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
     double maximumSliderValue = 5000.0;
     double sliderInterval = 0.1;
@@ -53,6 +56,12 @@ private:
     juce::Label decayLabel;
     juce::Label sustainLabel;
     juce::Label releaseLabel;
+
+    SliderAttachment attackAttachment;
+    SliderAttachment decayAttachment;
+    SliderAttachment sustainAttachment;
+    SliderAttachment releaseAttachment;
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment routeAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModAdsrComponent)
 };

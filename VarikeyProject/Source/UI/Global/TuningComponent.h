@@ -27,7 +27,7 @@ public:
         horizontal
     };
 
-    TuningComponent();
+    TuningComponent(juce::AudioProcessorValueTreeState& vts);
     ~TuningComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -37,6 +37,9 @@ public:
 
 
 private:
+
+    juce::AudioProcessorValueTreeState& vts;
+    typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
     void setSliderParams(juce::Slider& slider, juce::Label& label, std::string name, int style);
     //juce::Font tuningFont;
@@ -78,6 +81,21 @@ private:
     juce::Label keyBreakLabel;
     juce::Label keyBreakValue;
     juce::Label breakLabel;
+
+    SliderAttachment attachment0;
+    SliderAttachment attachment1;
+    SliderAttachment attachment2;
+    SliderAttachment attachment3;
+    SliderAttachment attachment4;
+    SliderAttachment attachment5;
+    SliderAttachment attachment6;
+    SliderAttachment attachment7;
+    SliderAttachment attachment8;
+    SliderAttachment attachment9;
+    SliderAttachment attachment10;
+    SliderAttachment attachment11;
+    SliderAttachment transposeAttachment;
+    juce::AudioProcessorValueTreeState::ButtonAttachment keyAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningComponent)
 };

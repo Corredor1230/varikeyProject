@@ -150,7 +150,7 @@ void SynthVoice::updateLeftAdditive(std::array<float, 8> additiveLeft)
     additiveCtrl.setParamValue("fifth", additiveLeft[4]);
     additiveCtrl.setParamValue("sixth", additiveLeft[5]);
     additiveCtrl.setParamValue("seventh", additiveLeft[6]);
-    additiveCtrl.setParamValue("eighth", additiveLeft[7]);
+    additiveCtrl.setParamValue("eigth", additiveLeft[7]);
 
 }
 
@@ -373,7 +373,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //OSCILLATORS
     //-------------------------------------------------------------
     //Selector for different synthesizers
-    switch (0)
+    switch (leftSynthChoice)
     {
     case 0:
         genCtrl.setParamValue("freq", oscFreq);
@@ -422,10 +422,10 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     {
         outputBuffer.addFrom(channel, startSample, synthBuffer, channel, 0, numSamples);
 
-        //if (!adsr.isActive())
-        //{
-        //    clearCurrentNote();
-        //}
+        if (!adsr.isActive())
+        {
+            clearCurrentNote();
+        }
 
         //clearCurrentNote();
     }

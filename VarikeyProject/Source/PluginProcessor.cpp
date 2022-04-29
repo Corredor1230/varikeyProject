@@ -53,6 +53,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         "volume"
     };
 
+    std::initializer_list<const char*> oscList
+    {
+        "Generator", "Additive", "Karplus", "Noise"
+    };
+
 //SYNTHS
     //GENERATOR
         //Left
@@ -69,7 +74,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         //Left
         std::string additiveLeft = "additiveLeft";
         createFloatParameter(params, "additiveLeft0", "0 Left", 0.f, 8.f, 1.f, 8.f);
-        for (int i = 1; i < 9; i++)
+
+        for (int i = 1; i < 8; i++)
         {
             createFloatParameter(params, additiveLeft + std::to_string(i), std::to_string(i) + " Left", 0.f, 8.f, 1.f, 0.f);
         }
@@ -77,15 +83,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         //Right
         std::string additiveRight = "additiveRight";
         createFloatParameter(params, "additiveRight0", "0 Right", 0.f, 8.f, 1.f, 8.f);
-        for (int i = 1; i < 8; i++)
+        for (int i = 1; i < 9; i++)
         {
             createFloatParameter(params, additiveRight + std::to_string(i), std::to_string(i) + " Right", 0.f, 8.f, 1.f, 0.f);
         }
 
     //KARPLUS
         //Left
-        createFloatParameter(params, "leftKarpAtt", "Karplus Attack 1", 0.f, 1.f, 0.0001, 0.01, 0.4);
-        createFloatParameter(params, "leftKarpRel", "Karplus Release 1", 0.f, 1.f, 0.0001, 1.f, 0.4);
+        createFloatParameter(params, "leftKarpAtt", "Karplus Attack 1", 0.f, 1.f, 0.0001, 0.01);
+        createFloatParameter(params, "leftKarpRel", "Karplus Release 1", 0.f, 1.f, 0.0001, 1.f);
         createFloatParameter(params, "leftKarpFb", "Karplus Feedback 1", 0.f, 1.f, 0.001, 0.95f);
         createIntParameter(params, "leftKarpNoise", "Karplus Noise 1", 0, 1, 1);
 
@@ -112,7 +118,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 
     //CHOICE
         params.push_back(std::make_unique<juce::AudioParameterChoice>("leftSynthChoice", "Left Synth", 
-            juce::StringArray{ "Generator", "Additive", "Karplus", "Noise" }, 0));
+            juce::StringArray(oscList), 1));
         params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "Right Synth", 
             juce::StringArray{ "Generator", "Additive", "Karplus", "Noise" }, 0));
         createFloatParameter(params, "synthMix", "Synth Mix", -1.0f, 1.0f, 0.01f, 0.0f);
@@ -485,7 +491,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateRightKarplus(rightKarpAtt.load(), rightKarpRel.load(), rightKarpFb.load(), rightKarpNoise.load());
             voice->updateLeftNoise(leftNoiseTone.load());
             voice->updateRightNoise(rightNoiseTone.load());
-            //voice->updateChoice(leftSynthChoice.load(), rightSynthChoice.load(), synthMix.load());
+            voice->updateChoice(leftSynthChoice.load(), rightSynthChoice.load(), synthMix.load());
 
             voice->updateLeftFm(leftFmRatio.load(), leftFmDepth.load());
             voice->updateRightFm(rightFmRatio.load(), rightFmDepth.load());

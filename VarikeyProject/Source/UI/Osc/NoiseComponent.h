@@ -18,7 +18,7 @@
 class NoiseComponent  : public juce::Component
 {
 public:
-    NoiseComponent();
+    NoiseComponent(juce::AudioProcessorValueTreeState& vts, juce::String toneID);
     ~NoiseComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -29,6 +29,8 @@ public:
 
 private:
 
+    juce::AudioProcessorValueTreeState& vts;
+
     juce::Label titleLabel;
     juce::String regionTitle = "Osc 1: ";
     juce::String componentTitle = "Noise Synth";
@@ -37,6 +39,7 @@ private:
 
     juce::Label toneLabel;
 
+    juce::AudioProcessorValueTreeState::SliderAttachment toneAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoiseComponent)
 };

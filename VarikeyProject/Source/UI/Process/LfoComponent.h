@@ -43,7 +43,9 @@ public:
         horizontal
     };
 
-    LfoComponent();
+    LfoComponent(juce::AudioProcessorValueTreeState& vts, juce::String freq1ID,
+        juce::String freq2ID, juce::String depth1ID, juce::String depth2ID,
+        juce::String shape1ID, juce::String shape2ID, juce::String route1ID, juce::String route2ID);
     ~LfoComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -55,6 +57,9 @@ public:
 
 
 private:
+
+    juce::AudioProcessorValueTreeState& vts;
+    typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
     LfoLookAndFeel lfoLookAndFeel;
 
@@ -83,6 +88,15 @@ private:
     juce::Label freq2Label;
     juce::Label depth2Label;
     juce::Label shape2Label;
+
+    SliderAttachment freq1Attachment;
+    SliderAttachment freq2Attachment;
+    SliderAttachment depth1Attachment;
+    SliderAttachment depth2Attachment;
+    SliderAttachment shape1Attachment;
+    SliderAttachment shape2Attachment;
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment route1Attachment;
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment route2Attachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfoComponent)
 };

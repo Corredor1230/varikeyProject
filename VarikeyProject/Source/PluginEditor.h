@@ -78,8 +78,6 @@ private:
     std::array<int, 3> pink{ 253, 169, 247 };
     std::array<int, 3> pale{ 234, 246, 242 };
 
-//    juce::AudioProcessorValueTreeState::ComboBoxAttachment leftOscAttachment;
-//    juce::AudioProcessorValueTreeState::ComboBoxAttachment rightOscAttachment;
 
     juce::ComboBox leftOscChoice;
     juce::ComboBox rightOscChoice;
@@ -122,5 +120,7 @@ private:
     VarikeyLookAndFeel varikeyLookAndFeel;
 
 
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment leftOscAttachment;
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment rightOscAttachment;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VarikeyProjectAudioProcessorEditor)
 };
