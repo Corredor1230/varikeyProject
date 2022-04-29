@@ -111,8 +111,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         createFloatParameter(params, "rightFmDepth", "FM Depth 2", 0.0f, 24.0f, 0.1f, 0.0f);
 
     //CHOICE
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("leftSynthChoice", "Left Synth", synthList, 1));
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "Left Synth", synthList, 1));
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("leftSynthChoice", "Left Synth", 
+            juce::StringArray{ "Generator", "Additive", "Karplus", "Noise" }, 0));
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "Right Synth", 
+            juce::StringArray{ "Generator", "Additive", "Karplus", "Noise" }, 0));
         createFloatParameter(params, "synthMix", "Synth Mix", -1.0f, 1.0f, 0.01f, 0.0f);
 
 //PROCESSES
@@ -483,7 +485,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateRightKarplus(rightKarpAtt.load(), rightKarpRel.load(), rightKarpFb.load(), rightKarpNoise.load());
             voice->updateLeftNoise(leftNoiseTone.load());
             voice->updateRightNoise(rightNoiseTone.load());
-            voice->updateChoice(leftSynthChoice.load(), rightSynthChoice.load(), synthMix.load());
+            //voice->updateChoice(leftSynthChoice.load(), rightSynthChoice.load(), synthMix.load());
 
             voice->updateLeftFm(leftFmRatio.load(), leftFmDepth.load());
             voice->updateRightFm(rightFmRatio.load(), rightFmDepth.load());

@@ -77,6 +77,7 @@ void SynthVoice::pitchWheelMoved(int newPitchWheelValue)
 
 void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels)
 {
+    //synthBuffer.setSize(outputChannels, samplesPerBlock, false, false, true);
 
     genSynth.init(sampleRate);
     genSynth.buildUserInterface(&genCtrl);
@@ -289,95 +290,36 @@ void SynthVoice::updateTuner(std::array<float, 12> tuningSliders, bool bassTunin
 //    if (!isVoiceActive())
 //        return;
 //
-//    // esto aun no me convence XD
-//    synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
-//    lfoBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
-//
-//    //We need to include our modAdsr in the buffer for it to work
-//    //but at this stage of the buffer, it does no processing!
-//    modAdsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());
-//    //Gets modAdsr next value to control other parameters in real time
-//    modAdsrSample = modAdsr.getNextSample();
-//
-//
-//    //Gets modOsc next value to control other parameters in real time
-//
-//    //Gets modOsc next value to control other parameters in real time
-//    //Just like with modAdsr we need to pass it our buffer for it to work
-//
-//
-//    synthBuffer.clear();
-//
-//
-//    //Creating an AudioBlock type object to use the dsp::gain.process function
-//    // No se necesita la sintaxis con brackets {, obvio no hace diferencia pero
-//    // estas diciendo q vas a hacer un list initializer con el audio block cuando
-//    // en realidad hay un constructor dedicado para un AudioBuffer
-//    //    juce::dsp::AudioBlock<float> audioBlock( synthBuffer );
-//    juce::dsp::AudioBlock<float> audioBlock{ synthBuffer };
-//
-//    //Updating our tuning in real time
+//    float** synthData = outputBuffer.getArrayOfWritePointers();
 //    float newMidi = tuningRef.alterMidiPitch(getCurrentlyPlayingNote());
 //    float oscFreq = tuningRef.midiToHertz(newMidi);
-//    //-------------------------------------------------------------
 //
-//
-//    //OSCILLATORS
-//    //-------------------------------------------------------------
-//    //Selector for different synthesizers
-//    switch (1)
+//    while (--numSamples >= 0)
 //    {
-//    case 0:
-//        karpCtrl.setParamValue("freq", oscFreq);
-//        // creo q en varias partes estás llamando getArrayOfWritePointers() pero
-//        // sería más facil de leer si arriba de todo esto hubiera un
-//        // float** synthData = synthBuffer.getArrayOfWritePoints();
-//        // int numSamples = synthBuffer.getNumSamples();
-//        karplusSynth.compute(synthBuffer.getNumSamples(), nullptr, synthBuffer.getArrayOfWritePointers());
-//        break;
-//    case 1:
+//
 //        genCtrl.setParamValue("freq", oscFreq);
-//        // creo q esoto es innecesario
-//        juce::dsp::Gain<float> sawGain;
-//        sawGain.setGainLinear(0.2);
-//        genSynth.compute(synthBuffer.getNumSamples(), nullptr, synthBuffer.getArrayOfWritePointers());
-//        // podrías escribir esto
-//        // synthBuffer.applyGain(0.2);
-//        sawGain.process(juce::dsp::ProcessContextReplacing<float>(audioBlock));
-//        break;
+//        genSynth.compute(numSamples, nullptr, synthData);
+//        startSample++;
 //    }
 //
-//
-//
-//
-//    //PROCESS
-//    //-------------------------------------------------------------
-//    //Filter with distortion
-//    if (false)
+//    while (--numSamples >= 0)
 //    {
-//        filter.compute(synthBuffer.getNumSamples(), synthBuffer.getArrayOfWritePointers(), synthBuffer.getArrayOfWritePointers());
+//        adsr.applyEnvelopeToBuffer(outputBuffer, startSample, numSamples);
+//        startSample++;
 //    }
 //
-//    //Gain control
-//    // otra vez innecesario existiendo buffer.applyGain()
-//
-//    //Amp adsr control
-//    adsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());
-//    //-------------------------------------------------------------
-//
-//
-//    //CLEAR
-//    //-------------------------------------------------------------
-//
-//    for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
-//    {
-//        outputBuffer.addFrom(channel, startSample, synthBuffer, channel, 0, numSamples);
-//
-//        if (!adsr.isActive())
-//        {
-//            clearCurrentNote();
+//        for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
+//        {    
+//            if (!adsr.isActive())
+//            {
+//                clearCurrentNote();
+//            }
+//    
+//            //clearCurrentNote();
 //        }
-//    }
+//
+//
+//    
 //}
 
 void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
@@ -391,7 +333,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     // esto aun no me convence XD
     synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
-    lfoBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
+    //lfoBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
 
     ////We need to include our modAdsr in the buffer for it to work
     ////but at this stage of the buffer, it does no processing!
@@ -431,7 +373,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //OSCILLATORS
     //-------------------------------------------------------------
     //Selector for different synthesizers
-    switch (leftSynthChoice)
+    switch (0)
     {
     case 0:
         genCtrl.setParamValue("freq", oscFreq);

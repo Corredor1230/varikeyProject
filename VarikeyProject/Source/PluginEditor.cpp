@@ -15,8 +15,8 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor (VarikeyP
     , filters(audioProcessor.vts)
     , genLeft(audioProcessor.vts, "leftGenShape", "leftGenNoiseLevel", "leftGenNoiseShape")
     , genRight(audioProcessor.vts, "rightGenShape", "rightGenNoiseLevel", "rightGenNoiseShape")
-    , leftOscAttachment(audioProcessor.vts, "leftSynthChoice", leftOscChoice)
-    , rightOscAttachment(audioProcessor.vts, "rightSynthChoice", rightOscChoice)
+    //, leftOscAttachment(audioProcessor.vts, "leftSynthChoice", leftOscChoice)
+    //, rightOscAttachment(audioProcessor.vts, "rightSynthChoice", rightOscChoice)
     , additiveLeft(audioProcessor.vts, leftAdditiveIDs)
     , additiveRight(audioProcessor.vts, rightAdditiveIDs)
 {
