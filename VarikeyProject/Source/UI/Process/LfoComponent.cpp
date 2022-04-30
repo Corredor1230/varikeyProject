@@ -130,6 +130,9 @@ LfoComponent::LfoComponent(juce::AudioProcessorValueTreeState& vts, juce::String
     routeBox.addItemList(juce::StringArray(synthList), 1);
     routeBox2.addItemList(juce::StringArray(synthList), 1);
 
+    routeBox.setSelectedId(-1, juce::NotificationType::sendNotification);
+    routeBox2.setSelectedId(-1, juce::NotificationType::sendNotification);
+
 }
 
 LfoComponent::~LfoComponent()
@@ -203,6 +206,9 @@ void LfoComponent::paint(juce::Graphics& g)
     routeLabel2.setBounds(freq2Label.getRight() + padding, padding / 1.5, rotaryWidth, titleHeight);
     routeBox2.setBounds(depth2Label.getRight() + padding, padding, width / 8, titleHeight - padding / 2);
 
+    setDisabledRoutes(lfo1N, routeBox);
+    setDisabledRoutes(lfo2N, routeBox2);
+
 }
 
 void LfoComponent::resized()
@@ -250,4 +256,66 @@ void LfoComponent::setRegionTitle(juce::String& region1, juce::String& region2)
 {
     region1Index = region1;
     region2Index = region2;
+}
+
+void LfoComponent::setUsedRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route, int modAdsrRoute)
+{
+    lfo1N = lfo1Num;
+    lfo2N = lfo2Num;
+    lfo1R = lfo1Route + 1;
+    lfo2R = lfo2Route + 1;
+    lfo3R = lfo3Route + 1;
+    lfo4R = lfo4Route + 1;
+    modAR = modAdsrRoute + 1;
+
+}
+
+void LfoComponent::setDisabledRoutes(int lfoNum, juce::ComboBox& box)
+{
+    switch (lfoNum)
+    {
+    case 0:
+        jassertfalse;
+        break;
+    case 1:
+        for (int i = 0; i <= box.getNumItems(); i++)
+        {
+            box.setItemEnabled(i, true);
+        }
+        (lfo2R == 0) ? box.setItemEnabled(lfo2R, true) : box.setItemEnabled(lfo2R, false);
+        (lfo3R == 0) ? box.setItemEnabled(lfo3R, true) : box.setItemEnabled(lfo3R, false);
+        (lfo4R == 0) ? box.setItemEnabled(lfo4R, true) : box.setItemEnabled(lfo4R, false);
+        (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
+        break;
+    case 2:
+        for (int i = 0; i <= box.getNumItems(); i++)
+        {
+            box.setItemEnabled(i, true);
+        }
+        (lfo1R == 0) ? box.setItemEnabled(lfo1R, true) : box.setItemEnabled(lfo1R, false);
+        (lfo3R == 0) ? box.setItemEnabled(lfo3R, true) : box.setItemEnabled(lfo3R, false);
+        (lfo4R == 0) ? box.setItemEnabled(lfo4R, true) : box.setItemEnabled(lfo4R, false);
+        (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
+        break;
+    case 3:
+        for (int i = 0; i <= box.getNumItems(); i++)
+        {
+            box.setItemEnabled(i, true);
+        }
+        (lfo1R == 0) ? box.setItemEnabled(lfo1R, true) : box.setItemEnabled(lfo1R, false);
+        (lfo2R == 0) ? box.setItemEnabled(lfo2R, true) : box.setItemEnabled(lfo2R, false);
+        (lfo4R == 0) ? box.setItemEnabled(lfo4R, true) : box.setItemEnabled(lfo4R, false);
+        (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
+        break;
+    case 4:
+        for (int i = 0; i <= box.getNumItems(); i++)
+        {
+            box.setItemEnabled(i, true);
+        }
+        (lfo1R == 0) ? box.setItemEnabled(lfo1R, true) : box.setItemEnabled(lfo1R, false);
+        (lfo2R == 0) ? box.setItemEnabled(lfo2R, true) : box.setItemEnabled(lfo2R, false);
+        (lfo3R == 0) ? box.setItemEnabled(lfo3R, true) : box.setItemEnabled(lfo3R, false);
+        (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
+        break;
+    }
 }

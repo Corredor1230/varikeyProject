@@ -148,6 +148,16 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
 {
     g.fillAll(varikeyLookAndFeel.getColourFromPalette(VarikeyLookAndFeel::paletteColours::gDark));
 
+    auto& r1 = *vts.getRawParameterValue("lfo1Route");
+    auto& r2 = *vts.getRawParameterValue("lfo2Route");
+    auto& r3 = *vts.getRawParameterValue("lfo3Route");
+    auto& r4 = *vts.getRawParameterValue("lfo4Route");
+    auto& r5 = *vts.getRawParameterValue("modAdsrRoute");
+
+    lfo1.setUsedRoutes(1, 2, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
+    lfo2.setUsedRoutes(3, 4, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
+    modAdsr.setUsedRoutes(r1.load(), r2.load(), r3.load(), r4.load());
+
     getBounds().removeFromLeft(5);
     getBounds().removeFromRight(5);
     getBounds().removeFromTop(5);

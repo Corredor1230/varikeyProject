@@ -46,15 +46,7 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
 {
     adsr.noteOff();
     modAdsr.noteOff();
-        //genCtrl.setParamValue("gate", false);
-        //additiveCtrl.setParamValue("gate", false);
-        //karpCtrl.setParamValue("gate", false);
-        //noiseCtrl.setParamValue("gate", false);
     karpCtrl.setParamValue("gate", false);
-        //genCtrlRight.setParamValue("gate", false);
-        //additiveCtrlRight.setParamValue("gate", false);
-        //karpCtrlRight.setParamValue("gate", false);
-        //noiseCtrlRight.setParamValue("gate", false);
 
 
     if (!allowTailOff || !adsr.isActive())
@@ -77,8 +69,6 @@ void SynthVoice::pitchWheelMoved(int newPitchWheelValue)
 
 void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels)
 {
-    //synthBuffer.setSize(outputChannels, samplesPerBlock, false, false, true);
-
     genSynth.init(sampleRate);
     genSynth.buildUserInterface(&genCtrl);
 
@@ -120,10 +110,6 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
     modAdsr.setSampleRate(sampleRate);
     lfo1Mod.init(sampleRate);
 
-    juce::dsp::ProcessSpec spec;
-    spec.maximumBlockSize = samplesPerBlock;
-    spec.sampleRate = sampleRate;
-    spec.numChannels = outputChannels;
 
 }
 
@@ -215,7 +201,10 @@ void SynthVoice::updateRightFm(float ratio, float depth)
 void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
 {
     filtCtrl.setParamValue("lopOnOff", isEnabled);
-    filtCtrl.setParamValue("lopCutoff", cutoff);
+    lopMid = freqToMidi(cutoff);
+    lopCutoff = std::fmin(20000, std::fmax(20,
+        (tuningRef.midiToHertz(lopMid + (lfo1Sample * lfo1Depth * 24 * (lfo1Route == 10))))));
+    filtCtrl.setParamValue("lopCutoff", lopCutoff);
     filtCtrl.setParamValue("lopQ", q);
 }
 
@@ -304,11 +293,12 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         return;
 
     // esto aun no me convence XD
+    // ando buscando soluciones para esto
     synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     int sampNumber = synthBuffer.getNumSamples();
 
-    ////We need to include our modAdsr in the buffer for it to work
-    ////but at this stage of the buffer, it does no processing!
+    //We need to include our modAdsr in the buffer for it to work
+    //but at this stage of the buffer, it does no processing!
     modAdsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);
     modAdsrSample = modAdsr.getNextSample();
     synthBuffer.clear();
@@ -339,12 +329,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     tunedMidi = tuningRef.alterMidiPitch(getCurrentlyPlayingNote());
     vibratoMidi = vibratoDepth * vibratoSample;
     processedMidi = tunedMidi + vibratoMidi + synthDetune;
-
-    //fmLeft.setFreq(tuningRef.midiToHertz(processedMidi) * 2);
-    //for (int i = 0; i < sampNumber; i++)
-    //{
-    //    fmLeftSample = fmLeft.getNextSample();
-    //}
 
     oscMidi = processedMidi;
 
@@ -383,10 +367,9 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //Filter with distortion
     filter.compute(sampNumber, synthData, synthData);
 
-    //Gain control
-    // otra vez innecesario existiendo buffer.applyGain()
+    volLfoCtrl = (lfo1Sample + 1) / 2.2;
+    synthBuffer.applyGain(1.0 - (volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
 
-    synthBuffer.applyGain(1.0);
 
     //Amp adsr control
     adsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);
@@ -407,6 +390,10 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     }
 }
 
+float SynthVoice::freqToMidi(float freq)
+{
+    return ((12 * log(freq / 220.0) / log(2.0)) + 57.01);
+}
 
 
 

@@ -77,6 +77,7 @@ public:
     void updateLfo4(float freq, float depth, float shape, int route);
     void updateGlobal(float detune, float vibFreq, float vibDepth, float volume);
     void updateTuner(std::array<float, 12> tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
+    float freqToMidi(float freq);
 
 private:
 
@@ -116,12 +117,15 @@ private:
 
 
     juce::AudioBuffer<float> synthBuffer;
-    juce::AudioBuffer<float> lfoBuffer;
 
     NoteTuning& tuningRef;
     juce::AudioProcessorValueTreeState& vts;
 
     bool isPrepared{ false };
+
+    //FILTER
+    float lopCutoff = 0;
+    float lopMid = 0;
 
     //CHOICE VARIABLES
     int leftSynthChoice = 0;
@@ -165,6 +169,7 @@ private:
     float vibratoDepth = 0;
     float dbVolume = -20;
     float linVolume = 0.7;
+    float volLfoCtrl = 0;
 
     //Local
 

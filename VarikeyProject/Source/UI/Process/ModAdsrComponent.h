@@ -33,10 +33,17 @@ public:
 
     void setSliderParams(juce::Slider& slider, juce::Label& label, std::string name, int style);
     void setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel);
+    void setUsedRoutes(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route);
+    void setDisabledRoutes(juce::ComboBox& box);
 private:
 
     juce::AudioProcessorValueTreeState& vts;
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+
+    int lfo1R = 0;
+    int lfo2R = 0;
+    int lfo3R = 0;
+    int lfo4R = 0;
 
     double maximumSliderValue = 5000.0;
     double sliderInterval = 0.1;

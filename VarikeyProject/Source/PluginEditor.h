@@ -68,6 +68,7 @@ private:
     // Your private member variables go here...
 
     VarikeyProjectAudioProcessor& audioProcessor;
+    juce::AudioProcessorValueTreeState& vts = audioProcessor.vts;
 
     //Colours
     float alphaValue = 0.8;
