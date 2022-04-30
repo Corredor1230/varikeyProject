@@ -25,13 +25,13 @@ AdsrComponent::AdsrComponent(juce::AudioProcessorValueTreeState& vts) : vts(vts)
     addAndMakeVisible(titleLabel);
 
     titleLabel.setText("Amp ADSR", juce::dontSendNotification);
-    attackSlider.setRange(0.0, maximumSliderValue, sliderInterval);
-    attackSlider.setSkewFactorFromMidPoint(sliderSkewFromMid);
-    decaySlider.setRange(0.0, maximumSliderValue, sliderInterval);
-    decaySlider.setSkewFactorFromMidPoint(sliderSkewFromMid);
-    sustainSlider.setRange(0.0, 1.0, 0.1);
-    releaseSlider.setRange(0.0, maximumSliderValue, sliderInterval);
-    releaseSlider.setSkewFactorFromMidPoint(sliderSkewFromMid);
+    //attackSlider.setRange(0.0, maximumSliderValue, sliderInterval);
+    //attackSlider.setSkewFactorFromMidPoint(sliderSkewFromMid);
+    //decaySlider.setRange(0.0, maximumSliderValue, sliderInterval);
+    //decaySlider.setSkewFactorFromMidPoint(sliderSkewFromMid);
+    //sustainSlider.setRange(0.0, 1.0, 0.1);
+    //releaseSlider.setRange(0.0, maximumSliderValue, sliderInterval);
+    //releaseSlider.setSkewFactorFromMidPoint(sliderSkewFromMid);
 
 
 }

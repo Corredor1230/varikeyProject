@@ -74,15 +74,15 @@ void PitchwheelLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int widt
     g.fillPath(thumbTick, AffineTransform::rotation(toAngle).translated(bounds.getCentreX(), bounds.getCentreY()));
 }
 
-PitchwheelComponent::PitchwheelComponent()
+PitchwheelComponent::PitchwheelComponent(juce::AudioProcessorValueTreeState& vts) : vts(vts)
+, pitchwheelAttachment(vts, "detune", pitchwheelSlider)
+, vibFreqAttachment(vts, "vibFreq", vibFreqSlider)
+, vibDepthAttachment(vts, "vibDepth", vibDepthSlider)
 {
     setSliderParams(pitchwheelSlider, pitchwheelLabel, "Detune", horizontal);
-    pitchwheelSlider.setRange(-1.0, 1.0, 0.01);
 
     setSliderParams(vibFreqSlider, vibFreqLabel, "Vibrato Frequency", rotary);
-    vibFreqSlider.setRange(0.0, 20.0, 0.1);
     setSliderParams(vibDepthSlider, vibDepthLabel, "Depth", rotary);
-    vibDepthSlider.setRange(0.0, 1.0, 0.01);
 }
 
 PitchwheelComponent::~PitchwheelComponent()

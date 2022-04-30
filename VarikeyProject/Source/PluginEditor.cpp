@@ -32,6 +32,7 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor (VarikeyP
         "lfo4Depth", "lfo3Shape", "lfo4Shape", "lfo3Route", "lfo4Route")
     , modAdsr(audioProcessor.vts)
     , tuner(audioProcessor.vts)
+    , pitchwheel(audioProcessor.vts)
 {
     varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
     setLookAndFeel(&varikeyLookAndFeel);

@@ -44,7 +44,7 @@ class SynthVoice : public juce::SynthesiserVoice
 {
 public:
     SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts) : tuningRef(someTuner)
-    ,vts(vts){}
+        , vts(vts) {}
     bool canPlaySound(juce::SynthesiserSound* sound) override;
     void startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition) override;
     void stopNote(float velocity, bool allowTailOff) override;
@@ -163,15 +163,34 @@ private:
     float synthDetune = 0;
     float vibratoFrequency = 0;
     float vibratoDepth = 0;
-    float synthVolume = 0.7;
+    float dbVolume = -20;
+    float linVolume = 0.7;
+
+    //Local
+
+    //Process samples
+    float synthStartSample = 0;
+    float vibratoSample = 0;
+    float fmLeftSample = 0;
+    float modAdsrSample = 0;
+    float lfo1Sample = 0;
+    float lfo2Sample = 0;
+    float lfo3Sample = 0;
+    float lfo4Sample = 0;
+
+    //Tuning
+    float tunedMidi = 0;
+    float vibratoMidi = 0;
+    float processedMidi = 0;
+    float oscMidi = 0;
+    float oscFreq = 0;
+    float leftFmFreq = 0;
 
     float tempVelocity = 0;
     float finalGain = 0;
     int synthSelector = 0;
-    float modAdsrSample = 0;
     float oscModShape = 0;
     float oscModDepth = 0;
     float modOscSample = 0;
     float lfoSample = 0;
-    
 };

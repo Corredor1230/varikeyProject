@@ -62,12 +62,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
     //GENERATOR
         //Left
         createIntParameter(params, "leftGenShape", "Wave Shape 1", 0, 3, 0);
-        createFloatParameter(params, "leftGenNoiseLevel", "Noise Level 1", 0.f, 1.f, 0.01f, 0.f);
+        createFloatParameter(params, "leftGenNoiseLevel", "Noise Level 1", 0.f, 1.f, 0.01f, 0.f, 1.4);
         createIntParameter(params, "leftGenNoiseShape", "Noise Shape 1", 0, 1, 1);
 
         //Right
         createIntParameter(params, "rightGenShape", "Wave Shape 2", 0, 3, 0);
-        createFloatParameter(params, "rightGenNoiseLevel", "Noise Level 2", 0.f, 1.f, 0.01f, 0.f);
+        createFloatParameter(params, "rightGenNoiseLevel", "Noise Level 2", 0.f, 1.f, 0.01f, 0.f, 1.4);
         createIntParameter(params, "rightGenNoiseShape", "Noise Shape 2", 0, 1, 1);
 
     //ADDITIVE
@@ -90,8 +90,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 
     //KARPLUS
         //Left
-        createFloatParameter(params, "leftKarpAtt", "Karplus Attack 1", 0.f, 1.f, 0.0001, 0.01);
-        createFloatParameter(params, "leftKarpRel", "Karplus Release 1", 0.f, 1.f, 0.0001, 1.f);
+        createFloatParameter(params, "leftKarpAtt", "Karplus Attack 1", 0.f, 1.f, 0.0001, 0.01, 0.4);
+        createFloatParameter(params, "leftKarpRel", "Karplus Release 1", 0.f, 1.f, 0.0001, 1.f, 0.4);
         createFloatParameter(params, "leftKarpFb", "Karplus Feedback 1", 0.f, 1.f, 0.001, 0.95f);
         createIntParameter(params, "leftKarpNoise", "Karplus Noise 1", 0, 1, 1);
 
@@ -120,14 +120,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         params.push_back(std::make_unique<juce::AudioParameterChoice>("leftSynthChoice", "Left Synth", 
             juce::StringArray(oscList), 1));
         params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "Right Synth", 
-            juce::StringArray{ "Generator", "Additive", "Karplus", "Noise" }, 0));
+            juce::StringArray(oscList), 1));
         createFloatParameter(params, "synthMix", "Synth Mix", -1.0f, 1.0f, 0.01f, 0.0f);
 
 //PROCESSES
     //FILTER
         //LOP
         createFloatParameter(params, "lopCutoff", "Cutoff LOP", 20.0f, 20000.0f, 1.0f, 1000.0f, 0.3);
-        params.push_back(std::make_unique<juce::AudioParameterBool>("lopOnOff", "On/Off", true));
+        params.push_back(std::make_unique<juce::AudioParameterBool>("lopOnOff", "On/Off", false));
         createFloatParameter(params, "lopQ", "Q LOP", 1.0f, 10.0f, 0.01f, 1.0f);
 
         //HIP
@@ -137,48 +137,53 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 
     //ADSR
         //Amp
-        createFloatParameter(params, "ampAdsrAtt", "Attack 1", 0.01, 5.0f, 0.001, 0.03, 0.3);
-        createFloatParameter(params, "ampAdsrDec", "Decay 1", 0.01, 5.0f, 0.001, 0.03, 0.3);
+        createFloatParameter(params, "ampAdsrAtt", "Attack 1", 0.01, 5.0f, 0.001, 0.03, 0.6);
+        createFloatParameter(params, "ampAdsrDec", "Decay 1", 0.01, 5.0f, 0.001, 0.03, 0.6);
         createFloatParameter(params, "ampAdsrSus", "Sustain 1", 0.0, 1.0f, 0.001f, 0.5f);
-        createFloatParameter(params, "ampAdsrRel", "Release 1", 0.01, 5.0f, 0.001, 0.03, 0.3);
+        createFloatParameter(params, "ampAdsrRel", "Release 1", 0.01, 5.0f, 0.001, 0.03, 0.6);
 
         //Mod
         createFloatParameter(params, "modAdsrAtt", "Attack 2", 0.01, 5.0f, 0.001, 0.03, 0.3);
         createFloatParameter(params, "modAdsrDec", "Decay 2", 0.01, 5.0f, 0.001, 0.03, 0.3);
         createFloatParameter(params, "modAdsrSus", "Sustain 2", 0.0, 1.0f, 0.001f, 0.5f);
         createFloatParameter(params, "modAdsrRel", "Release 2", 0.01, 5.0f, 0.001, 0.03, 0.3);
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("modAdsrRoute", "Route Adsr", synthList, 1));
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("modAdsrRoute", "Route Adsr", 
+            juce::StringArray(synthList), 1));
 
     //LFO
         //Lfo 1
         createFloatParameter(params, "lfo1Freq", "Frequency 1", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "lfo1Depth", "Depth 1", 0.0f, 1.0f, 0.001f, 0.0f);
         createFloatParameter(params, "lfo1Shape", "Shape 1", 1.0f, 100.0f, 0.1f, 1.0f);
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo1Route", "Route Lfo 1", synthList, 1));
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo1Route", "Route Lfo 1", 
+            juce::StringArray(synthList), 1));
 
         //Lfo 2
         createFloatParameter(params, "lfo2Freq", "Frequency 2", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "lfo2Depth", "Depth 2", 0.0f, 1.0f, 0.001f, 0.0f);
         createFloatParameter(params, "lfo2Shape", "Shape 2", 1.0f, 100.0f, 0.1f, 1.0f);
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo2Route", "Route Lfo 2", synthList, 1));
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo2Route", "Route Lfo 2", 
+            juce::StringArray(synthList), 1));
 
         //Lfo 3
         createFloatParameter(params, "lfo3Freq", "Frequency 3", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "lfo3Depth", "Depth 3", 0.0f, 1.0f, 0.001f, 0.0f);
         createFloatParameter(params, "lfo3Shape", "Shape 3", 1.0f, 100.0f, 0.1f, 1.0f);
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo3Route", "Route Lfo 3", synthList, 1));
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo3Route", "Route Lfo 3", 
+            juce::StringArray(synthList), 1));
 
         //Lfo 4
         createFloatParameter(params, "lfo4Freq", "Frequency 4", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "lfo4Depth", "Depth 4", 0.0f, 1.0f, 0.001f, 0.0f);
         createFloatParameter(params, "lfo4Shape", "Shape 4", 1.0f, 100.0f, 0.1f, 1.0f);
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo4Route", "Route Lfo 4", synthList, 1));
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo4Route", "Route Lfo 4", 
+            juce::StringArray(synthList), 1));
 
 //GLOBAL
     //OTHER
         createFloatParameter(params, "detune", "Detune", -1.0f, 1.0f, 0.01f, 0.0f);
-        createFloatParameter(params, "vibFreq", "Vibrato Frequency", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
-        createFloatParameter(params, "vibDepth", "Vibrato Depth", 0.0f, 1.0f, 0.001f, 0.0f);
+        createFloatParameter(params, "vibFreq", "Vibrato Frequency", 0.0f, 20.f, 0.01f, 0.0f, 0.3);
+        createFloatParameter(params, "vibDepth", "Vibrato Depth", 0.0f, 1.f, 0.001f, 0.0f);
         createFloatParameter(params, "volume", "Volume", -60.0f, 0.0f, 0.1f, -20.f);
 
     //NOTE TUNING

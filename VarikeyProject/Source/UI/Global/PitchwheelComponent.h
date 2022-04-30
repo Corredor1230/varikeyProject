@@ -40,7 +40,7 @@ public:
         horizontal
     };
 
-    PitchwheelComponent();
+    PitchwheelComponent(juce::AudioProcessorValueTreeState& vts);
     ~PitchwheelComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -51,6 +51,9 @@ public:
 
 private:
 
+    juce::AudioProcessorValueTreeState& vts;
+    typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+
     juce::Slider pitchwheelSlider;
     juce::Label pitchwheelLabel;
 
@@ -59,6 +62,10 @@ private:
     
     juce::Slider vibDepthSlider;
     juce::Label vibDepthLabel;
+
+    SliderAttachment pitchwheelAttachment;
+    SliderAttachment vibFreqAttachment;
+    SliderAttachment vibDepthAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PitchwheelComponent)
 };

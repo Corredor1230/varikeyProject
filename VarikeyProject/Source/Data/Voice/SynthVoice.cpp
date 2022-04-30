@@ -46,15 +46,15 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
 {
     adsr.noteOff();
     modAdsr.noteOff();
-        genCtrl.setParamValue("gate", false);
-        additiveCtrl.setParamValue("gate", false);
-        karpCtrl.setParamValue("gate", false);
-        noiseCtrl.setParamValue("gate", false);
-
-        genCtrlRight.setParamValue("gate", false);
-        additiveCtrlRight.setParamValue("gate", false);
-        karpCtrlRight.setParamValue("gate", false);
-        noiseCtrlRight.setParamValue("gate", false);
+        //genCtrl.setParamValue("gate", false);
+        //additiveCtrl.setParamValue("gate", false);
+        //karpCtrl.setParamValue("gate", false);
+        //noiseCtrl.setParamValue("gate", false);
+    karpCtrl.setParamValue("gate", false);
+        //genCtrlRight.setParamValue("gate", false);
+        //additiveCtrlRight.setParamValue("gate", false);
+        //karpCtrlRight.setParamValue("gate", false);
+        //noiseCtrlRight.setParamValue("gate", false);
 
 
     if (!allowTailOff || !adsr.isActive())
@@ -203,7 +203,8 @@ void SynthVoice::updateChoice(int leftChoice, int rightChoice, float synthMix)
 
 void SynthVoice::updateLeftFm(float ratio, float depth)
 {
-
+    leftFmRatio = ratio;
+    leftFmDepth = depth;
 }
 
 void SynthVoice::updateRightFm(float ratio, float depth)
@@ -242,6 +243,9 @@ void SynthVoice::updateLfo1(float freq, float depth, float shape, int route)
     lfo1Depth = depth;
     lfo1Shape = shape;
     lfo1Route = route;
+    lfo1Mod.setFreq(freq);
+    lfo1Mod.updateLfo(shape, depth);
+
 }
 
 void SynthVoice::updateLfo2(float freq, float depth, float shape, int route)
@@ -250,6 +254,9 @@ void SynthVoice::updateLfo2(float freq, float depth, float shape, int route)
     lfo2Depth = depth;
     lfo2Shape = shape;
     lfo2Route = route;
+    lfo2Mod.setFreq(freq);
+    lfo2Mod.updateLfo(shape, depth);
+
 }
 
 void SynthVoice::updateLfo3(float freq, float depth, float shape, int route)
@@ -258,6 +265,8 @@ void SynthVoice::updateLfo3(float freq, float depth, float shape, int route)
     lfo3Depth = depth;
     lfo3Shape = shape;
     lfo3Route = route;
+    lfo3Mod.setFreq(freq);
+    lfo3Mod.updateLfo(shape, depth);
 }
 
 void SynthVoice::updateLfo4(float freq, float depth, float shape, int route)
@@ -266,14 +275,18 @@ void SynthVoice::updateLfo4(float freq, float depth, float shape, int route)
     lfo4Depth = depth;
     lfo4Shape = shape;
     lfo4Route = route;
+    lfo4Mod.setFreq(freq);
+    lfo4Mod.updateLfo(shape, depth);
 }
 
 void SynthVoice::updateGlobal(float detune, float vibFreq, float vibDepth, float volume)
 {
     synthDetune = detune;
-    vibratoFrequency = vibFreq;
+    vibrato.setFreq(vibFreq);
+    vibrato.updateLfo(1, vibDepth);
     vibratoDepth = vibDepth;
-    synthVolume = volume;
+    dbVolume = volume;
+    linVolume = juce::Decibels::decibelsToGain(volume, -60.f);
 }
 
 void SynthVoice::updateTuner(std::array<float, 12> tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter)
@@ -281,6 +294,123 @@ void SynthVoice::updateTuner(std::array<float, 12> tuningSliders, bool bassTunin
     tuningRef.setTuning(tuningSliders);
 }
 
+void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
+{
+
+    //SETUP
+    //-------------------------------------------------------------
+    // muy bien esto!
+    if (!isVoiceActive())
+        return;
+
+    // esto aun no me convence XD
+    synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
+    int sampNumber = synthBuffer.getNumSamples();
+
+    ////We need to include our modAdsr in the buffer for it to work
+    ////but at this stage of the buffer, it does no processing!
+    modAdsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);
+    modAdsrSample = modAdsr.getNextSample();
+    synthBuffer.clear();
+
+    for (int i = 0; i < sampNumber; i++)
+    {
+        vibratoSample = vibrato.getNextSample();
+    }
+
+    for (int i = 0; i < sampNumber; i++)
+    {
+        lfo1Sample = lfo1Mod.getNextSample();
+    }
+    for (int i = 0; i < sampNumber; i++)
+    {
+        lfo2Sample = lfo2Mod.getNextSample();
+    }
+    for (int i = 0; i < sampNumber; i++)
+    {
+        lfo3Sample = lfo3Mod.getNextSample();
+    }
+    for (int i = 0; i < sampNumber; i++)
+    {
+        lfo4Sample = lfo4Mod.getNextSample();
+    }
+
+    //Updating our tuning in real time
+    tunedMidi = tuningRef.alterMidiPitch(getCurrentlyPlayingNote());
+    vibratoMidi = vibratoDepth * vibratoSample;
+    processedMidi = tunedMidi + vibratoMidi + synthDetune;
+
+    //fmLeft.setFreq(tuningRef.midiToHertz(processedMidi) * 2);
+    //for (int i = 0; i < sampNumber; i++)
+    //{
+    //    fmLeftSample = fmLeft.getNextSample();
+    //}
+
+    oscMidi = processedMidi;
+
+
+    oscFreq = std::fmax(std::fmin(tuningRef.midiToHertz(oscMidi), 20000.f), 22.f);
+
+    //-------------------------------------------------------------
+
+    float** synthData = synthBuffer.getArrayOfWritePointers();
+
+    //OSCILLATORS
+    //-------------------------------------------------------------
+    //Selector for different synthesizers
+    switch (leftSynthChoice)
+    {
+    case 0:
+        genCtrl.setParamValue("freq", oscFreq);
+        genSynth.compute(sampNumber, nullptr, synthData);
+        break;
+    case 1:
+        additiveCtrl.setParamValue("freq", oscFreq);
+        additiveSynth.compute(sampNumber, nullptr, synthData);
+        break;
+    case 2:
+        karpCtrl.setParamValue("freq", oscFreq);
+        karplusSynth.compute(sampNumber, nullptr, synthData);
+        break;
+    case 3:
+        noiseCtrl.setParamValue("freq", oscFreq);
+        noiseSynth.compute(sampNumber, nullptr, synthData);
+        break;
+    }
+
+    //PROCESS
+    //-------------------------------------------------------------
+    //Filter with distortion
+    filter.compute(sampNumber, synthData, synthData);
+
+    //Gain control
+    // otra vez innecesario existiendo buffer.applyGain()
+
+    synthBuffer.applyGain(1.0);
+
+    //Amp adsr control
+    adsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);
+    //-------------------------------------------------------------
+
+
+    //CLEAR
+    //-------------------------------------------------------------
+
+    for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
+    {
+        outputBuffer.addFrom(channel, startSample, synthBuffer, channel, 0, numSamples);
+
+        if (!adsr.isActive())
+        {
+            clearCurrentNote();
+        }
+    }
+}
+
+
+
+
+////Trying to avoid using a new buffer in Audio Thread
 //void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
 //{
 //
@@ -321,112 +451,3 @@ void SynthVoice::updateTuner(std::array<float, 12> tuningSliders, bool bassTunin
 //
 //    
 //}
-
-void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
-{
-
-    //SETUP
-    //-------------------------------------------------------------
-    // muy bien esto!
-    if (!isVoiceActive())
-        return;
-
-    // esto aun no me convence XD
-    synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
-    //lfoBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
-
-    ////We need to include our modAdsr in the buffer for it to work
-    ////but at this stage of the buffer, it does no processing!
-    modAdsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());
-    ////Gets modAdsr next value to control other parameters in real time
-    modAdsrSample = modAdsr.getNextSample();
-
-
-    ////Gets modOsc next value to control other parameters in real time
-
-    ////Gets modOsc next value to control other parameters in real time
-    ////Just like with modAdsr we need to pass it our buffer for it to work
-    for (int i = 0; i < lfoBuffer.getNumSamples(); i++)
-    {
-        lfoSample = lfo1Mod.getNextSample();
-    }
-
-    synthBuffer.clear();
-
-    float** synthData = synthBuffer.getArrayOfWritePointers();
-    int sampNumber = synthBuffer.getNumSamples();
-
-    //Creating an AudioBlock type object to use the dsp::gain.process function
-    // No se necesita la sintaxis con brackets {, obvio no hace diferencia pero
-    // estas diciendo q vas a hacer un list initializer con el audio block cuando
-    // en realidad hay un constructor dedicado para un AudioBuffer
-    //    juce::dsp::AudioBlock<float> audioBlock( synthBuffer );
-
-    //Updating our tuning in real time
-    float newMidi = tuningRef.alterMidiPitch(getCurrentlyPlayingNote());
-    float oscFreq = tuningRef.midiToHertz(newMidi);
-    //-------------------------------------------------------------
-
-    //float oscFreq = tuningRef.midiToHertz(getCurrentlyPlayingNote());
-
-
-    //OSCILLATORS
-    //-------------------------------------------------------------
-    //Selector for different synthesizers
-    switch (leftSynthChoice)
-    {
-    case 0:
-        genCtrl.setParamValue("freq", oscFreq);
-        // creo q en varias partes estás llamando getArrayOfWritePointers() pero
-        // sería más facil de leer si arriba de todo esto hubiera un
-        // float** synthData = synthBuffer.getArrayOfWritePoints();
-        // int numSamples = synthBuffer.getNumSamples();
-        genSynth.compute(sampNumber, nullptr, synthBuffer.getArrayOfWritePointers());
-        break;
-    case 1:
-        additiveCtrl.setParamValue("freq", oscFreq);
-        additiveSynth.compute(sampNumber, nullptr, synthBuffer.getArrayOfWritePointers());
-        break;
-    case 2:
-        karpCtrl.setParamValue("freq", oscFreq);
-        karplusSynth.compute(sampNumber, nullptr, synthBuffer.getArrayOfWritePointers());
-        break;
-    case 3:
-        noiseCtrl.setParamValue("freq", oscFreq);
-        noiseSynth.compute(sampNumber, nullptr, synthBuffer.getArrayOfWritePointers());
-        break;
-    }
-
-    //genCtrl.setParamValue("freq", oscFreq);
-    //genSynth.compute(synthBuffer.getNumSamples(), nullptr, synthBuffer.getArrayOfWritePointers());
-
-
-    //PROCESS
-    //-------------------------------------------------------------
-    //Filter with distortion
-    filter.compute(synthBuffer.getNumSamples(), synthBuffer.getArrayOfWritePointers(), synthBuffer.getArrayOfWritePointers());
-
-    //Gain control
-    // otra vez innecesario existiendo buffer.applyGain()
-    synthBuffer.applyGain(1.0);
-
-    //Amp adsr control
-    adsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());
-    //-------------------------------------------------------------
-
-
-    //CLEAR
-    //-------------------------------------------------------------
-
-    for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
-    {
-        outputBuffer.addFrom(channel, startSample, synthBuffer, channel, 0, numSamples);
-
-        if (!adsr.isActive())
-        {
-            clearCurrentNote();
-        }
-
-        //clearCurrentNote();
-    }
-}

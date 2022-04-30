@@ -57,4 +57,4 @@ synth(thisFreq) = (karplusSource : + ~ de.fdelay(ma.SR, del) * kLinearFeed) * no
 };
 
 
-process = synth(freq) * gate * globalGain <: _,_;
+process = synth(freq) * globalGain <: _,_;
