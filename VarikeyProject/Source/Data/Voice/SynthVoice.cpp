@@ -310,10 +310,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     for (int i = 0; i < sampNumber; i++)
     {
-        lfo1Sample = lfo1Mod.getNextSample();
-    }
-    for (int i = 0; i < sampNumber; i++)
-    {
         lfo2Sample = lfo2Mod.getNextSample();
     }
     for (int i = 0; i < sampNumber; i++)
@@ -367,8 +363,17 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //Filter with distortion
     filter.compute(sampNumber, synthData, synthData);
 
-    volLfoCtrl = (lfo1Sample + 1) / 2.2;
-    synthBuffer.applyGain(1.0 - (volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
+
+    for (int i = 0; i < sampNumber; i++)
+    {
+        lfo1Sample = lfo1Mod.getNextSample();
+        volLfoCtrl = (lfo1Sample + 1) / 2.2;
+
+        for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
+        {
+            synthBuffer.applyGain(ch, i, 1, 1.0 - (volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
+        }
+    }
 
 
     //Amp adsr control
