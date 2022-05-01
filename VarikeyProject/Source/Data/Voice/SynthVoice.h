@@ -132,6 +132,10 @@ private:
     //FILTER
     float lopCutoff = 0;
     float lopMid = 0;
+    float hipCutoff = 0;
+    float hipMid = 0;
+    float lopQ;
+    float hipQ;
 
     //CHOICE VARIABLES
     int leftSynthChoice = 0;

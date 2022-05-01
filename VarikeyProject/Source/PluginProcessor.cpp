@@ -284,6 +284,8 @@ void VarikeyProjectAudioProcessor::changeProgramName (int index, const juce::Str
 void VarikeyProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     synth.setCurrentPlaybackSampleRate(sampleRate);
+    filter.init(sampleRate);
+    filter.buildUserInterface(&filtCtrl);
 
     for (int i = 0; i < synth.getNumVoices(); i++)
     {
@@ -431,6 +433,13 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             auto& hipCutoff = *vts.getRawParameterValue("hipCutoff");
             auto& hipQ = *vts.getRawParameterValue("hipQ");
 
+            loCut = lopOnOff.load();
+            loQ = lopQ.load();
+            loSwitch = lopOnOff.load();
+            hiCut = hipCutoff.load();
+            hiQ = hipQ.load();
+            hiSwitch = hipOnOff.load();
+
             //ADSR
             auto& ampAdsrAtt = *vts.getRawParameterValue("ampAdsrAtt");
             auto& ampAdsrDec = *vts.getRawParameterValue("ampAdsrDec");
@@ -442,6 +451,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             auto& modAdsrSus = *vts.getRawParameterValue("modAdsrSus");
             auto& modAdsrRel = *vts.getRawParameterValue("modAdsrRel");
             auto& modAdsrRoute = *vts.getRawParameterValue("modAdsrRoute");
+            modAdsrR = modAdsrRoute.load();
 
             //LFO
             auto& lfo1Freq = *vts.getRawParameterValue("lfo1Freq");
@@ -533,7 +543,17 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
 
     }
-        synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    
+    filtCtrl.setParamValue("lopCutoff", loCut);
+    filtCtrl.setParamValue("lopQ", loQ);
+    filtCtrl.setParamValue("lopOnOff", loSwitch);
+    filtCtrl.setParamValue("hipCutoff", hiCut);
+    filtCtrl.setParamValue("hipQ", hiQ);
+    filtCtrl.setParamValue("hipOnOff", hiSwitch);
+
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+    if ((modAdsrR != 10 || modAdsrR != 11) || (modAdsrR != 12 || modAdsrR != 13))
+        filter.compute(buffer.getNumSamples(), buffer.getArrayOfWritePointers(), buffer.getArrayOfWritePointers());
 }
 
 //==============================================================================

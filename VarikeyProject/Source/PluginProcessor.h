@@ -9,8 +9,12 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <faust/misc.h>
+#include <faust/dsp/dsp.h>
+#include <faust/gui/MapUI.h>
 #include "Data/Voice/SynthVoice.h"
 #include "Data/Voice/SynthSound.h"
+#include"Data/Process/HipLopFilter.h"
 
 //==============================================================================
 /**
@@ -75,7 +79,27 @@ private:
     float lfoDepth = 0;
     float lfoWave = 0;
 
+    float loCut = 0;
+    float loQ = 0;
+    bool loSwitch = false;
+    float hiCut = 0;
+    float hiQ = 0;
+    bool hiSwitch = false;
+    int modAdsrR = 0;
+
+    int lfo1Route = 0;
+    int lfo2Route = 0;
+    int lfo3Route = 0;
+    int lfo4Route = 0;
+    float lfo1Sample = 0;
+    float lfo2Sample = 0;
+    float lfo3Sample = 0;
+    float lfo4Sample = 0;
+
     NoteTuning noteTuning;
+    HipLopFilter filter;
+    MapUI filtCtrl;
+
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VarikeyProjectAudioProcessor)

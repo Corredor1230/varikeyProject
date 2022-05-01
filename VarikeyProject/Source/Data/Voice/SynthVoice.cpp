@@ -222,7 +222,8 @@ void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
     filtCtrl.setParamValue("lopOnOff", isEnabled);
     lopMid = freqToMidi(cutoff);
     lopCutoff = std::fmin(20000, std::fmax(20,
-        (tuningRef.midiToHertz(lopMid + (lfo1Sample * lfo1Depth * 24 * (lfo1Route == 10))))));
+        (tuningRef.midiToHertz(lopMid * modAdsrSample * (modAdsrRoute == 10)))));
+    lopQ = std::fmax(0.1, q * modAdsrSample * (modAdsrRoute == 11));
     filtCtrl.setParamValue("lopCutoff", lopCutoff);
     filtCtrl.setParamValue("lopQ", q);
 }
@@ -230,6 +231,10 @@ void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
 void SynthVoice::updateHipFilter(bool isEnabled, float cutoff, float q)
 {
     filtCtrl.setParamValue("hipOnOff", isEnabled);
+    hipMid = freqToMidi(cutoff);
+    hipCutoff = std::fmin(20000, std::fmax(20,
+        (tuningRef.midiToHertz(hipMid * modAdsrSample * (modAdsrRoute == 12)))));
+    hipQ = std::fmax(0.1, q * modAdsrSample * (modAdsrRoute == 13));
     filtCtrl.setParamValue("hipCutoff", cutoff);
     filtCtrl.setParamValue("hipQ", q);
 }
@@ -437,16 +442,11 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         }
     }
 
-    //for (int i = 0; i < sampNumber; i++)
-    //{
-    //    for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
-    //    {
-    //        synthBuffer.addSample(ch, i, rightBuffer.getSample(ch, i));
-    //    }
-    //}
-
-
-    filter.compute(sampNumber, synthData, synthBuffer.getArrayOfWritePointers());
+    if ((modAdsrRoute == 10
+        || modAdsrRoute == 11)
+        || (modAdsrRoute == 12
+        || modAdsrRoute == 13)) 
+        filter.compute(sampNumber, synthData, synthData);
 
     for (int i = 0; i < sampNumber; i++)
     {
