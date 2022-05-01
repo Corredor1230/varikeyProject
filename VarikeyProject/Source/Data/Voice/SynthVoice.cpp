@@ -32,7 +32,7 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
     genCtrlRight.setParamValue("gate", true);
     additiveCtrlRight.setParamValue("gate", true);
     karpCtrlRight.setParamValue("gate", true);
-    noiseCtrlRight.setParamValue("gate", false);
+    noiseCtrlRight.setParamValue("gate", true);
 
     adsr.noteOn();
     modAdsr.noteOn();
@@ -47,6 +47,7 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
     adsr.noteOff();
     modAdsr.noteOff();
     karpCtrl.setParamValue("gate", false);
+    karpCtrlRight.setParamValue("gate", false);
 
 
     if (!allowTailOff || !adsr.isActive())
@@ -183,6 +184,8 @@ void SynthVoice::updateChoice(int leftChoice, int rightChoice, float synthMix)
     leftSynthChoice = leftChoice;
     rightSynthChoice = rightChoice;
     leftRightMix = synthMix;
+    leftMixGain = ((leftRightMix - 1) / 2) * (-1);
+    rightMixGain = ((leftRightMix + 1) / 2);
 }
 
 
@@ -196,6 +199,22 @@ void SynthVoice::updateLeftFm(float ratio, float depth)
 void SynthVoice::updateRightFm(float ratio, float depth)
 {
 
+}
+
+void SynthVoice::updateLeftDist(float input, float output, bool isOn)
+{
+    leftDistInput = input;
+    leftDistOutput = output;
+    distLeft.updateDistortion(leftDistInput, leftDistOutput);
+    leftDistIsOn = isOn;
+}
+
+void SynthVoice::updateRightDist(float input, float output, bool isOn)
+{
+    rightDistInput = input;
+    rightDistOutput = output;
+    distRight.updateDistortion(rightDistInput, rightDistOutput);
+    rightDistIsOn = isOn;
 }
 
 void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
@@ -295,6 +314,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     // esto aun no me convence XD
     // ando buscando soluciones para esto
     synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
+    rightBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     int sampNumber = synthBuffer.getNumSamples();
 
     //We need to include our modAdsr in the buffer for it to work
@@ -302,6 +322,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     modAdsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);
     modAdsrSample = modAdsr.getNextSample();
     synthBuffer.clear();
+    rightBuffer.clear();
 
     for (int i = 0; i < sampNumber; i++)
     {
@@ -334,6 +355,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //-------------------------------------------------------------
 
     float** synthData = synthBuffer.getArrayOfWritePointers();
+    float** rightData = rightBuffer.getArrayOfWritePointers();
 
     //OSCILLATORS
     //-------------------------------------------------------------
@@ -358,11 +380,73 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         break;
     }
 
+    switch (rightSynthChoice)
+    {
+    case 0:
+        genCtrlRight.setParamValue("freq", oscFreq);
+        genSynthRight.compute(sampNumber, nullptr, rightData);
+        break;
+    case 1:
+        additiveCtrlRight.setParamValue("freq", oscFreq);
+        additiveSynthRight.compute(sampNumber, nullptr, rightData);
+        break;
+    case 2:
+        karpCtrlRight.setParamValue("freq", oscFreq);
+        karplusSynthRight.compute(sampNumber, nullptr, rightData);
+        break;
+    case 3:
+        noiseCtrlRight.setParamValue("freq", oscFreq);
+        noiseSynthRight.compute(sampNumber, nullptr, rightData);
+        break;
+    }
+
     //PROCESS
     //-------------------------------------------------------------
     //Filter with distortion
-    filter.compute(sampNumber, synthData, synthData);
 
+    if (leftDistIsOn)
+    {
+        for (int i = 0; i < sampNumber; i++)
+        {
+            for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
+            {
+                distLeft.process(synthBuffer, ch, i);
+            }
+        }
+    }
+
+
+    if (rightDistIsOn)
+    {
+        for (int i = 0; i < sampNumber; i++)
+        {
+            for (int ch = 0; ch < rightBuffer.getNumChannels(); ch++)
+            {
+                distRight.process(rightBuffer, ch, i);
+            }
+        }
+    }
+
+    for (int i = 0; i < sampNumber; i++)
+    {
+        for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
+        {
+            synthBuffer.applyGain(ch, i, 1, leftMixGain);
+            rightBuffer.applyGain(ch, i, 1, rightMixGain);
+            synthBuffer.addSample(ch, i, rightBuffer.getSample(ch, i));
+        }
+    }
+
+    //for (int i = 0; i < sampNumber; i++)
+    //{
+    //    for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
+    //    {
+    //        synthBuffer.addSample(ch, i, rightBuffer.getSample(ch, i));
+    //    }
+    //}
+
+
+    filter.compute(sampNumber, synthData, synthBuffer.getArrayOfWritePointers());
 
     for (int i = 0; i < sampNumber; i++)
     {
@@ -374,7 +458,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
             synthBuffer.applyGain(ch, i, 1, 1.0 - (volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
         }
     }
-
 
     //Amp adsr control
     adsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);

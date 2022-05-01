@@ -23,6 +23,7 @@
 #include "../Source/Data/Synth/Generator.h"
 #include "../Source/Data/Synth/Karplus.h"
 #include "../Source/Data/Synth/NoiseSynth.h"
+#include "../Source/Data/Process/Distortion.h"
 
 //class myVector {
 //    int numElements;
@@ -66,6 +67,8 @@ public:
 
     //Process updaters
     void updateLeftFm(float ratio, float depth);
+    void updateLeftDist(float input, float output, bool isOn);
+    void updateRightDist(float input, float output, bool isOn);
     void updateRightFm(float ratio, float depth);
     void updateLopFilter(bool isEnabled, float cutoff, float q);
     void updateHipFilter(bool isEnabled, float cutoff, float q);
@@ -103,6 +106,8 @@ private:
 
     Oscillator fmLeft;
     Oscillator fmRight;
+    Distortion distLeft;
+    Distortion distRight;
 
     HipLopFilter filter;
     MapUI filtCtrl;
@@ -117,6 +122,7 @@ private:
 
 
     juce::AudioBuffer<float> synthBuffer;
+    juce::AudioBuffer<float> rightBuffer;
 
     NoteTuning& tuningRef;
     juce::AudioProcessorValueTreeState& vts;
@@ -132,12 +138,22 @@ private:
     int rightSynthChoice = 1;
 
     float leftRightMix = -1.f;
+    float leftMixGain = 1.f;
+    float rightMixGain = 1.f;
 
     //FM VARIABLES
     float leftFmRatio = 1.f;
     float leftFmDepth = 0.f;
     float rightFmRatio = 1.f;
     float rightFmDepth = 0.f;
+
+    //DIST
+    float leftDistInput = 0.f;
+    float leftDistOutput = 0.f;
+    float rightDistInput = 0.f;
+    float rightDistOutput = 0.f;
+    bool leftDistIsOn = false;
+    bool rightDistIsOn = false;
 
     //LFO
     float lfo1Freq = 0.0f;

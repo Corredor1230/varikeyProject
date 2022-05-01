@@ -23,6 +23,7 @@
 #include "UI/Process/ModAdsrComponent.h"
 #include "UI/Process/LfoComponent.h"
 #include "UI/Global/PitchwheelComponent.h"
+#include "UI/Process/DistComponent.h"
 
 //==============================================================================
 /**
@@ -82,6 +83,8 @@ private:
 
     juce::ComboBox leftOscChoice;
     juce::ComboBox rightOscChoice;
+    juce::Slider crossSlider;
+    juce::Label crossLabel;
 
 
     int leftOscValue = 1;
@@ -102,8 +105,8 @@ private:
     //FM Row
     FmComponent fmLeft;
     FmComponent fmRight;
-    juce::Slider crossSlider;
-    juce::Label crossLabel;
+    DistComponent distLeft;
+    DistComponent distRight;
 
     //Second Row
     FilterComponent filters;
@@ -123,5 +126,6 @@ private:
 
     juce::AudioProcessorValueTreeState::ComboBoxAttachment leftOscAttachment;
     juce::AudioProcessorValueTreeState::ComboBoxAttachment rightOscAttachment;
+    juce::AudioProcessorValueTreeState::SliderAttachment mixAttachment;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VarikeyProjectAudioProcessorEditor)
 };

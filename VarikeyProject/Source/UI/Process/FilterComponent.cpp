@@ -40,9 +40,6 @@ FilterComponent::FilterComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     lopToggleLabel.setText("On/Off", juce::sendNotification);
     hipToggleLabel.setText("On/Off", juce::sendNotification);
 
-    lopToggle.setToggleState(true, juce::sendNotification);
-    hipToggle.setToggleState(false, juce::sendNotification);
-
     hipCutoffSlider.setSkewFactorFromMidPoint(1000.0f);
     setSliderParams(lopQSlider, lopQLabel, "Q", rotary);
     lopQSlider.setRange(1.0f, 10.0f, 0.1f);

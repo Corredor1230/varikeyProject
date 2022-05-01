@@ -20,9 +20,6 @@ public:
     Oscillator() {};
     void init(float sampleRate);
     void setFreq(float freq);
-    // q se supone q hace el forcedinline?
-    // esto es un macro q no es soportado por todos los compiladores y solo funciona como imagino q crees q funciona si la declaración está ahí mismo
-    //forcedinline 
     void updateAngle() noexcept;
     float getNextSample();
     void updateLfo(float waveValue, float depth);

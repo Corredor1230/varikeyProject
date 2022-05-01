@@ -10,13 +10,14 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor (VarikeyProjectAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyProjectAudioProcessor& p)
+    : AudioProcessorEditor(&p), audioProcessor(p)
     , filters(audioProcessor.vts)
     , genLeft(audioProcessor.vts, "leftGenShape", "leftGenNoiseLevel", "leftGenNoiseShape")
     , genRight(audioProcessor.vts, "rightGenShape", "rightGenNoiseLevel", "rightGenNoiseShape")
     , leftOscAttachment(audioProcessor.vts, "leftSynthChoice", leftOscChoice)
     , rightOscAttachment(audioProcessor.vts, "rightSynthChoice", rightOscChoice)
+    , mixAttachment(audioProcessor.vts, "synthMix", crossSlider)
     , additiveLeft(audioProcessor.vts, leftAdditiveIDs)
     , additiveRight(audioProcessor.vts, rightAdditiveIDs)
     , karpLeft(audioProcessor.vts, "leftKarpAtt", "leftKarpRel", "leftKarpFb", "leftKarpNoise")
@@ -26,6 +27,8 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor (VarikeyP
     , ampAdsr(audioProcessor.vts)
     , fmLeft(audioProcessor.vts, "leftFmRatio", "leftFmDepth")
     , fmRight(audioProcessor.vts, "rightFmRatio", "rightFmDepth")
+    , distLeft(audioProcessor.vts, "leftDistInput", "leftDistOutput", "leftDistOnOff")
+    , distRight(audioProcessor.vts, "rightDistInput", "rightDistOutput", "rightDistOnOff")
     , lfo1(audioProcessor.vts, "lfo1Freq", "lfo2Freq", "lfo1Depth", 
         "lfo2Depth", "lfo1Shape", "lfo2Shape", "lfo1Route", "lfo2Route")
     , lfo2(audioProcessor.vts, "lfo3Freq", "lfo4Freq", "lfo3Depth", 
@@ -55,6 +58,9 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor (VarikeyP
 
     addAndMakeVisible(fmLeft);
     addAndMakeVisible(fmRight);
+    addAndMakeVisible(distLeft);
+    addAndMakeVisible(distRight);
+
     addAndMakeVisible(crossSlider);
     addAndMakeVisible(crossLabel);
 
@@ -112,6 +118,8 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor (VarikeyP
     noiseRight.setCustomLookAndFeel(&varikeyLookAndFeel);
     fmLeft.setCustomLookAndFeel(&varikeyLookAndFeel);
     fmRight.setCustomLookAndFeel(&varikeyLookAndFeel);
+    distLeft.setCustomLookAndFeel(&varikeyLookAndFeel);
+    distRight.setCustomLookAndFeel(&varikeyLookAndFeel);
     filters.setCustomLookAndFeel(&varikeyLookAndFeel);
     ampAdsr.setCustomLookAndFeel(&varikeyLookAndFeel);
     modAdsr.setCustomLookAndFeel(&varikeyLookAndFeel);
@@ -136,6 +144,8 @@ VarikeyProjectAudioProcessorEditor::~VarikeyProjectAudioProcessorEditor()
     noiseRight.setCustomLookAndFeel(nullptr);
     fmLeft.setCustomLookAndFeel(nullptr);
     fmRight.setCustomLookAndFeel(nullptr);
+    distLeft.setCustomLookAndFeel(nullptr);
+    distRight.setCustomLookAndFeel(nullptr);
     filters.setCustomLookAndFeel(nullptr);
     ampAdsr.setCustomLookAndFeel(nullptr);
     modAdsr.setCustomLookAndFeel(nullptr);
@@ -287,8 +297,8 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
         break;
     }
 
-    fmLeft.setBounds(firstRowStartX, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
-    fmRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
+    distLeft.setBounds(firstRowStartX, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
+    distRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
     crossSlider.setBounds(firstColumnWidth, crossLabel.getBottom(), secondColumnWidth, crossHeight);
     crossLabel.setBounds(labelStartX, firstRowHeight, labelWidth, labelHeight);
 
