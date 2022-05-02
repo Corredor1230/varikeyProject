@@ -221,11 +221,14 @@ void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
 {
     filtCtrl.setParamValue("lopOnOff", isEnabled);
     lopMid = freqToMidi(cutoff);
-    lopCutoff = std::fmin(20000, std::fmax(20,
-        (tuningRef.midiToHertz(lopMid * modAdsrSample * (modAdsrRoute == 10)))));
+    lopCutoff = std::fmin(20000, 
+        std::fmax(100,
+        (tuningRef.midiToHertz(lopMid * (modAdsrSample * 0.5 + 0.5) * (modAdsrRoute == 10)))));
     lopQ = std::fmax(0.1, q * modAdsrSample * (modAdsrRoute == 11));
     filtCtrl.setParamValue("lopCutoff", lopCutoff);
     filtCtrl.setParamValue("lopQ", q);
+    filtCoefs.makeLowPass(getSampleRate(), lopCutoff, q);
+    juceFilt.setCoefficients(filtCoefs);
 }
 
 void SynthVoice::updateHipFilter(bool isEnabled, float cutoff, float q)
@@ -292,7 +295,7 @@ void SynthVoice::updateLfo4(float freq, float depth, float shape, int route)
     lfo4Mod.updateLfo(shape, depth);
 }
 
-void SynthVoice::updateGlobal(float detune, float vibFreq, float vibDepth, float volume)
+void SynthVoice::updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter)
 {
     synthDetune = detune;
     vibrato.setFreq(vibFreq);
@@ -300,6 +303,7 @@ void SynthVoice::updateGlobal(float detune, float vibFreq, float vibDepth, float
     vibratoDepth = vibDepth;
     dbVolume = volume;
     linVolume = juce::Decibels::decibelsToGain(volume, -60.f);
+    isGlobalFilter ? isVoiceFilt = false : isVoiceFilt = true;
 }
 
 void SynthVoice::updateTuner(std::array<float, 12> tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter)
@@ -442,11 +446,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         }
     }
 
-    if ((modAdsrRoute == 10
-        || modAdsrRoute == 11)
-        || (modAdsrRoute == 12
-        || modAdsrRoute == 13)) 
-        filter.compute(sampNumber, synthData, synthData);
 
     for (int i = 0; i < sampNumber; i++)
     {
@@ -458,6 +457,8 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
             synthBuffer.applyGain(ch, i, 1, 1.0 - (volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
         }
     }
+
+    //if (isVoiceFilt) filter.compute(sampNumber, synthData, synthData);
 
     //Amp adsr control
     adsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);

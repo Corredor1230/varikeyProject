@@ -78,7 +78,7 @@ public:
     void updateLfo2(float freq, float depth, float shape, int route);
     void updateLfo3(float freq, float depth, float shape, int route);
     void updateLfo4(float freq, float depth, float shape, int route);
-    void updateGlobal(float detune, float vibFreq, float vibDepth, float volume);
+    void updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter);
     void updateTuner(std::array<float, 12> tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
     float freqToMidi(float freq);
 
@@ -110,6 +110,8 @@ private:
     Distortion distRight;
 
     HipLopFilter filter;
+    juce::IIRFilter juceFilt;
+    juce::IIRCoefficients filtCoefs;
     MapUI filtCtrl;
 
     AdsrData adsr;
@@ -190,6 +192,7 @@ private:
     float dbVolume = -20;
     float linVolume = 0.7;
     float volLfoCtrl = 0;
+    bool isVoiceFilt = false;
 
     //Local
 

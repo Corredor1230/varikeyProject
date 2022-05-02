@@ -433,7 +433,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             auto& hipCutoff = *vts.getRawParameterValue("hipCutoff");
             auto& hipQ = *vts.getRawParameterValue("hipQ");
 
-            loCut = lopOnOff.load();
+            loCut = lopCutoff.load();
             loQ = lopQ.load();
             loSwitch = lopOnOff.load();
             hiCut = hipCutoff.load();
@@ -535,7 +535,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateLfo2(lfo2Freq.load(), lfo2Depth.load(), lfo2Shape.load(), lfo2Route.load());
             voice->updateLfo3(lfo3Freq.load(), lfo3Depth.load(), lfo3Shape.load(), lfo3Route.load());
             voice->updateLfo4(lfo4Freq.load(), lfo4Depth.load(), lfo4Shape.load(), lfo4Route.load());
-            voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load());
+            voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load(), isGlobalFilter(modAdsrR));
             voice->updateTuner(tuningArray, bassControlsTuning.load(), keyboardBreak.load(), scaleCenter.load());
 
 
@@ -552,8 +552,8 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
     filtCtrl.setParamValue("hipOnOff", hiSwitch);
 
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-    if ((modAdsrR != 10 || modAdsrR != 11) || (modAdsrR != 12 || modAdsrR != 13))
-        filter.compute(buffer.getNumSamples(), buffer.getArrayOfWritePointers(), buffer.getArrayOfWritePointers());
+    if(isGlobalFilter(modAdsrR))
+    filter.compute(buffer.getNumSamples(), buffer.getArrayOfWritePointers(), buffer.getArrayOfWritePointers());
 }
 
 //==============================================================================
@@ -592,6 +592,23 @@ void VarikeyProjectAudioProcessor::createIntParameter(std::vector<std::unique_pt
     const juce::String& paramID, const juce::String& paramName, int minVal, int maxVal, int defaultVal)
 {
     params.push_back(std::make_unique<juce::AudioParameterInt>(paramID, paramName, minVal, maxVal, defaultVal));
+}
+
+bool VarikeyProjectAudioProcessor::isGlobalFilter(int modAdsrRoute)
+{
+    switch (modAdsrRoute)
+    {
+    case 10:
+        return false;
+    case 11:
+        return false;
+    case 12:
+        return false;
+    case 13:
+        return false;
+    default:
+        return true;
+    }
 }
 
 //==============================================================================

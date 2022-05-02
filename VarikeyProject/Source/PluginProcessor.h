@@ -66,6 +66,8 @@ public:
     void createIntParameter(std::vector<std::unique_ptr<juce::RangedAudioParameter>>& params,
         const juce::String& paramID, const juce::String& paramName, int minVal, int maxVal, int defaultVal);
 
+    bool isGlobalFilter(int modAdsrRoute);
+
 private:
 
 
