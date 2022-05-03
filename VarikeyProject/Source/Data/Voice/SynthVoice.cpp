@@ -105,12 +105,18 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
     filter.init(sampleRate);
     filter.buildUserInterface(&filtCtrl);
 
-
+    juce::dsp::ProcessSpec spec;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.sampleRate = sampleRate;
+    spec.numChannels = outputChannels;
+    juceLopFilt.prepare(spec);
+    juceLopFilt.setType(juce::dsp::StateVariableTPTFilterType::lowpass);
+    juceHipFilt.prepare(spec);
+    juceHipFilt.setType(juce::dsp::StateVariableTPTFilterType::highpass);
 
     adsr.setSampleRate(sampleRate);
     modAdsr.setSampleRate(sampleRate);
     lfo1Mod.init(sampleRate);
-
 
 }
 
@@ -219,25 +225,28 @@ void SynthVoice::updateRightDist(float input, float output, bool isOn)
 
 void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
 {
+    lopEnabled = isEnabled;
     filtCtrl.setParamValue("lopOnOff", isEnabled);
     lopMid = freqToMidi(cutoff);
-    lopCutoff = std::fmin(20000, 
+    //modAdsrSample = modAdsr.getNextSample();
+    lopCutoff = std::fmin(20000,
         std::fmax(100,
-        (tuningRef.midiToHertz(lopMid * (modAdsrSample * 0.5 + 0.5) * (modAdsrRoute == 10)))));
-    lopQ = std::fmax(0.1, q * modAdsrSample * (modAdsrRoute == 11));
+            (tuningRef.midiToHertz(lopMid * (modAdsrSample * 0.5 + 0.5) * (modAdsrRoute == 10)))));
+    (modAdsrRoute == 11) ? updateQ = std::fmax(0.1, q * modAdsrSample) : updateQ = q;
+    juceLopFilt.setCutoffFrequency(lopCutoff);
+    juceLopFilt.setResonance(updateQ);
     filtCtrl.setParamValue("lopCutoff", lopCutoff);
     filtCtrl.setParamValue("lopQ", q);
-    filtCoefs.makeLowPass(getSampleRate(), lopCutoff, q);
-    juceFilt.setCoefficients(filtCoefs);
 }
 
 void SynthVoice::updateHipFilter(bool isEnabled, float cutoff, float q)
 {
+    hipEnabled = isEnabled;
     filtCtrl.setParamValue("hipOnOff", isEnabled);
     hipMid = freqToMidi(cutoff);
     hipCutoff = std::fmin(20000, std::fmax(20,
-        (tuningRef.midiToHertz(hipMid * modAdsrSample * (modAdsrRoute == 12)))));
-    hipQ = std::fmax(0.1, q * modAdsrSample * (modAdsrRoute == 13));
+        (tuningRef.midiToHertz(hipMid * (modAdsrSample * 0.5 + 0.5) * (modAdsrRoute == 12)))));
+    (modAdsrRoute == 13) ? updateHipQ = std::fmax(0.1, q * modAdsrSample) : updateHipQ = q;
     filtCtrl.setParamValue("hipCutoff", cutoff);
     filtCtrl.setParamValue("hipQ", q);
 }
@@ -324,12 +333,13 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     // ando buscando soluciones para esto
     synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     rightBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
+    adsrBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
+
     int sampNumber = synthBuffer.getNumSamples();
 
     //We need to include our modAdsr in the buffer for it to work
     //but at this stage of the buffer, it does no processing!
-    modAdsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);
-    modAdsrSample = modAdsr.getNextSample();
+
     synthBuffer.clear();
     rightBuffer.clear();
 
@@ -365,6 +375,9 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     float** synthData = synthBuffer.getArrayOfWritePointers();
     float** rightData = rightBuffer.getArrayOfWritePointers();
+
+    auto audioBlock = juce::dsp::AudioBlock<float> {synthBuffer};
+    auto context = juce::dsp::ProcessContextReplacing<float>(audioBlock);
 
     //OSCILLATORS
     //-------------------------------------------------------------
@@ -457,6 +470,23 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
             synthBuffer.applyGain(ch, i, 1, 1.0 - (volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
         }
     }
+
+    modAdsr.applyEnvelopeToBuffer(adsrBuffer, 0, sampNumber);
+
+    if (isVoiceFilt)
+    {
+        for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
+        {
+            for (int samp = 0; samp < sampNumber; samp++)
+            {
+                modAdsrSample = modAdsr.getNextSample();
+            }
+        }
+        if (lopEnabled) juceLopFilt.process(context);
+        if (hipEnabled) juceHipFilt.process(context);
+    }
+
+
 
     //if (isVoiceFilt) filter.compute(sampNumber, synthData, synthData);
 

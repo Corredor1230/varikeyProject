@@ -110,8 +110,10 @@ private:
     Distortion distRight;
 
     HipLopFilter filter;
-    juce::IIRFilter juceFilt;
-    juce::IIRCoefficients filtCoefs;
+    juce::dsp::StateVariableTPTFilter<float> juceLopFilt;
+    juce::dsp::StateVariableTPTFilter<float> juceHipFilt;
+    bool lopEnabled = false;
+    bool hipEnabled = false;
     MapUI filtCtrl;
 
     AdsrData adsr;
@@ -125,6 +127,7 @@ private:
 
     juce::AudioBuffer<float> synthBuffer;
     juce::AudioBuffer<float> rightBuffer;
+    juce::AudioBuffer<float> adsrBuffer;
 
     NoteTuning& tuningRef;
     juce::AudioProcessorValueTreeState& vts;
@@ -136,8 +139,10 @@ private:
     float lopMid = 0;
     float hipCutoff = 0;
     float hipMid = 0;
-    float lopQ;
-    float hipQ;
+    float lopQ = 0.1;
+    float hipQ = 0.1;
+    float updateQ = 0.1;
+    float updateHipQ = 0.1;
 
     //CHOICE VARIABLES
     int leftSynthChoice = 0;
