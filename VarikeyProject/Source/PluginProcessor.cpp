@@ -45,8 +45,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         "gen1Noise", "gen2Noise",
         "noise1Tone", "noise2Tone",
         "mix",
-        "fm1Ratio", "fm1Depth",
-        "fm2Ratio", "fm2Depth",
+        "distInLeft", "distOutLeft",
+        "distInRight", "distOutRight",
         "lopCutoff", "lopQ",
         "hipCutoff", "hipQ",
         "detune", "vibFreq", "vibDepth",
@@ -107,18 +107,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         //Right
         createFloatParameter(params, "rightNoiseTone", "Noise Tone 2", 0.0f, 1.0f, 0.001f, 1.0f);
 
-    //FM MOD
+    //DISTORTION
         //Left
-        createFloatParameter(params, "leftFmRatio", "FM Ratio 1", 0.0f, 8.0f, 0.1, 1.0f);
-        createFloatParameter(params, "leftFmDepth", "FM Depth 1", 0.0f, 24.0f, 0.1f, 0.0f);
 
         createFloatParameter(params, "leftDistInput", "Input", 0.0f, 100.0f, 0.1f, 1.0f, 0.5);
         createFloatParameter(params, "leftDistOutput", "Output", 0.0f, 1.0f, 0.01f, 1.0f, 0.7);
         params.push_back(std::make_unique<juce::AudioParameterBool>("leftDistOnOff", "On/Off", false));
 
         //Right
-        createFloatParameter(params, "rightFmRatio", "FM Ratio 2", 0.0f, 8.0f, 0.1, 1.0f);
-        createFloatParameter(params, "rightFmDepth", "FM Depth 2", 0.0f, 24.0f, 0.1f, 0.0f);
 
         createFloatParameter(params, "rightDistInput", "Input", 0.0f, 10.0f, 0.1f, 1.0f, 0.5);
         createFloatParameter(params, "rightDistOutput", "Output", 0.0f, 1.0f, 0.01f, 1.0f, 0.7);
@@ -407,15 +403,11 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             auto& leftNoiseTone = *vts.getRawParameterValue("leftNoiseTone");
             auto& rightNoiseTone = *vts.getRawParameterValue("rightNoiseTone");
 
-            //FM
-            auto& leftFmRatio = *vts.getRawParameterValue("leftFmRatio");
-            auto& leftFmDepth = *vts.getRawParameterValue("leftFmDepth");
+            //DIST
             auto& leftDistInput = *vts.getRawParameterValue("leftDistInput");
             auto& leftDistOutput = *vts.getRawParameterValue("leftDistOutput");
             auto& leftDistOnOff = *vts.getRawParameterValue("leftDistOnOff");
 
-            auto& rightFmRatio = *vts.getRawParameterValue("rightFmRatio");
-            auto& rightFmDepth = *vts.getRawParameterValue("rightFmDepth");
             auto& rightDistInput = *vts.getRawParameterValue("rightDistInput");
             auto& rightDistOutput = *vts.getRawParameterValue("rightDistOutput");
             auto& rightDistOnOff = *vts.getRawParameterValue("rightDistOnOff");
@@ -523,8 +515,6 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateRightNoise(rightNoiseTone.load());
             voice->updateChoice(leftSynthChoice.load(), rightSynthChoice.load(), synthMix.load());
 
-            voice->updateLeftFm(leftFmRatio.load(), leftFmDepth.load());
-            voice->updateRightFm(rightFmRatio.load(), rightFmDepth.load());
             voice->updateLeftDist(leftDistInput.load(), leftDistOutput.load(), leftDistOnOff.load());
             voice->updateRightDist(rightDistInput.load(), rightDistOutput.load(), rightDistOnOff.load());
             voice->updateLopFilter(lopOnOff.load(), lopCutoff.load(), lopQ.load());

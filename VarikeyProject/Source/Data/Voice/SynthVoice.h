@@ -66,10 +66,8 @@ public:
     void updateChoice(int leftChoice, int rightChoice, float synthMix);
 
     //Process updaters
-    void updateLeftFm(float ratio, float depth);
     void updateLeftDist(float input, float output, bool isOn);
     void updateRightDist(float input, float output, bool isOn);
-    void updateRightFm(float ratio, float depth);
     void updateLopFilter(bool isEnabled, float cutoff, float q);
     void updateHipFilter(bool isEnabled, float cutoff, float q);
     void updateAmpAdsr(float attack, float decay, float sustain, float release);
@@ -104,8 +102,6 @@ private:
     MapUI noiseCtrl;
     MapUI noiseCtrlRight;
 
-    Oscillator fmLeft;
-    Oscillator fmRight;
     Distortion distLeft;
     Distortion distRight;
 
@@ -151,12 +147,6 @@ private:
     float leftRightMix = -1.f;
     float leftMixGain = 1.f;
     float rightMixGain = 1.f;
-
-    //FM VARIABLES
-    float leftFmRatio = 1.f;
-    float leftFmDepth = 0.f;
-    float rightFmRatio = 1.f;
-    float rightFmDepth = 0.f;
 
     //DIST
     float leftDistInput = 0.f;
@@ -204,7 +194,6 @@ private:
     //Process samples
     float synthStartSample = 0;
     float vibratoSample = 0;
-    float fmLeftSample = 0;
     float modAdsrSample = 0;
     float lfo1Sample = 0;
     float lfo2Sample = 0;
@@ -217,7 +206,6 @@ private:
     float processedMidi = 0;
     float oscMidi = 0;
     float oscFreq = 0;
-    float leftFmFreq = 0;
 
     float tempVelocity = 0;
     float finalGain = 0;

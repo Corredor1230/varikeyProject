@@ -94,8 +94,7 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
     karplusSynthRight.init(sampleRate);
     karplusSynthRight.buildUserInterface(&karpCtrlRight);
 
-    fmLeft.init(sampleRate);
-    fmRight.init(sampleRate);
+
     lfo1Mod.init(sampleRate);
     lfo2Mod.init(sampleRate);
     lfo3Mod.init(sampleRate);
@@ -192,19 +191,6 @@ void SynthVoice::updateChoice(int leftChoice, int rightChoice, float synthMix)
     leftRightMix = synthMix;
     leftMixGain = ((leftRightMix - 1) / 2) * (-1);
     rightMixGain = ((leftRightMix + 1) / 2);
-}
-
-
-
-void SynthVoice::updateLeftFm(float ratio, float depth)
-{
-    leftFmRatio = ratio;
-    leftFmDepth = depth;
-}
-
-void SynthVoice::updateRightFm(float ratio, float depth)
-{
-
 }
 
 void SynthVoice::updateLeftDist(float input, float output, bool isOn)
