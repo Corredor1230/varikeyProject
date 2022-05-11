@@ -187,7 +187,9 @@ private:
     float dbVolume = -20;
     float linVolume = 0.7;
     float volLfoCtrl = 0;
+    float volNormalize = 1.5;
     bool isVoiceFilt = false;
+
 
     //Local
 

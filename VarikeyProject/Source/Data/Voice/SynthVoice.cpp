@@ -453,7 +453,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
         for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
         {
-            synthBuffer.applyGain(ch, i, 1, 1.0 - (volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
+            synthBuffer.applyGain(ch, i, 1, volNormalize - (volNormalize * volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
         }
     }
 
