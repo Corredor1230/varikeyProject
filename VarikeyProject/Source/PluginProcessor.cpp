@@ -282,6 +282,10 @@ void VarikeyProjectAudioProcessor::prepareToPlay (double sampleRate, int samples
     synth.setCurrentPlaybackSampleRate(sampleRate);
     filter.init(sampleRate);
     filter.buildUserInterface(&filtCtrl);
+    lfo1Mod.init(sampleRate);
+    lfo2Mod.init(sampleRate);
+    lfo3Mod.init(sampleRate);
+    lfo4Mod.init(sampleRate);
 
     for (int i = 0; i < synth.getNumVoices(); i++)
     {
@@ -369,7 +373,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             additiveLeft[6] = additiveLeft6.load();
             additiveLeft[7] = additiveLeft7.load();
 
-
+            
             auto& additiveRight0 = *vts.getRawParameterValue("additiveRight0");
             auto& additiveRight1 = *vts.getRawParameterValue("additiveRight1");
             auto& additiveRight2 = *vts.getRawParameterValue("additiveRight2");
@@ -432,6 +436,8 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             hiQ = hipQ.load();
             hiSwitch = hipOnOff.load();
 
+
+
             //ADSR
             auto& ampAdsrAtt = *vts.getRawParameterValue("ampAdsrAtt");
             auto& ampAdsrDec = *vts.getRawParameterValue("ampAdsrDec");
@@ -465,6 +471,26 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             auto& lfo4Depth = *vts.getRawParameterValue("lfo4Depth");
             auto& lfo4Shape = *vts.getRawParameterValue("lfo4Shape");
             auto& lfo4Route = *vts.getRawParameterValue("lfo4Route");
+
+            lfo1FreqCtrl = lfo1Freq.load();
+            lfo1DepthCtrl = lfo1Depth.load();
+            lfo1WaveCtrl = lfo1Shape.load();
+            lfo1RouteCtrl = lfo1Route.load();
+
+            lfo2FreqCtrl = lfo2Freq.load();
+            lfo2DepthCtrl = lfo2Depth.load();
+            lfo2WaveCtrl = lfo2Shape.load();
+            lfo2RouteCtrl = lfo2Route.load();
+
+            lfo3FreqCtrl = lfo3Freq.load();
+            lfo3DepthCtrl = lfo3Depth.load();
+            lfo3WaveCtrl = lfo3Shape.load();
+            lfo3RouteCtrl = lfo3Route.load();
+
+            lfo4FreqCtrl = lfo4Freq.load();
+            lfo4DepthCtrl = lfo4Depth.load();
+            lfo4WaveCtrl = lfo4Shape.load();
+            lfo4RouteCtrl = lfo4Route.load();
 
             //GLOBAL
             auto& detune = *vts.getRawParameterValue("detune");
@@ -544,6 +570,9 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     if(isGlobalFilter(modAdsrR))
     filter.compute(buffer.getNumSamples(), buffer.getArrayOfWritePointers(), buffer.getArrayOfWritePointers());
+
+
+
 }
 
 //==============================================================================
@@ -599,6 +628,10 @@ bool VarikeyProjectAudioProcessor::isGlobalFilter(int modAdsrRoute)
     default:
         return true;
     }
+}
+
+bool VarikeyProjectAudioProcessor::hasTremolo(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route)
+{
 }
 
 //==============================================================================

@@ -25,8 +25,6 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     , noiseLeft(audioProcessor.vts, "leftNoiseTone")
     , noiseRight(audioProcessor.vts, "rightNoiseTone")
     , ampAdsr(audioProcessor.vts)
-    , fmLeft(audioProcessor.vts, "leftFmRatio", "leftFmDepth")
-    , fmRight(audioProcessor.vts, "rightFmRatio", "rightFmDepth")
     , distLeft(audioProcessor.vts, "leftDistInput", "leftDistOutput", "leftDistOnOff")
     , distRight(audioProcessor.vts, "rightDistInput", "rightDistOutput", "rightDistOnOff")
     , lfo1(audioProcessor.vts, "lfo1Freq", "lfo2Freq", "lfo1Depth", 
@@ -56,8 +54,6 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     addAndMakeVisible(leftOscChoice);
     addAndMakeVisible(rightOscChoice);
 
-    addAndMakeVisible(fmLeft);
-    addAndMakeVisible(fmRight);
     addAndMakeVisible(distLeft);
     addAndMakeVisible(distRight);
 
@@ -116,8 +112,6 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     karpRight.setCustomLookAndFeel(&varikeyLookAndFeel);
     noiseLeft.setCustomLookAndFeel(&varikeyLookAndFeel);
     noiseRight.setCustomLookAndFeel(&varikeyLookAndFeel);
-    fmLeft.setCustomLookAndFeel(&varikeyLookAndFeel);
-    fmRight.setCustomLookAndFeel(&varikeyLookAndFeel);
     distLeft.setCustomLookAndFeel(&varikeyLookAndFeel);
     distRight.setCustomLookAndFeel(&varikeyLookAndFeel);
     filters.setCustomLookAndFeel(&varikeyLookAndFeel);
@@ -142,8 +136,6 @@ VarikeyProjectAudioProcessorEditor::~VarikeyProjectAudioProcessorEditor()
     karpRight.setCustomLookAndFeel(nullptr);
     noiseLeft.setCustomLookAndFeel(nullptr);
     noiseRight.setCustomLookAndFeel(nullptr);
-    fmLeft.setCustomLookAndFeel(nullptr);
-    fmRight.setCustomLookAndFeel(nullptr);
     distLeft.setCustomLookAndFeel(nullptr);
     distRight.setCustomLookAndFeel(nullptr);
     filters.setCustomLookAndFeel(nullptr);

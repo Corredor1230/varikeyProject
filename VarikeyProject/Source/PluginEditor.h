@@ -103,8 +103,6 @@ private:
     NoiseComponent noiseRight;
 
     //FM Row
-    FmComponent fmLeft;
-    FmComponent fmRight;
     DistComponent distLeft;
     DistComponent distRight;
 

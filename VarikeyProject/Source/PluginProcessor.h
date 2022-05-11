@@ -15,6 +15,7 @@
 #include "Data/Voice/SynthVoice.h"
 #include "Data/Voice/SynthSound.h"
 #include"Data/Process/HipLopFilter.h"
+#include "Data/Process/Oscillator.h"
 
 //==============================================================================
 /**
@@ -67,6 +68,7 @@ public:
         const juce::String& paramID, const juce::String& paramName, int minVal, int maxVal, int defaultVal);
 
     bool isGlobalFilter(int modAdsrRoute);
+    bool hasTremolo(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route);
 
 private:
 
@@ -77,9 +79,26 @@ private:
     std::array<float, 12> tuning;
     std::array<int, 5> integers;
 
-    float lfoFreq = 0;
-    float lfoDepth = 0;
-    float lfoWave = 0;
+    float lfo1FreqCtrl = 0;
+    float lfo1DepthCtrl = 0;
+    float lfo1WaveCtrl = 0;
+    
+    float lfo2FreqCtrl = 0;
+    float lfo2DepthCtrl = 0;
+    float lfo2WaveCtrl = 0;
+
+    float lfo3FreqCtrl = 0;
+    float lfo3DepthCtrl = 0;
+    float lfo3WaveCtrl = 0;
+
+    float lfo4FreqCtrl = 0;
+    float lfo4DepthCtrl = 0;
+    float lfo4WaveCtrl = 0;
+
+    int lfo1RouteCtrl = 0;
+    int lfo2RouteCtrl = 0;
+    int lfo3RouteCtrl = 0;
+    int lfo4RouteCtrl = 0;
 
     float loCut = 0;
     float loQ = 0;
@@ -89,10 +108,6 @@ private:
     bool hiSwitch = false;
     int modAdsrR = 0;
 
-    int lfo1Route = 0;
-    int lfo2Route = 0;
-    int lfo3Route = 0;
-    int lfo4Route = 0;
     float lfo1Sample = 0;
     float lfo2Sample = 0;
     float lfo3Sample = 0;
@@ -101,6 +116,10 @@ private:
     NoteTuning noteTuning;
     HipLopFilter filter;
     MapUI filtCtrl;
+    Oscillator lfo1Mod;
+    Oscillator lfo2Mod;
+    Oscillator lfo3Mod;
+    Oscillator lfo4Mod;
 
 
     //==============================================================================
