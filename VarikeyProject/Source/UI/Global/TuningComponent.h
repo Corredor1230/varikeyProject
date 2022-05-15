@@ -17,7 +17,7 @@
 //==============================================================================
 /*
 */
-class TuningComponent  : public juce::Component
+class TuningComponent : public juce::Component
 {
 public:
 
@@ -30,7 +30,7 @@ public:
     TuningComponent(juce::AudioProcessorValueTreeState& vts);
     ~TuningComponent() override;
 
-    void paint (juce::Graphics&) override;
+    void paint(juce::Graphics&) override;
     void resized() override;
     void setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel);
     void setFont(juce::Font& font);
@@ -59,6 +59,7 @@ private:
     juce::Slider slider10;
     juce::Slider slider11;
     juce::Slider transposeSlider;
+    juce::Slider keybreakSlider;
     juce::ToggleButton keyBreakToggle;
     int transposeTextBoxWidth;
     int transposeTextBoxHeight;
@@ -80,6 +81,8 @@ private:
     juce::Label titleLabel;
     juce::Label keyBreakLabel;
     juce::Label keyBreakValue;
+    juce::String breakKeyString;
+    int breakKeyValue = 48;
     juce::Label breakLabel;
 
     SliderAttachment attachment0;
@@ -95,7 +98,7 @@ private:
     SliderAttachment attachment10;
     SliderAttachment attachment11;
     SliderAttachment transposeAttachment;
-    juce::AudioProcessorValueTreeState::ButtonAttachment keyAttachment;
-
+    SliderAttachment breakAttachment;
+    juce::AudioProcessorValueTreeState::ButtonAttachment breakToggleAttachment;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningComponent)
 };

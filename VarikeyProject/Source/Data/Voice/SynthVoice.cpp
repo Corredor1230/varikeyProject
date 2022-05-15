@@ -122,6 +122,7 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
 void SynthVoice::updateLeftGenerator(int genShape, float noiseLevel, int noiseShape)
 {
     genCtrl.setParamValue("shape", genShape);
+
     genCtrl.setParamValue("noiseLevel", noiseLevel);
     genCtrl.setParamValue("noiseShape", noiseShape);
 }
@@ -296,14 +297,16 @@ void SynthVoice::updateGlobal(float detune, float vibFreq, float vibDepth, float
     vibrato.setFreq(vibFreq);
     vibrato.updateLfo(1, vibDepth);
     vibratoDepth = vibDepth;
-    dbVolume = volume;
-    linVolume = juce::Decibels::decibelsToGain(volume, -60.f);
     isGlobalFilter ? isVoiceFilt = false : isVoiceFilt = true;
 }
 
-void SynthVoice::updateTuner(std::array<float, 12> tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter)
+void SynthVoice::updateTuner(std::array<float, 12> tuningSliders, bool inputBassTuning, int inputKeyboardBreak, int scaleCenter)
 {
     tuningRef.setTuning(tuningSliders);
+    keyboardBreak = inputKeyboardBreak;
+    scaleCenterSetPitch = scaleCenter;
+    bassTuning = inputBassTuning;
+
 }
 
 void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
@@ -336,15 +339,16 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     for (int i = 0; i < sampNumber; i++)
     {
+        lfo1Sample = lfo1Mod.getNextSample();
         lfo2Sample = lfo2Mod.getNextSample();
-    }
-    for (int i = 0; i < sampNumber; i++)
-    {
         lfo3Sample = lfo3Mod.getNextSample();
+        lfo4Sample = lfo4Mod.getNextSample();
     }
     for (int i = 0; i < sampNumber; i++)
     {
-        lfo4Sample = lfo4Mod.getNextSample();
+    }
+    for (int i = 0; i < sampNumber; i++)
+    {
     }
 
     //Updating our tuning in real time
@@ -368,44 +372,93 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //OSCILLATORS
     //-------------------------------------------------------------
     //Selector for different synthesizers
-    switch (leftSynthChoice)
+    if (!bassTuning)
     {
-    case 0:
-        genCtrl.setParamValue("freq", oscFreq);
-        genSynth.compute(sampNumber, nullptr, synthData);
-        break;
-    case 1:
-        additiveCtrl.setParamValue("freq", oscFreq);
-        additiveSynth.compute(sampNumber, nullptr, synthData);
-        break;
-    case 2:
-        karpCtrl.setParamValue("freq", oscFreq);
-        karplusSynth.compute(sampNumber, nullptr, synthData);
-        break;
-    case 3:
-        noiseCtrl.setParamValue("freq", oscFreq);
-        noiseSynth.compute(sampNumber, nullptr, synthData);
-        break;
-    }
+        switch (leftSynthChoice)
+        {
+        case 0:
+            genCtrl.setParamValue("freq", oscFreq);
+            genSynth.compute(sampNumber, nullptr, synthData);
+            break;
+        case 1:
+            additiveCtrl.setParamValue("freq", oscFreq);
+            additiveSynth.compute(sampNumber, nullptr, synthData);
+            break;
+        case 2:
+            karpCtrl.setParamValue("freq", oscFreq);
+            karplusSynth.compute(sampNumber, nullptr, synthData);
+            break;
+        case 3:
+            noiseCtrl.setParamValue("freq", oscFreq);
+            noiseSynth.compute(sampNumber, nullptr, synthData);
+            break;
+        }
 
-    switch (rightSynthChoice)
+        switch (rightSynthChoice)
+        {
+        case 0:
+            genCtrlRight.setParamValue("freq", oscFreq);
+            genSynthRight.compute(sampNumber, nullptr, rightData);
+            break;
+        case 1:
+            additiveCtrlRight.setParamValue("freq", oscFreq);
+            additiveSynthRight.compute(sampNumber, nullptr, rightData);
+            break;
+        case 2:
+            karpCtrlRight.setParamValue("freq", oscFreq);
+            karplusSynthRight.compute(sampNumber, nullptr, rightData);
+            break;
+        case 3:
+            noiseCtrlRight.setParamValue("freq", oscFreq);
+            noiseSynthRight.compute(sampNumber, nullptr, rightData);
+            break;
+        }
+    }
+    else if (getCurrentlyPlayingNote() > keyboardBreak)
     {
-    case 0:
-        genCtrlRight.setParamValue("freq", oscFreq);
-        genSynthRight.compute(sampNumber, nullptr, rightData);
-        break;
-    case 1:
-        additiveCtrlRight.setParamValue("freq", oscFreq);
-        additiveSynthRight.compute(sampNumber, nullptr, rightData);
-        break;
-    case 2:
-        karpCtrlRight.setParamValue("freq", oscFreq);
-        karplusSynthRight.compute(sampNumber, nullptr, rightData);
-        break;
-    case 3:
-        noiseCtrlRight.setParamValue("freq", oscFreq);
-        noiseSynthRight.compute(sampNumber, nullptr, rightData);
-        break;
+        switch (leftSynthChoice)
+        {
+        case 0:
+            genCtrl.setParamValue("freq", oscFreq);
+            genSynth.compute(sampNumber, nullptr, synthData);
+            break;
+        case 1:
+            additiveCtrl.setParamValue("freq", oscFreq);
+            additiveSynth.compute(sampNumber, nullptr, synthData);
+            break;
+        case 2:
+            karpCtrl.setParamValue("freq", oscFreq);
+            karplusSynth.compute(sampNumber, nullptr, synthData);
+            break;
+        case 3:
+            noiseCtrl.setParamValue("freq", oscFreq);
+            noiseSynth.compute(sampNumber, nullptr, synthData);
+            break;
+        }
+
+        switch (rightSynthChoice)
+        {
+        case 0:
+            genCtrlRight.setParamValue("freq", oscFreq);
+            genSynthRight.compute(sampNumber, nullptr, rightData);
+            break;
+        case 1:
+            additiveCtrlRight.setParamValue("freq", oscFreq);
+            additiveSynthRight.compute(sampNumber, nullptr, rightData);
+            break;
+        case 2:
+            karpCtrlRight.setParamValue("freq", oscFreq);
+            karplusSynthRight.compute(sampNumber, nullptr, rightData);
+            break;
+        case 3:
+            noiseCtrlRight.setParamValue("freq", oscFreq);
+            noiseSynthRight.compute(sampNumber, nullptr, rightData);
+            break;
+        }
+    }
+    else
+    {
+        tuningRef.updateScaleCenter(getCurrentlyPlayingNote() % 12);
     }
 
     //PROCESS
@@ -445,17 +498,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         }
     }
 
-
-    for (int i = 0; i < sampNumber; i++)
-    {
-        lfo1Sample = lfo1Mod.getNextSample();
-        volLfoCtrl = (lfo1Sample + 1) / 2.2;
-
-        for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
-        {
-            synthBuffer.applyGain(ch, i, 1, volNormalize - (volNormalize * volLfoCtrl * lfo1Depth * (lfo1Route == 17)));
-        }
-    }
 
     modAdsr.applyEnvelopeToBuffer(adsrBuffer, 0, sampNumber);
 

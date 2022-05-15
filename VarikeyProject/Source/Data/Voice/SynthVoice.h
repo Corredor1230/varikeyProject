@@ -130,6 +130,17 @@ private:
 
     bool isPrepared{ false };
 
+    //SYNTH
+    float leftNoiseLevel = 0;
+    float rightNoiseLevel = 0;
+    float leftNoiseTone = 0;
+    float rightNoiseTone = 0;
+    float synthMix = 0;
+    float distInLeft = 0;
+    float distInRight = 0;
+    float distOutLeft = 0;
+    float distOutRight = 0;
+
     //FILTER
     float lopCutoff = 0;
     float lopMid = 0;
@@ -184,10 +195,6 @@ private:
     float synthDetune = 0;
     float vibratoFrequency = 0;
     float vibratoDepth = 0;
-    float dbVolume = -20;
-    float linVolume = 0.7;
-    float volLfoCtrl = 0;
-    float volNormalize = 1.5;
     bool isVoiceFilt = false;
 
 
@@ -208,6 +215,9 @@ private:
     float processedMidi = 0;
     float oscMidi = 0;
     float oscFreq = 0;
+    int keyboardBreak = 48;
+    int scaleCenterSetPitch = 0;
+    bool bassTuning = false;
 
     float tempVelocity = 0;
     float finalGain = 0;

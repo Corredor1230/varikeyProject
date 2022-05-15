@@ -18,9 +18,14 @@ int NoteTuning::getModulus(const int midiNoteNumber)
     return pitchModulus;
 }
 
+void NoteTuning::updateScaleCenter(int center)
+{
+    scaleCenter = center;
+}
+
 float NoteTuning::alterMidiPitch(int midiPitch)
 {
-    int pitchModulus = getModulus(midiPitch);
+    int pitchModulus = getModulus(midiPitch - scaleCenter);
     float newMidi{0};
     std::array<float, 12> modifier = noteTuning;
     //std::array<float, 12> modifier;

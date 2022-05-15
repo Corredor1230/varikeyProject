@@ -26,9 +26,12 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
 , attachment10(vts, "tuning10", slider10)
 , attachment11(vts, "tuning11", slider11)
 , transposeAttachment(vts, "scaleCenter", transposeSlider)
-, keyAttachment(vts, "bassControlsTuning", keyBreakToggle)
+, breakAttachment(vts, "keyboardBreak", keybreakSlider)
+, breakToggleAttachment(vts, "bassControlsTuning", keyBreakToggle)
 
 {
+
+
     //transposeTextBoxWidth = getWidth() / 12;
     //transposeTextBoxHeight = getHeight() / 6;
     addAndMakeVisible(transposeSlider);
@@ -50,7 +53,11 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     addAndMakeVisible(keyBreakLabel);
     keyBreakLabel.setText("Bass controls tuning", juce::dontSendNotification);
 
+    
+
     addAndMakeVisible(keyBreakValue);
+    addAndMakeVisible(keybreakSlider);
+
     addAndMakeVisible(valueOutline);
     keyBreakValue.setEditable(true);
     //keyBreakValue.setColour(juce::Label::ColourIds::outlineColourId, 
@@ -104,6 +111,10 @@ void TuningComponent::paint (juce::Graphics& g)
         keyBreakToggle.setColour(juce::ToggleButton::ColourIds::tickDisabledColourId, toggleOn);
         break;
     }
+
+    breakKeyString = keyBreakValue.getText();
+    breakKeyValue = breakKeyString.getIntValue();
+    keybreakSlider.setValue(breakKeyValue, juce::sendNotification);
 }
 
 void TuningComponent::resized()
@@ -118,7 +129,7 @@ void TuningComponent::resized()
     int sliderStartX = padding;
     int sliderStartY = title + sliderLabel;
 
-    transposeTextBoxWidth = sliderWidth*2;
+    transposeTextBoxWidth = sliderWidth * 2;
     transposeTextBoxHeight = height / 6;
     int labelStartX = (padding * 2) / 1.1;
     int topStartY = 3;

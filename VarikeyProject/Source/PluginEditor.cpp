@@ -304,6 +304,8 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     tuner.setBounds(firstRowStartX, thirdRowStartY, tunerWidth, thirdRowHeight);
     volumeLabel.setBounds(volumeStartX, thirdRowStartY + topStartY, volumeWidth, labelHeight);
     volumeSlider.setBounds(volumeStartX, volumeLabel.getBottom(), volumeWidth, volumeHeight);
+
+    
 }
 
 void VarikeyProjectAudioProcessorEditor::resized()

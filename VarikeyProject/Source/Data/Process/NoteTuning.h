@@ -40,10 +40,13 @@ public:
 
     void setTuning(std::array<float, 12>& tuning);
 
+    void updateScaleCenter(int center);
+
 
 private:
 
     std::array<float, 12> noteTuning;
+    int scaleCenter = 0;
 
 };
 

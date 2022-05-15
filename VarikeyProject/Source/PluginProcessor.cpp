@@ -157,28 +157,28 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 
     //LFO
         //Lfo 1
-        createFloatParameter(params, "lfo1Freq", "Frequency 1", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
+        createFloatParameter(params, "lfo1Freq", "Frequency 1", 0.0f, 15.0f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "lfo1Depth", "Depth 1", 0.0f, 1.0f, 0.001f, 0.0f);
         createFloatParameter(params, "lfo1Shape", "Shape 1", 1.0f, 100.0f, 0.1f, 1.0f);
         params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo1Route", "Route Lfo 1", 
             juce::StringArray(synthList), 0));
 
         //Lfo 2
-        createFloatParameter(params, "lfo2Freq", "Frequency 2", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
+        createFloatParameter(params, "lfo2Freq", "Frequency 2", 0.0f, 15.0f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "lfo2Depth", "Depth 2", 0.0f, 1.0f, 0.001f, 0.0f);
         createFloatParameter(params, "lfo2Shape", "Shape 2", 1.0f, 100.0f, 0.1f, 1.0f);
         params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo2Route", "Route Lfo 2", 
             juce::StringArray(synthList), 0));
 
         //Lfo 3
-        createFloatParameter(params, "lfo3Freq", "Frequency 3", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
+        createFloatParameter(params, "lfo3Freq", "Frequency 3", 0.0f, 15.0f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "lfo3Depth", "Depth 3", 0.0f, 1.0f, 0.001f, 0.0f);
         createFloatParameter(params, "lfo3Shape", "Shape 3", 1.0f, 100.0f, 0.1f, 1.0f);
         params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo3Route", "Route Lfo 3", 
             juce::StringArray(synthList), 0));
 
         //Lfo 4
-        createFloatParameter(params, "lfo4Freq", "Frequency 4", 0.0f, 20.0f, 0.01f, 0.0f, 0.3);
+        createFloatParameter(params, "lfo4Freq", "Frequency 4", 0.0f, 15.0f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "lfo4Depth", "Depth 4", 0.0f, 1.0f, 0.001f, 0.0f);
         createFloatParameter(params, "lfo4Shape", "Shape 4", 1.0f, 100.0f, 0.1f, 1.0f);
         params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo4Route", "Route Lfo 4", 
@@ -187,7 +187,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 //GLOBAL
     //OTHER
         createFloatParameter(params, "detune", "Detune", -1.0f, 1.0f, 0.01f, 0.0f);
-        createFloatParameter(params, "vibFreq", "Vibrato Frequency", 0.0f, 20.f, 0.01f, 0.0f, 0.3);
+        createFloatParameter(params, "vibFreq", "Vibrato Frequency", 0.0f, 15.f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "vibDepth", "Vibrato Depth", 0.0f, 1.f, 0.001f, 0.0f);
         createFloatParameter(params, "volume", "Volume", -60.0f, 0.0f, 0.1f, -20.f);
 
@@ -554,7 +554,6 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load(), isGlobalFilter(modAdsrR));
             voice->updateTuner(tuningArray, bassControlsTuning.load(), keyboardBreak.load(), scaleCenter.load());
 
-
         }
 
 
@@ -632,6 +631,7 @@ bool VarikeyProjectAudioProcessor::isGlobalFilter(int modAdsrRoute)
 
 bool VarikeyProjectAudioProcessor::hasTremolo(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route)
 {
+    return true;
 }
 
 //==============================================================================
