@@ -45,7 +45,9 @@ class SynthVoice : public juce::SynthesiserVoice
 {
 public:
     SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts) : tuningRef(someTuner)
-        , vts(vts) {}
+        , vts(vts) {
+        tuningCenterParam = vts.getParameter("scaleCenter");
+    }
     bool canPlaySound(juce::SynthesiserSound* sound) override;
     void startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition) override;
     void stopNote(float velocity, bool allowTailOff) override;
@@ -127,6 +129,7 @@ private:
 
     NoteTuning& tuningRef;
     juce::AudioProcessorValueTreeState& vts;
+    juce::RangedAudioParameter* tuningCenterParam;
 
     bool isPrepared{ false };
 
@@ -226,4 +229,7 @@ private:
     float oscModDepth = 0;
     float modOscSample = 0;
     float lfoSample = 0;
+
+    float lfoVolNormalizer = 1 / 2;
+    float gen1NoiseLfo = 0;
 };

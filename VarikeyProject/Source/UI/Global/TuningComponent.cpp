@@ -35,23 +35,29 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     //transposeTextBoxWidth = getWidth() / 12;
     //transposeTextBoxHeight = getHeight() / 6;
     addAndMakeVisible(transposeSlider);
+    addAndMakeVisible(centerLabel);
+
+    centerLabel.setText("C", juce::dontSendNotification);
+    centerLabel.setJustificationType(juce::Justification::centred);
+
     transposeSlider.setRange(0.0, 11.0, 1.0);
     transposeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
-    transposeSlider.setTextBoxStyle(juce::Slider::TextBoxLeft,
-        false, 25, 25);
+    //transposeSlider.setTextBoxStyle(juce::Slider::TextBoxLeft,
+    //    false, 25, 25);
+    transposeSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 25, 25);
 
     addAndMakeVisible(keyBreakToggle);
     keyBreakToggle.setName("Key Break Toggle");
 
     addAndMakeVisible(transposeLabel);
-    transposeLabel.setText("Transpose", juce::dontSendNotification);
+    transposeLabel.setText("Centered at: ", juce::dontSendNotification);
     transposeLabel.attachToComponent(&transposeSlider, true);
 
     addAndMakeVisible(titleLabel);
     titleLabel.setText("Note Tuning", juce::dontSendNotification);
 
     addAndMakeVisible(keyBreakLabel);
-    keyBreakLabel.setText("Bass controls tuning", juce::dontSendNotification);
+    keyBreakLabel.setText("Tuning control below: ", juce::dontSendNotification);
 
     
 
@@ -115,6 +121,51 @@ void TuningComponent::paint (juce::Graphics& g)
     breakKeyString = keyBreakValue.getText();
     breakKeyValue = breakKeyString.getIntValue();
     keybreakSlider.setValue(breakKeyValue, juce::sendNotification);
+
+    switch ((int)transposeSlider.getValue())
+    {
+    case 0:
+        centerLabel.setText("C", juce::dontSendNotification);
+        break;
+    case 1:
+        centerLabel.setText("C#/Db", juce::dontSendNotification);
+        break;
+    case 2:
+        centerLabel.setText("D", juce::dontSendNotification);
+        break;
+    case 3:
+        centerLabel.setText("D#/Eb", juce::dontSendNotification);
+        break;
+    case 4:
+        centerLabel.setText("E", juce::dontSendNotification);
+        break;
+    case 5:
+        centerLabel.setText("F", juce::dontSendNotification);
+        break;
+    case 6:
+        centerLabel.setText("F#/Gb", juce::dontSendNotification);
+        break;
+    case 7:
+        centerLabel.setText("G", juce::dontSendNotification);
+        break;
+    case 8:
+        centerLabel.setText("G#/Ab", juce::dontSendNotification);
+        break;
+    case 9:
+        centerLabel.setText("A", juce::dontSendNotification);
+        break;
+    case 10:
+        centerLabel.setText("A#/Bb", juce::dontSendNotification);
+        break;
+    case 11:
+        centerLabel.setText("B", juce::dontSendNotification);
+        break;
+    default:
+        jassertfalse;
+        break;
+    }
+
+    setSliderLabels((int)transposeSlider.getValue());
 }
 
 void TuningComponent::resized()
@@ -129,12 +180,14 @@ void TuningComponent::resized()
     int sliderStartX = padding;
     int sliderStartY = title + sliderLabel;
 
+
     transposeTextBoxWidth = sliderWidth * 2;
     transposeTextBoxHeight = height / 6;
+    int centerLabelWidth = 40;
     int labelStartX = (padding * 2) / 1.1;
     int topStartY = 3;
     int transposeHeight = height / 6;
-    int transposeWidth = width - transposeTextBoxWidth - labelStartX - padding - 1;
+    int transposeWidth = width - transposeTextBoxWidth - labelStartX - centerLabelWidth - padding - 1;
     int transposeStartX = sliderStartX + padding + transposeTextBoxWidth;
     int transposeStartY = 3 * (height / 4);
 
@@ -152,7 +205,7 @@ void TuningComponent::resized()
     slider9.setBounds(slider8.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
     slider10.setBounds(slider9.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
     slider11.setBounds(slider10.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
-    transposeSlider.setBounds(transposeStartX, slider0.getBottom(), transposeWidth, transposeHeight);
+    transposeSlider.setBounds(transposeStartX + centerLabelWidth, slider0.getBottom(), transposeWidth, transposeHeight);
     titleLabel.setBounds(labelStartX, topStartY, transposeTextBoxWidth, transposeTextBoxHeight);
     keyBreakToggle.setBounds(titleLabel.getRight() + sliderWidth, topStartY + 2, padding * 3, transposeTextBoxHeight);
     keyBreakLabel.setBounds(keyBreakToggle.getRight(), topStartY, sliderWidth * 3.5, transposeTextBoxHeight);
@@ -160,6 +213,9 @@ void TuningComponent::resized()
     keyBreakValue.setBounds(keyBreakLabel.getRight(), topStartY, sliderWidth, transposeTextBoxHeight);
     transposeLabel.setBounds(labelStartX, slider0.getBottom() - 2, transposeTextBoxWidth, transposeTextBoxHeight);
     transposeLabel.setJustificationType(juce::Justification::centredLeft);
+    centerLabel.setBounds(transposeStartX, slider0.getBottom() - 2, centerLabelWidth, transposeTextBoxHeight);
+
+
 }
 
 void TuningComponent::setSliderParams(juce::Slider& slider, juce::Label& label, std::string name, int style)
@@ -197,4 +253,20 @@ void TuningComponent::setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFe
 void TuningComponent::setFont(juce::Font& font)
 {
     customFont = font;
+}
+
+void TuningComponent::setSliderLabels(int centerValue)
+{
+    label0.setText(noteArray[getArrayValue(0, centerValue)], juce::dontSendNotification);
+    label1.setText(noteArray[getArrayValue(1, centerValue)], juce::dontSendNotification);
+    label2.setText(noteArray[getArrayValue(2, centerValue)], juce::dontSendNotification);
+    label3.setText(noteArray[getArrayValue(3, centerValue)], juce::dontSendNotification);
+    label4.setText(noteArray[getArrayValue(4, centerValue)], juce::dontSendNotification);
+    label5.setText(noteArray[getArrayValue(5, centerValue)], juce::dontSendNotification);
+    label6.setText(noteArray[getArrayValue(6, centerValue)], juce::dontSendNotification);
+    label7.setText(noteArray[getArrayValue(7, centerValue)], juce::dontSendNotification);
+    label8.setText(noteArray[getArrayValue(8, centerValue)], juce::dontSendNotification);
+    label9.setText(noteArray[getArrayValue(9, centerValue)], juce::dontSendNotification);
+    label10.setText(noteArray[getArrayValue(10, centerValue)], juce::dontSendNotification);
+    label11.setText(noteArray[getArrayValue(11, centerValue)], juce::dontSendNotification);
 }

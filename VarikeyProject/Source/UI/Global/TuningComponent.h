@@ -34,6 +34,8 @@ public:
     void resized() override;
     void setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel);
     void setFont(juce::Font& font);
+    void setSliderLabels(int centerValue);
+    int getArrayValue(int index, int centerValue){return (index + centerValue) % 12;}
 
 
 private:
@@ -81,7 +83,9 @@ private:
     juce::Label titleLabel;
     juce::Label keyBreakLabel;
     juce::Label keyBreakValue;
+    juce::Label centerLabel;
     juce::String breakKeyString;
+    juce::StringArray noteArray{ "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B" };
     int breakKeyValue = 48;
     juce::Label breakLabel;
 

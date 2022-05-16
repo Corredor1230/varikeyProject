@@ -122,8 +122,8 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
 void SynthVoice::updateLeftGenerator(int genShape, float noiseLevel, int noiseShape)
 {
     genCtrl.setParamValue("shape", genShape);
-
-    genCtrl.setParamValue("noiseLevel", noiseLevel);
+    leftNoiseLevel = noiseLevel;
+    //genCtrl.setParamValue("noiseLevel", noiseLevel);
     genCtrl.setParamValue("noiseShape", noiseShape);
 }
 
@@ -374,10 +374,14 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //Selector for different synthesizers
     if (!bassTuning)
     {
+        tuningRef.updateScaleCenter(scaleCenterSetPitch);
         switch (leftSynthChoice)
         {
         case 0:
             genCtrl.setParamValue("freq", oscFreq);
+            gen1NoiseLfo = ((lfo1Route == 1) * lfo1Sample + 
+                (lfo2Route == 1) * lfo2Sample + (lfo3Route == 1) * lfo3Sample + (lfo4Route == 1) * lfo4Sample) * lfoVolNormalizer;
+            genCtrl.setParamValue("noiseLevel", leftNoiseLevel - leftNoiseLevel * gen1NoiseLfo);
             genSynth.compute(sampNumber, nullptr, synthData);
             break;
         case 1:
@@ -459,6 +463,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     else
     {
         tuningRef.updateScaleCenter(getCurrentlyPlayingNote() % 12);
+        tuningCenterParam->setValue(getCurrentlyPlayingNote() % 12);
     }
 
     //PROCESS
