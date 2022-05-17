@@ -40,10 +40,10 @@ AdditiveComponent::~AdditiveComponent()
 void AdditiveComponent::paint (juce::Graphics& g)
 {
     g.fillAll(juce::Colour());
-    juce::Rectangle<float> border;
-    border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
-    g.setColour(slider0.findColour(juce::ToggleButton::ColourIds::tickDisabledColourId));
-    g.drawRect(border, 1.0f);
+    //juce::Rectangle<float> border;
+    //border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
+    //g.setColour(slider0.findColour(juce::ToggleButton::ColourIds::tickDisabledColourId));
+    //g.drawRect(border, 1.0f);
 }
 
 void AdditiveComponent::resized()

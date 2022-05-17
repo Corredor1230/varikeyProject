@@ -96,11 +96,11 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     leftOscChoice.addItemList(juce::StringArray(synthList), 1);
     leftOscChoice.setJustificationType(juce::Justification::centred);
     leftOscChoice.setTextWhenNothingSelected("Generator");
-    leftOscChoice.setSelectedId(1);
+    //leftOscChoice.setSelectedId(1);
     rightOscChoice.addItemList(juce::StringArray(synthList), 1);
     rightOscChoice.setJustificationType(juce::Justification::centred);
     rightOscChoice.setTextWhenNothingSelected("Generator");
-    rightOscChoice.setSelectedId(1);
+    //rightOscChoice.setSelectedId(1);
 
     tuner.setCustomLookAndFeel(&varikeyLookAndFeel);
     additiveLeft.setCustomLookAndFeel(&varikeyLookAndFeel);
@@ -205,7 +205,7 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
 
     leftOscChoice.setBounds(firstColumnWidth + (padding / 2), firstRowHeight - oscChoiceHeight - (padding / 1.5),
         oscChoiceWidth, oscChoiceHeight);
-    rightOscChoice.setBounds(leftOscChoice.getRight() + padding, firstRowHeight - oscChoiceHeight - (padding / 1.5),
+    rightOscChoice.setBounds(width / 2 + 7, firstRowHeight - oscChoiceHeight - (padding / 1.5),
         oscChoiceWidth, oscChoiceHeight);
 
     genLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
@@ -304,7 +304,13 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     volumeLabel.setBounds(volumeStartX, thirdRowStartY + topStartY, volumeWidth, labelHeight);
     volumeSlider.setBounds(volumeStartX, volumeLabel.getBottom(), volumeWidth, volumeHeight);
 
-    
+    g.setColour(varikeyLookAndFeel.getColourFromPalette(VarikeyLookAndFeel::paletteColours::contrast));
+    g.fillRect(firstRowStartX + 5, secondRowStartY, width - 10, 1);
+    g.fillRect(firstRowStartX + 5, thirdRowStartY, width - 10, 1);
+    g.fillRect(width / 2, secondRowStartY + 6, 1, secondRowHeight - 12);
+    g.fillRect(modAdsr.getRight() + (width - modAdsr.getRight()) / 2 - 4, secondRowStartY + 6, 1, (secondRowHeight - pitchwheelHeight) - 12);
+    g.fillRect(width / 2, firstRowHeight - oscChoiceHeight - padding - 2, 1, oscChoiceHeight + padding);
+    g.fillRect(filters.getRight(), secondRowStartY + 6, 1, secondRowHeight - 12);
 }
 
 void VarikeyProjectAudioProcessorEditor::resized()

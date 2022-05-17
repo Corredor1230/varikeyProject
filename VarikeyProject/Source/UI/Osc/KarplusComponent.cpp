@@ -54,10 +54,10 @@ KarplusComponent::~KarplusComponent()
 void KarplusComponent::paint (juce::Graphics& g)
 {
     g.fillAll(juce::Colour());
-    juce::Rectangle<float> border;
-    border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
-    g.setColour(getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId));
-    g.drawRect(border, 1.0f);
+    //juce::Rectangle<float> border;
+    //border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
+    //g.setColour(getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId));
+    //g.drawRect(border, 1.0f);
 
     auto bounds = getBounds().reduced(5, 5);
     int height = bounds.getHeight();
@@ -69,7 +69,7 @@ void KarplusComponent::paint (juce::Graphics& g)
     int title = height / 6;
 
     int horizontalHeight = 25;
-    int sliderWidth = (width / 5) - padding;
+    int sliderWidth = (width / 5) - padding + 10;
     int sliderHeight = height - title - sliderLabel;
     int sliderStartX = padding;
     int sliderStartY = title + sliderLabel;

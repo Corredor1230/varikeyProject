@@ -54,10 +54,10 @@ FilterComponent::~FilterComponent()
 void FilterComponent::paint (juce::Graphics& g)
 {
     g.fillAll(juce::Colour());
-    juce::Rectangle<float> border;
-    border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
-    g.setColour(getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId));
-    g.drawRect(border, 1.0f);
+    //juce::Rectangle<float> border;
+    //border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
+    //g.setColour(getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId));
+    //g.drawRect(border, 1.0f);
 
     auto bounds = getBounds().reduced(5, 5);
     int height = bounds.getHeight();

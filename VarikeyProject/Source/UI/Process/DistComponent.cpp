@@ -36,10 +36,10 @@ DistComponent::~DistComponent()
 void DistComponent::paint (juce::Graphics& g)
 {
     g.fillAll(juce::Colour());
-    juce::Rectangle<float> border;
-    border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
-    g.setColour(getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId));
-    g.drawRect(border, 1.0f);
+    //juce::Rectangle<float> border;
+    //border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
+    //g.setColour(getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId));
+    //g.drawRect(border, 1.0f);
 
     auto bounds = getBounds().reduced(5, 5);
     int height = bounds.getHeight();
@@ -63,7 +63,7 @@ void DistComponent::paint (juce::Graphics& g)
     distToggleLabel.setBounds(distToggle.getRight() - padding, padding / 1.5, sliderLabelWidth + padding, titleHeight);
     inputLabel.setBounds(padding, height / 2, sliderLabelWidth, sliderLabelHeight);
     inputSlider.setBounds(inputLabel.getRight() - padding, titleLabel.getBottom() - padding / 2, sliderDiameter, sliderDiameter);
-    outputLabel.setBounds(inputSlider.getRight(), height / 2, sliderLabelWidth, sliderLabelHeight);
+    outputLabel.setBounds(inputSlider.getRight() + 10, height / 2, sliderLabelWidth, sliderLabelHeight);
     outputSlider.setBounds(outputLabel.getRight() - padding, titleLabel.getBottom() - padding / 2, sliderDiameter, sliderDiameter);
 
     juce::Colour toggleOff = getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId);
