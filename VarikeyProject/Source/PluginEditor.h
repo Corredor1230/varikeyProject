@@ -125,5 +125,6 @@ private:
     juce::AudioProcessorValueTreeState::ComboBoxAttachment leftOscAttachment;
     juce::AudioProcessorValueTreeState::ComboBoxAttachment rightOscAttachment;
     juce::AudioProcessorValueTreeState::SliderAttachment mixAttachment;
+    juce::AudioProcessorValueTreeState::SliderAttachment volumeAttachment;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VarikeyProjectAudioProcessorEditor)
 };

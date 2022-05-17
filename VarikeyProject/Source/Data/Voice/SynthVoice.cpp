@@ -115,7 +115,6 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
 
     adsr.setSampleRate(sampleRate);
     modAdsr.setSampleRate(sampleRate);
-    lfo1Mod.init(sampleRate);
 
 }
 
@@ -335,21 +334,12 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     for (int i = 0; i < sampNumber; i++)
     {
         vibratoSample = vibrato.getNextSample();
-    }
-
-    for (int i = 0; i < sampNumber; i++)
-    {
         lfo1Sample = lfo1Mod.getNextSample();
         lfo2Sample = lfo2Mod.getNextSample();
         lfo3Sample = lfo3Mod.getNextSample();
         lfo4Sample = lfo4Mod.getNextSample();
     }
-    for (int i = 0; i < sampNumber; i++)
-    {
-    }
-    for (int i = 0; i < sampNumber; i++)
-    {
-    }
+
 
     //Updating our tuning in real time
     tunedMidi = tuningRef.alterMidiPitch(getCurrentlyPlayingNote());

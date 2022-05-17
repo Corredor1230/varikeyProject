@@ -113,8 +113,16 @@ private:
     float lfo3Sample = 0;
     float lfo4Sample = 0;
 
+    float volumeDb = 0;
+    float linearVolume = 0;
+    float tremoloVolume = 0;
+    float startGain = 0;
+    float endGain = 0;
+
     NoteTuning noteTuning;
     HipLopFilter filter;
+    juce::dsp::StateVariableTPTFilter<float> juceLopFilt;
+    juce::dsp::StateVariableTPTFilter<float> juceHipFilt;
     MapUI filtCtrl;
     Oscillator lfo1Mod;
     Oscillator lfo2Mod;

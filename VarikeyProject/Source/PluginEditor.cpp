@@ -18,6 +18,7 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     , leftOscAttachment(audioProcessor.vts, "leftSynthChoice", leftOscChoice)
     , rightOscAttachment(audioProcessor.vts, "rightSynthChoice", rightOscChoice)
     , mixAttachment(audioProcessor.vts, "synthMix", crossSlider)
+    , volumeAttachment(audioProcessor.vts, "volume", volumeSlider)
     , additiveLeft(audioProcessor.vts, leftAdditiveIDs)
     , additiveRight(audioProcessor.vts, rightAdditiveIDs)
     , karpLeft(audioProcessor.vts, "leftKarpAtt", "leftKarpRel", "leftKarpFb", "leftKarpNoise")
@@ -69,8 +70,6 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
 
     volumeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
     volumeSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 25);
-    volumeSlider.setRange(-60.0, 0.0, 0.01);
-    volumeSlider.setValue(-20.0);
     volumeLabel.setText("Volume", juce::dontSendNotification);
     volumeLabel.setJustificationType(juce::Justification::centred);
 
