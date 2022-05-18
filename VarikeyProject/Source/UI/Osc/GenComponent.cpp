@@ -75,23 +75,23 @@ void GenComponent::paint (juce::Graphics& g)
     titleLabel.setText(regionTitle + componentTitle, juce::dontSendNotification);
     titleLabel.setBounds(padding * 1.5, padding / 1.5, width, title);
     waveShape.setBounds(rotaryStartX, labelStartY, rotaryDiameter, rotaryDiameter);
-    noiseLevel.setBounds(waveShape.getRight() + padding, labelStartY, sliderWidth, sliderHeight);
+    noiseLevel.setBounds(waveShape.getRight() + padding * 2.3, labelStartY, sliderWidth, sliderHeight);
     switch (noiseShapeValue)
     {
     case 0:
-        whiteLabel.setBounds(waveShape.getRight() + padding, noiseLevel.getBottom() - padding / 1.5, sliderLabelWidth, horizontalHeight);
+        whiteLabel.setBounds(waveShape.getRight() + padding * 2.3, noiseLevel.getBottom() - padding / 1.5, sliderLabelWidth, horizontalHeight);
         pinkLabel.setBounds(0, 0, 0, 0);
         break;
     case 1:
-        pinkLabel.setBounds(waveShape.getRight() + padding, noiseLevel.getBottom() - padding / 1.5, sliderLabelWidth, horizontalHeight);
+        pinkLabel.setBounds(waveShape.getRight() + padding * 2.3, noiseLevel.getBottom() - padding / 1.5, sliderLabelWidth, horizontalHeight);
         whiteLabel.setBounds(0, 0, 0, 0);
         break;
     default:
-        pinkLabel.setBounds(waveShape.getRight() + padding, noiseLevel.getBottom() - padding / 1.5, sliderLabelWidth, horizontalHeight);
+        pinkLabel.setBounds(waveShape.getRight() + padding * 2.3, noiseLevel.getBottom() - padding / 1.5, sliderLabelWidth, horizontalHeight);
         whiteLabel.setBounds(0, 0, 0, 0);
         break;
     }
-    noiseShape.setBounds(waveShape.getRight() + sliderLabelWidth, noiseLevel.getBottom() - padding / 2, sliderWidth - sliderLabelWidth, horizontalHeight);
+    noiseShape.setBounds(waveShape.getRight() + sliderLabelWidth + padding * 1.3, noiseLevel.getBottom() - padding / 2, sliderWidth - sliderLabelWidth, horizontalHeight);
 }
 
 void GenComponent::resized()

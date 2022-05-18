@@ -63,6 +63,7 @@ private:
     juce::Slider transposeSlider;
     juce::Slider keybreakSlider;
     juce::ToggleButton keyBreakToggle;
+    juce::ComboBox presetSelector;
     int transposeTextBoxWidth;
     int transposeTextBoxHeight;
     juce::DrawableRectangle valueOutline;
@@ -84,6 +85,7 @@ private:
     juce::Label keyBreakLabel;
     juce::Label keyBreakValue;
     juce::Label centerLabel;
+    juce::Label presetLabel;
     juce::String breakKeyString;
     juce::StringArray noteArray{ "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B" };
     int breakKeyValue = 48;
@@ -104,5 +106,6 @@ private:
     SliderAttachment transposeAttachment;
     SliderAttachment breakAttachment;
     juce::AudioProcessorValueTreeState::ButtonAttachment breakToggleAttachment;
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment presetAttachment;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningComponent)
 };

@@ -14,8 +14,9 @@
 #include <faust/gui/MapUI.h>
 #include "Data/Voice/SynthVoice.h"
 #include "Data/Voice/SynthSound.h"
-#include"Data/Process/HipLopFilter.h"
+#include "Data/Process/HipLopFilter.h"
 #include "Data/Process/Oscillator.h"
+#include "Data/Process/TuningPresets.h"
 
 //==============================================================================
 /**
@@ -69,6 +70,7 @@ public:
 
     bool isGlobalFilter(int modAdsrRoute);
     bool hasTremolo(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route);
+    void changeTuningPreset(int presetChoice, std::array<float, 12> preset);
 
 private:
 
@@ -77,7 +79,22 @@ private:
     juce::AudioProcessorValueTreeState::ParameterLayout buildParams();
     juce::Synthesiser synth;
     std::array<float, 12> tuning;
+    juce::StringArray tuningId{
+        "tuning0",
+        "tuning1",
+        "tuning2",
+        "tuning3",
+        "tuning4",
+        "tuning5",
+        "tuning6",
+        "tuning7",
+        "tuning8",
+        "tuning9",
+        "tuning10",
+        "tuning11" };
+
     std::array<int, 5> integers;
+    std::array<float, 12> justIntonation{ 0, 0.12, 0.04, 0.16, -0.14, -0.02, -0.17, 0.02, 0.14, -0.16, -0.04, -0.12 };
 
     float lfo1FreqCtrl = 0;
     float lfo1DepthCtrl = 0;
@@ -120,6 +137,7 @@ private:
     float endGain = 0;
 
     NoteTuning noteTuning;
+    TuningPresets presets;
     HipLopFilter filter;
     juce::dsp::StateVariableTPTFilter<float> juceLopFilt;
     juce::dsp::StateVariableTPTFilter<float> juceHipFilt;

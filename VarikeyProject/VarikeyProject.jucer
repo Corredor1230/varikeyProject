@@ -18,6 +18,9 @@
           <FILE id="ezanMU" name="Distortion.h" compile="0" resource="0" file="Source/Data/Process/Distortion.h"/>
           <FILE id="GwtUMw" name="NoteTuning.cpp" compile="1" resource="0" file="Source/Data/Process/NoteTuning.cpp"/>
           <FILE id="TJLBKd" name="NoteTuning.h" compile="0" resource="0" file="Source/Data/Process/NoteTuning.h"/>
+          <FILE id="BGOiBp" name="TuningPresets.cpp" compile="1" resource="0"
+                file="Source/Data/Process/TuningPresets.cpp"/>
+          <FILE id="EAxoET" name="TuningPresets.h" compile="0" resource="0" file="Source/Data/Process/TuningPresets.h"/>
           <FILE id="TeAC1Y" name="Oscillator.cpp" compile="1" resource="0" file="Source/Data/Process/Oscillator.cpp"/>
           <FILE id="eyRbeF" name="Oscillator.h" compile="0" resource="0" file="Source/Data/Process/Oscillator.h"/>
           <FILE id="eJHJ9B" name="HipLopFilter.h" compile="0" resource="0" file="Source/Data/Process/HipLopFilter.h"/>

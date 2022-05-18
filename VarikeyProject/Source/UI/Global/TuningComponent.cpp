@@ -28,6 +28,7 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
 , transposeAttachment(vts, "scaleCenter", transposeSlider)
 , breakAttachment(vts, "keyboardBreak", keybreakSlider)
 , breakToggleAttachment(vts, "bassControlsTuning", keyBreakToggle)
+, presetAttachment(vts, "tuningPreset", presetSelector)
 
 {
 
@@ -59,7 +60,18 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     addAndMakeVisible(keyBreakLabel);
     keyBreakLabel.setText("Tuning control below: ", juce::dontSendNotification);
 
-    
+    addAndMakeVisible(presetSelector);
+    addAndMakeVisible(presetLabel);
+    std::initializer_list<const char*> presetList{ 
+        "Equal Temperament", "Just Intonation",
+        "Pythagorean", "1/4 Meantone",
+        "Werckmeister III", "Marimba 1", "Marimba 2", "Marimba 3", "Koto"};
+    presetSelector.addItemList(juce::StringArray(presetList), 1);
+    presetSelector.setJustificationType(juce::Justification::centred);
+    presetSelector.setTextWhenNothingSelected("Equal Temperament");
+
+    presetLabel.setText("Tuning Preset: ", juce::dontSendNotification);
+    presetLabel.setJustificationType(juce::Justification::centred);
 
     addAndMakeVisible(keyBreakValue);
     addAndMakeVisible(keybreakSlider);
@@ -211,6 +223,8 @@ void TuningComponent::resized()
     keyBreakLabel.setBounds(keyBreakToggle.getRight(), topStartY, sliderWidth * 3.5, transposeTextBoxHeight);
     keyBreakLabel.setJustificationType(juce::Justification::centredLeft);
     keyBreakValue.setBounds(keyBreakLabel.getRight(), topStartY, sliderWidth, transposeTextBoxHeight);
+    presetLabel.setBounds(keyBreakValue.getRight() + padding, topStartY, sliderWidth * 2, transposeTextBoxHeight);
+    presetSelector.setBounds(presetLabel.getRight(), topStartY, sliderWidth * 2, transposeTextBoxHeight);
     transposeLabel.setBounds(labelStartX, slider0.getBottom() - 2, transposeTextBoxWidth, transposeTextBoxHeight);
     transposeLabel.setJustificationType(juce::Justification::centredLeft);
     centerLabel.setBounds(transposeStartX, slider0.getBottom() - 2, centerLabelWidth, transposeTextBoxHeight);

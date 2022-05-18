@@ -203,7 +203,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
             createFloatParameter(params, tuning + std::to_string(i), std::to_string(i) + "Tuner", -1.0f, 1.0f, 0.01f, 0.0f);
         }
         createIntParameter(params, "scaleCenter", "Scale Center", 0, 11, 0);
-
+        createIntParameter(params, "tuningPreset", "Tuning Preset", 0, 8, 0);
     
 
 
@@ -528,6 +528,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             auto& tuning9 = *vts.getRawParameterValue("tuning9");
             auto& tuning10 = *vts.getRawParameterValue("tuning10");
             auto& tuning11 = *vts.getRawParameterValue("tuning11");
+            auto& tuningPreset = *vts.getRawParameterValue("tuningPreset");
             tuningArray[0] = tuning0.load();
             tuningArray[1] = tuning1.load();
             tuningArray[2] = tuning2.load();
@@ -540,6 +541,9 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             tuningArray[9] = tuning9.load();
             tuningArray[10] = tuning10.load();
             tuningArray[11] = tuning11.load();
+            presets.setPreset((int)tuningPreset.load());
+            presets.setValueTreeValues(vts, tuningId, tuningArray);
+            
             noteTuning.setTuning(tuningArray);
 
             auto& scaleCenter = *vts.getRawParameterValue("scaleCenter");
@@ -581,6 +585,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
             volumeDb = volume.load();
             linearVolume = juce::Decibels::decibelsToGain(volumeDb);
+
         }
 
 
@@ -690,6 +695,11 @@ bool VarikeyProjectAudioProcessor::hasTremolo(int lfo1Route, int lfo2Route, int 
     else if (lfo3Route == 17) return true;
     else if (lfo4Route == 17) return true;
     else return false;
+}
+
+void VarikeyProjectAudioProcessor::changeTuningPreset(int presetChoice, std::array<float, 12> preset)
+{
+    noteTuning.setTuning(preset);
 }
 
 //==============================================================================

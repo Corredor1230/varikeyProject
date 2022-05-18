@@ -38,7 +38,7 @@ public:
 
     int getModulus(const int midiNoteNumber);
 
-    void setTuning(std::array<float, 12>& tuning);
+    void setTuning(std::array<float, 12>& tuning, std::array<float, 12>& preset);
 
     void updateScaleCenter(int center);
 
@@ -46,6 +46,7 @@ public:
 private:
 
     std::array<float, 12> noteTuning;
+    std::array<float, 12> tuningPreset;
     int scaleCenter = 0;
 
 };
