@@ -123,9 +123,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 
     //CHOICE
         params.push_back(std::make_unique<juce::AudioParameterChoice>("leftSynthChoice", "Left Synth", 
-            juce::StringArray(oscList), 1));
+            juce::StringArray(oscList), 0));
         params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "Right Synth", 
-            juce::StringArray(oscList), 1));
+            juce::StringArray(oscList), 0));
         createFloatParameter(params, "synthMix", "Synth Mix", -1.0f, 1.0f, 0.01f, 0.0f);
 
 //PROCESSES
@@ -515,7 +515,6 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             std::array<float, 12> tuningArray;
             auto& bassControlsTuning = *vts.getRawParameterValue("bassControlsTuning");
             auto& keyboardBreak = *vts.getRawParameterValue("keyboardBreak");
-
             auto& tuning0 = *vts.getRawParameterValue("tuning0");
             auto& tuning1 = *vts.getRawParameterValue("tuning1");
             auto& tuning2 = *vts.getRawParameterValue("tuning2");
@@ -528,7 +527,6 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             auto& tuning9 = *vts.getRawParameterValue("tuning9");
             auto& tuning10 = *vts.getRawParameterValue("tuning10");
             auto& tuning11 = *vts.getRawParameterValue("tuning11");
-            auto& tuningPreset = *vts.getRawParameterValue("tuningPreset");
             tuningArray[0] = tuning0.load();
             tuningArray[1] = tuning1.load();
             tuningArray[2] = tuning2.load();
@@ -541,9 +539,6 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             tuningArray[9] = tuning9.load();
             tuningArray[10] = tuning10.load();
             tuningArray[11] = tuning11.load();
-            presets.setPreset((int)tuningPreset.load());
-            presets.setValueTreeValues(vts, tuningId, tuningArray);
-            
             noteTuning.setTuning(tuningArray);
 
             auto& scaleCenter = *vts.getRawParameterValue("scaleCenter");

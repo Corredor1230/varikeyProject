@@ -45,7 +45,7 @@ float NoteTuning::alterMidiPitch(int midiPitch)
 }
 
 // incluso acá puedes usar numNotes
-void NoteTuning::setTuning(std::array<float, 12>& tuning, std::array<float, 12>& preset)
+void NoteTuning::setTuning(std::array<float, 12>& tuning)
 {
     //for (int i = 0; i < 12; i++)
     //{
@@ -53,7 +53,6 @@ void NoteTuning::setTuning(std::array<float, 12>& tuning, std::array<float, 12>&
     //}
 
     noteTuning = tuning;
-    tuningPreset = preset;
 }
 
 float NoteTuning::midiToHertz(const float midiNoteNumber)

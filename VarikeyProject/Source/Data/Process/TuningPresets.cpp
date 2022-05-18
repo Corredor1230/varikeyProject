@@ -54,16 +54,22 @@ void TuningPresets::setPreset(int preset = 0)
     {
     case 0:
         currentPreset = equalArray;
+        break;
     case 1:
         currentPreset = justArray;
+        break;
     case 2:
         currentPreset = pythagoreanArray;
+        break;
     case 3:
         currentPreset = quarterMeantoneArray;
+        break;
     case 4:
         currentPreset = werckmeisterArray;
+        break;
     default:
         currentPreset = equalArray;
+        break;
     }
 }
 
@@ -71,6 +77,12 @@ void TuningPresets::setValueTreeValues(juce::AudioProcessorValueTreeState& value
 {
     for (int i = 0; i < paramIDs.size(); i++)
     {
-        valueTree.getParameterAsValue(paramIDs[i]).setValue(currentPreset[i] + tuningArray[i]);
+        //valueTree.getParameter(paramIDs[i])->setValueNotifyingHost(currentPreset[i] + tuningArray[i]);
+        valueTree.getParameter(paramIDs[i])->sendValueChangedMessageToListeners(currentPreset[i] + tuningArray[i]);
     }
+}
+
+std::array<float, 12> TuningPresets::getCurrentPreset()
+{
+    return currentPreset;
 }

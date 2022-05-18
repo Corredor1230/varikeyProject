@@ -63,7 +63,7 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     addAndMakeVisible(presetSelector);
     addAndMakeVisible(presetLabel);
     std::initializer_list<const char*> presetList{ 
-        "Equal Temperament", "Just Intonation",
+        "12-TET", "Just Intonation",
         "Pythagorean", "1/4 Meantone",
         "Werckmeister III", "Marimba 1", "Marimba 2", "Marimba 3", "Koto"};
     presetSelector.addItemList(juce::StringArray(presetList), 1);
@@ -96,6 +96,8 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     setSliderParams(slider10, label10, "10", vertical);
     setSliderParams(slider11, label11, "11", vertical);
 
+    presetSelector.setSelectedItemIndex(3, juce::sendNotification);
+    oldValue = presetSelector.getSelectedItemIndex();
 }
 
 TuningComponent::~TuningComponent()
@@ -178,6 +180,14 @@ void TuningComponent::paint (juce::Graphics& g)
     }
 
     setSliderLabels((int)transposeSlider.getValue());
+
+    if (oldValue != presetSelector.getSelectedItemIndex() - 1)
+    {
+        oldValue = presetSelector.getSelectedItemIndex() - 1;
+        presets.setPreset(presetSelector.getSelectedItemIndex() - 1);
+        currentPreset = presets.getCurrentPreset();
+        presetSelector.onChange = [&]() {updateSlidersFromArray(currentPreset); };
+    }
 }
 
 void TuningComponent::resized()
@@ -223,8 +233,8 @@ void TuningComponent::resized()
     keyBreakLabel.setBounds(keyBreakToggle.getRight(), topStartY, sliderWidth * 3.5, transposeTextBoxHeight);
     keyBreakLabel.setJustificationType(juce::Justification::centredLeft);
     keyBreakValue.setBounds(keyBreakLabel.getRight(), topStartY, sliderWidth, transposeTextBoxHeight);
-    presetLabel.setBounds(keyBreakValue.getRight() + padding, topStartY, sliderWidth * 2, transposeTextBoxHeight);
-    presetSelector.setBounds(presetLabel.getRight(), topStartY, sliderWidth * 2, transposeTextBoxHeight);
+    presetLabel.setBounds(keyBreakValue.getRight() + padding, topStartY, sliderWidth * 2.5, transposeTextBoxHeight);
+    presetSelector.setBounds(presetLabel.getRight() + padding, topStartY + padding / 2, sliderWidth * 3, transposeTextBoxHeight - padding);
     transposeLabel.setBounds(labelStartX, slider0.getBottom() - 2, transposeTextBoxWidth, transposeTextBoxHeight);
     transposeLabel.setJustificationType(juce::Justification::centredLeft);
     centerLabel.setBounds(transposeStartX, slider0.getBottom() - 2, centerLabelWidth, transposeTextBoxHeight);
@@ -283,4 +293,20 @@ void TuningComponent::setSliderLabels(int centerValue)
     label9.setText(noteArray[getArrayValue(9, centerValue)], juce::dontSendNotification);
     label10.setText(noteArray[getArrayValue(10, centerValue)], juce::dontSendNotification);
     label11.setText(noteArray[getArrayValue(11, centerValue)], juce::dontSendNotification);
+}
+
+void TuningComponent::updateSlidersFromArray(std::array<float, 12> newValues)
+{
+    slider0.setValue(newValues[0], juce::sendNotification);
+    slider1.setValue(newValues[1], juce::sendNotification);
+    slider2.setValue(newValues[2], juce::sendNotification);
+    slider3.setValue(newValues[3], juce::sendNotification);
+    slider4.setValue(newValues[4], juce::sendNotification);
+    slider5.setValue(newValues[5], juce::sendNotification);
+    slider6.setValue(newValues[6], juce::sendNotification);
+    slider7.setValue(newValues[7], juce::sendNotification);
+    slider8.setValue(newValues[8], juce::sendNotification);
+    slider9.setValue(newValues[9], juce::sendNotification);
+    slider10.setValue(newValues[10], juce::sendNotification);
+    slider11.setValue(newValues[11], juce::sendNotification);
 }

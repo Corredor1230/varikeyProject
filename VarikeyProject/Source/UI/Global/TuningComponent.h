@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "../LookAndFeelElements/Fonts/EmbeddedFonts.h"
 #include "../VarikeyLookAndFeel.h"
+#include "../Source/Data/Process/TuningPresets.h"
 
 //==============================================================================
 /*
@@ -36,12 +37,15 @@ public:
     void setFont(juce::Font& font);
     void setSliderLabels(int centerValue);
     int getArrayValue(int index, int centerValue){return (index + centerValue) % 12;}
-
+    void updateSlidersFromArray(std::array<float, 12> newValues);
 
 private:
 
     juce::AudioProcessorValueTreeState& vts;
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+    TuningPresets presets;
+    std::array<float, 12> currentPreset;
+    int oldValue = 0;
 
     void setSliderParams(juce::Slider& slider, juce::Label& label, std::string name, int style);
     //juce::Font tuningFont;

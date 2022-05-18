@@ -36,6 +36,7 @@ public:
     };
 
     std::array<float, 12> getPreset(tuningPresets preset);
+    std::array<float, 12> getCurrentPreset();
     void setPreset(tuningPresets preset);
     void setPreset(int preset);
     void setValueTreeValues(juce::AudioProcessorValueTreeState& valueTree, juce::StringArray paramIDs, std::array<float, 12> tuningArray);

@@ -16,7 +16,6 @@
 #include "Data/Voice/SynthSound.h"
 #include "Data/Process/HipLopFilter.h"
 #include "Data/Process/Oscillator.h"
-#include "Data/Process/TuningPresets.h"
 
 //==============================================================================
 /**
@@ -137,7 +136,6 @@ private:
     float endGain = 0;
 
     NoteTuning noteTuning;
-    TuningPresets presets;
     HipLopFilter filter;
     juce::dsp::StateVariableTPTFilter<float> juceLopFilt;
     juce::dsp::StateVariableTPTFilter<float> juceHipFilt;
