@@ -87,13 +87,13 @@ void FilterComponent::paint (juce::Graphics& g)
     lopQSlider.setBounds(lopCutoffSlider.getRight() + 3 * padding, lopStartY, sliderWidth, sliderHeight);
 
 
-    hipLabel.setBounds(sliderStartX, lopCutoffSlider.getBottom() - 5, 2 * sliderLabelWidth, sliderLabelHeight);
-    hipToggle.setBounds(hipLabel.getRight(), lopCutoffSlider.getBottom() - 5, sliderLabelWidth, sliderLabelHeight);
-    hipToggleLabel.setBounds(hipToggle.getRight() - padding, lopCutoffSlider.getBottom() - 5, sliderLabelWidth + padding, sliderLabelHeight);
+    hipLabel.setBounds(sliderStartX, lopCutoffSlider.getBottom() + padding, 2 * sliderLabelWidth, sliderLabelHeight);
+    hipToggle.setBounds(hipLabel.getRight(), lopCutoffSlider.getBottom() + padding, sliderLabelWidth, sliderLabelHeight);
+    hipToggleLabel.setBounds(hipToggle.getRight() - padding, lopCutoffSlider.getBottom() + padding, sliderLabelWidth + padding, sliderLabelHeight);
 
     int hipStartY = hipLabel.getBottom() - 3.2 * padding;
-    hipCutoffSlider.setBounds(sliderStartX + sliderLabelWidth, hipStartY, sliderWidth, sliderHeight);
-    hipQSlider.setBounds(hipCutoffSlider.getRight() + 3 * padding, hipStartY, sliderWidth, sliderHeight);
+    hipCutoffSlider.setBounds(sliderStartX + sliderLabelWidth, hipStartY + padding, sliderWidth, sliderHeight);
+    hipQSlider.setBounds(hipCutoffSlider.getRight() + 3 * padding, hipStartY + padding, sliderWidth, sliderHeight);
 
 
     juce::Colour toggleOff = getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId);

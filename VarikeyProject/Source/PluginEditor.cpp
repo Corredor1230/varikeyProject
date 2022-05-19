@@ -40,6 +40,9 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     setLookAndFeel(&varikeyLookAndFeel);
     addAndMakeVisible(tuner);
 
+    varikeyLogo = Drawable::createFromImageData(BinaryData::Varikey_svg,
+        BinaryData::Varikey_svgSize);
+
     addAndMakeVisible(additiveLeft);
     addAndMakeVisible(additiveRight);
     addAndMakeVisible(genLeft);
@@ -154,6 +157,9 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     auto& r3 = *vts.getRawParameterValue("lfo3Route");
     auto& r4 = *vts.getRawParameterValue("lfo4Route");
     auto& r5 = *vts.getRawParameterValue("modAdsrRoute");
+    auto& centerToggle = *vts.getRawParameterValue("bassControlsTuning");
+    if (centerToggle.load()) 
+        tuner.updateCenterSlider(audioProcessor.getCurrentControlNote());
 
     lfo1.setUsedRoutes(1, 2, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
     lfo2.setUsedRoutes(3, 4, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
@@ -163,60 +169,7 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     getBounds().removeFromRight(5);
     getBounds().removeFromTop(5);
     getBounds().removeFromBottom(5);
-    int height = getHeight();
-    int width = getWidth();
 
-    int padding = 10;
-    int firstRowStartX = 0;
-    int firstRowStartY = 0;
-    int firstRowHeight = 2 * (height / 9);
-    int secondRowHeight = height / 2.75;
-    int firstColumnWidth = width / 3;
-    int filterWidth = firstColumnWidth * 0.8;
-    int adsrWidth = width / 2 - filterWidth;
-    int secondColumnWidth = width / 3;
-
-    int fmRowHeight = (height / 9);
-    int lfoHeight = (3 * secondRowHeight) / 8;
-    int pitchwheelHeight = secondRowHeight - lfoHeight * 2;
-    int labelHeight = 18;
-    int labelWidth = 50;
-    int labelStartX = firstColumnWidth + (secondColumnWidth / 2) - (labelWidth / 2);
-    int crossHeight = fmRowHeight - labelHeight;
-
-    int secondRowStartX = 0;
-    int secondRowStartY = height / 3;
-
-    int thirdRowStartX = 0;
-    int thirdRowStartY = firstRowHeight + fmRowHeight + secondRowHeight;
-    int thirdRowHeight = height - firstRowHeight - fmRowHeight - secondRowHeight;
-    int volumeWidth = width / 12 + padding * 2;
-    int tunerWidth = 2 * firstColumnWidth + secondColumnWidth - volumeWidth;
-
-    int volumeStartX = tunerWidth - padding;
-    int topStartY = 8 + padding / 2.5;
-    int volumeHeight = thirdRowHeight - labelHeight - 1.7 * padding - topStartY;
-
-
-    int oscChoiceWidth = (secondColumnWidth / 2) - padding;
-    int oscChoiceHeight = (firstRowHeight / 4) - 1.5 * padding;
-
-
-
-    leftOscChoice.setBounds(firstColumnWidth + (padding / 2), firstRowHeight - oscChoiceHeight - (padding / 1.5),
-        oscChoiceWidth, oscChoiceHeight);
-    rightOscChoice.setBounds(width / 2 + 7, firstRowHeight - oscChoiceHeight - (padding / 1.5),
-        oscChoiceWidth, oscChoiceHeight);
-
-    genLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
-    additiveLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
-    karpLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
-    noiseLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
-
-    genRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
-    additiveRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
-    karpRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
-    noiseRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
 
 
 
@@ -288,10 +241,102 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
         break;
     }
 
+
+
+    g.setColour(varikeyLookAndFeel.getColourFromPalette(VarikeyLookAndFeel::paletteColours::contrast));
+    g.fillRect(firstRowStartX + 5, secondRowStartY, width - 10, 1);
+    g.fillRect(firstRowStartX + 5, thirdRowStartY, width - 10, 1);
+    g.fillRect(modAdsr.getRight() + (width - modAdsr.getRight()) / 2 - 4, secondRowStartY + 6, 1, (secondRowHeight - pitchwheelHeight) - 8);
+    g.fillRect(width / 2, secondRowStartY + 6, 1, secondRowHeight - 12);
+
+    //ADSR
+    g.fillRect(filters.getRight(), secondRowStartY + 6, 1, secondRowHeight - 12);
+    g.fillRect(firstRowStartX + 5, secondRowStartY + secondRowHeight / 2, filterWidth - 10, 1);
+    g.fillRect(filters.getRight() + 5, secondRowStartY + secondRowHeight / 2, adsrWidth - 10, 1);
+
+    //Volume
+    g.fillRect(volumeStartX - 5, thirdRowStartY + 5, 1, thirdRowHeight - 10);
+    g.fillRect(firstRowStartX + 5, firstRowHeight - 3, width - 10, 1);
+
+    //First row lines
+    //g.fillRect(width / 2, firstRowHeight - oscChoiceHeight - padding - 2, 1, oscChoiceHeight + padding);
+    //g.fillRect(firstColumnWidth + 1, firstRowStartY + 5, 1, firstRowHeight - oscChoiceHeight * 1.7);
+    //g.fillRect(firstColumnWidth + secondColumnWidth + 1, firstRowStartY + 5, 1, firstRowHeight - oscChoiceHeight * 1.7);
+    //g.fillRect(firstColumnWidth + 1, firstRowHeight - oscChoiceHeight * 1.5, secondColumnWidth + 1, 1);
+    g.fillRect(firstColumnWidth + 1, firstRowHeight + 5, 1, fmRowHeight - 10);
+    g.fillRect(firstColumnWidth + secondColumnWidth + 1, firstRowHeight + 5, 1, fmRowHeight - 10);
+
+    //LFO
+    g.fillRect(modAdsr.getRight() + 5, secondRowStartY + lfoHeight + 2, lfo1.getWidth() / 2 - 15, 1);
+    g.fillRect(modAdsr.getRight() + lfo1.getWidth() / 2 + 4, secondRowStartY + lfoHeight + 2, lfo1.getWidth() / 2 - 10, 1);
+    g.fillRect(modAdsr.getRight() + 5, lfo2.getBottom() + 3, width - modAdsr.getRight() - 10, 1);
+    juce::Rectangle<float> logoRect;
+    logoRect.setBounds(genLeft.getRight() + padding * 8.6, firstRowStartY + padding * 1.5, secondColumnWidth / 4, firstRowHeight / 1.6);
+    varikeyLogo->replaceColour(juce::Colours::black, varikeyLookAndFeel.getColourFromPalette(VarikeyLookAndFeel::paletteColours::highlight));
+    varikeyLogo->drawWithin(g, logoRect, juce::RectanglePlacement::Flags::fillDestination, 1.0);
+}
+
+void VarikeyProjectAudioProcessorEditor::resized()
+{
+    height = getHeight();
+    width = getWidth();
+
+    padding = 10;
+    firstRowStartX = 0;
+    firstRowStartY = 0;
+    firstRowHeight = 2 * (height / 9);
+    secondRowHeight = height / 2.75;
+    firstColumnWidth = width / 3;
+    filterWidth = firstColumnWidth * 0.8;
+    adsrWidth = width / 2 - filterWidth;
+    secondColumnWidth = width / 3;
+
+    fmRowHeight = (height / 9);
+    lfoHeight = (3 * secondRowHeight) / 8;
+    pitchwheelHeight = secondRowHeight - lfoHeight * 2;
+    labelHeight = 18;
+    labelWidth = 50;
+    labelStartX = firstColumnWidth + (secondColumnWidth / 2) - (labelWidth / 2);
+    crossHeight = fmRowHeight - labelHeight;
+
+    secondRowStartX = 0;
+    secondRowStartY = height / 3;
+
+    thirdRowStartX = 0;
+    thirdRowStartY = firstRowHeight + fmRowHeight + secondRowHeight;
+    thirdRowHeight = height - firstRowHeight - fmRowHeight - secondRowHeight;
+    volumeWidth = width / 12 + padding * 2;
+    tunerWidth = 2 * firstColumnWidth + secondColumnWidth - volumeWidth;
+
+    volumeStartX = tunerWidth - padding;
+    topStartY = 8 + padding / 2.5;
+    volumeHeight = thirdRowHeight - labelHeight - 1.7 * padding - topStartY;
+
+
+    oscChoiceWidth = (secondColumnWidth / 2) - padding;
+    oscChoiceHeight = (firstRowHeight / 4) - 1.5 * padding;
+
+
+
+    leftOscChoice.setBounds(firstColumnWidth + (padding / 2) - padding + 6.3, firstRowHeight - oscChoiceHeight - (padding / 1.5),
+        oscChoiceWidth, oscChoiceHeight);
+    rightOscChoice.setBounds(width / 2 + padding * 1.33, firstRowHeight - oscChoiceHeight - (padding / 1.5),
+        oscChoiceWidth, oscChoiceHeight);
+
+    genLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
+    additiveLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
+    karpLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
+    noiseLeft.setBounds(firstRowStartX, firstRowStartY, firstColumnWidth, firstRowHeight);
+
+    genRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
+    additiveRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
+    karpRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
+    noiseRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
+
     distLeft.setBounds(firstRowStartX, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
     distRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
-    crossSlider.setBounds(firstColumnWidth, crossLabel.getBottom(), secondColumnWidth, crossHeight);
     crossLabel.setBounds(labelStartX, firstRowHeight, labelWidth, labelHeight);
+    crossSlider.setBounds(firstColumnWidth, crossLabel.getBottom(), secondColumnWidth, crossHeight);
 
     filters.setBounds(firstRowStartX, secondRowStartY, filterWidth, secondRowHeight);
     ampAdsr.setBounds(filters.getRight(), secondRowStartY, adsrWidth, secondRowHeight / 2);
@@ -303,20 +348,6 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     tuner.setBounds(firstRowStartX, thirdRowStartY, tunerWidth, thirdRowHeight);
     volumeLabel.setBounds(volumeStartX, thirdRowStartY + topStartY, volumeWidth, labelHeight);
     volumeSlider.setBounds(volumeStartX, volumeLabel.getBottom(), volumeWidth, volumeHeight);
-
-    g.setColour(varikeyLookAndFeel.getColourFromPalette(VarikeyLookAndFeel::paletteColours::contrast));
-    g.fillRect(firstRowStartX + 5, secondRowStartY, width - 10, 1);
-    g.fillRect(firstRowStartX + 5, thirdRowStartY, width - 10, 1);
-    g.fillRect(width / 2, secondRowStartY + 6, 1, secondRowHeight - 12);
-    g.fillRect(modAdsr.getRight() + (width - modAdsr.getRight()) / 2 - 4, secondRowStartY + 6, 1, (secondRowHeight - pitchwheelHeight) - 12);
-    g.fillRect(width / 2, firstRowHeight - oscChoiceHeight - padding - 2, 1, oscChoiceHeight + padding);
-    g.fillRect(filters.getRight(), secondRowStartY + 6, 1, secondRowHeight - 12);
-}
-
-void VarikeyProjectAudioProcessorEditor::resized()
-{
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
 }
 
 int VarikeyProjectAudioProcessorEditor::getComboBoxIndex(juce::String& string)

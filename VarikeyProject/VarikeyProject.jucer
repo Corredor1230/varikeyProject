@@ -44,6 +44,12 @@
         </GROUP>
       </GROUP>
       <GROUP id="{B177FE03-6A10-92CF-C7FF-F74E149E2FEA}" name="UI">
+        <GROUP id="{89A9C4CC-6D90-02A6-04C6-93A978A33975}" name="Images">
+          <FILE id="xawfAx" name="Saw.svg" compile="0" resource="1" file="Source/UI/Images/Saw.svg"/>
+          <FILE id="G90jrJ" name="Square.svg" compile="0" resource="1" file="Source/UI/Images/Square.svg"/>
+          <FILE id="UACSut" name="Triangle.svg" compile="0" resource="1" file="Source/UI/Images/Triangle.svg"/>
+          <FILE id="GjDbn6" name="Varikey.svg" compile="0" resource="1" file="Source/UI/Images/Varikey.svg"/>
+        </GROUP>
         <GROUP id="{8B2483A4-1418-E2C1-CC76-75F8761C5480}" name="Global">
           <FILE id="rzbey5" name="PitchwheelComponent.cpp" compile="1" resource="0"
                 file="Source/UI/Global/PitchwheelComponent.cpp"/>

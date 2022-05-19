@@ -233,6 +233,8 @@ void SynthVoice::updateHipFilter(bool isEnabled, float cutoff, float q)
     hipCutoff = std::fmin(20000, std::fmax(20,
         (tuningRef.midiToHertz(hipMid * (modAdsrSample * 0.5 + 0.5) * (modAdsrRoute == 12)))));
     (modAdsrRoute == 13) ? updateHipQ = std::fmax(0.1, q * modAdsrSample) : updateHipQ = q;
+    juceHipFilt.setCutoffFrequency(hipCutoff);
+    juceHipFilt.setResonance(updateHipQ);
     filtCtrl.setParamValue("hipCutoff", cutoff);
     filtCtrl.setParamValue("hipQ", q);
 }
@@ -454,6 +456,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     {
         tuningRef.updateScaleCenter(getCurrentlyPlayingNote() % 12);
         tuningCenterParam->setValue(getCurrentlyPlayingNote() % 12);
+        controlNote = getCurrentlyPlayingNote();
     }
 
     //PROCESS
@@ -535,6 +538,12 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 float SynthVoice::freqToMidi(float freq)
 {
     return ((12 * log(freq / 220.0) / log(2.0)) + 57.01);
+}
+
+float SynthVoice::getMidiNote()
+{
+    if(controlNote!=0)
+    return controlNote % 12;
 }
 
 

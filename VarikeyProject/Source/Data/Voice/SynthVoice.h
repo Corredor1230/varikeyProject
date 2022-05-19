@@ -81,6 +81,7 @@ public:
     void updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter);
     void updateTuner(std::array<float, 12> tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
     float freqToMidi(float freq);
+    float getMidiNote();
 
 private:
 
@@ -221,6 +222,7 @@ private:
     int keyboardBreak = 48;
     int scaleCenterSetPitch = 0;
     bool bassTuning = false;
+    int controlNote = 0;
 
     float tempVelocity = 0;
     float finalGain = 0;

@@ -62,13 +62,9 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
 
     addAndMakeVisible(presetSelector);
     addAndMakeVisible(presetLabel);
-    std::initializer_list<const char*> presetList{ 
-        "12-TET", "Just Intonation",
-        "Pythagorean", "1/4 Meantone",
-        "Werckmeister III", "Marimba 1", "Marimba 2", "Marimba 3", "Koto"};
-    presetSelector.addItemList(juce::StringArray(presetList), 1);
+    presetSelector.addItemList(presetList, 1);
     presetSelector.setJustificationType(juce::Justification::centred);
-    presetSelector.setTextWhenNothingSelected("Equal Temperament");
+    presetSelector.setTextWhenNothingSelected("12-TET");
 
     presetLabel.setText("Tuning Preset: ", juce::dontSendNotification);
     presetLabel.setJustificationType(juce::Justification::centred);
@@ -96,8 +92,8 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     setSliderParams(slider10, label10, "10", vertical);
     setSliderParams(slider11, label11, "11", vertical);
 
-    presetSelector.setSelectedItemIndex(3, juce::sendNotification);
-    oldValue = presetSelector.getSelectedItemIndex();
+    presetSelector.setSelectedItemIndex(0, juce::sendNotification);
+    oldValue = getPresetIndex(presetSelector.getText());
 }
 
 TuningComponent::~TuningComponent()
@@ -106,6 +102,8 @@ TuningComponent::~TuningComponent()
 
 void TuningComponent::paint (juce::Graphics& g)
 {
+
+
     g.fillAll(juce::Colour());
     //juce::Rectangle<float> border;
     //border.setBounds(5, 5, getWidth() - 10, getHeight() - 10);
@@ -181,13 +179,21 @@ void TuningComponent::paint (juce::Graphics& g)
 
     setSliderLabels((int)transposeSlider.getValue());
 
-    if (oldValue != presetSelector.getSelectedItemIndex() - 1)
+    if (oldValue != getPresetIndex(presetSelector.getText()))
     {
-        oldValue = presetSelector.getSelectedItemIndex() - 1;
-        presets.setPreset(presetSelector.getSelectedItemIndex() - 1);
+        oldValue = getPresetIndex(presetSelector.getText());
+        presets.setPreset(getPresetIndex(presetSelector.getText()));
         currentPreset = presets.getCurrentPreset();
-        presetSelector.onChange = [&]() {updateSlidersFromArray(currentPreset); };
+        //presetSelector.onChange = [&]() {updateSlidersFromArray(currentPreset); };
+        updateSlidersFromArray(currentPreset);
     }
+
+    //presets.setPreset(getPresetIndex(presetSelector.getText()));
+    //DBG(getPresetIndex(presetSelector.getText()));
+    //currentPreset = presets.getCurrentPreset();
+    //presetSelector.onChange = [=]() {updateSlidersFromArray(presets.getCurrentPreset()); };
+
+
 }
 
 void TuningComponent::resized()
@@ -309,4 +315,22 @@ void TuningComponent::updateSlidersFromArray(std::array<float, 12> newValues)
     slider9.setValue(newValues[9], juce::sendNotification);
     slider10.setValue(newValues[10], juce::sendNotification);
     slider11.setValue(newValues[11], juce::sendNotification);
+}
+
+int TuningComponent::getPresetIndex(juce::String& preset)
+{
+    if (preset == "12-TET") return 0;
+    if (preset == "Just Intonation") return 1;
+    if (preset == "Pythagorean") return 2;
+    if (preset == "1/4 Meantone") return 3;
+    if (preset == "Werckmeister III") return 4;
+    if (preset == "Marimba 1") return 5;
+    if (preset == "Marimba 2") return 6;
+    if (preset == "Marimba 3") return 7;
+    if (preset == "Koto") return 8;
+}
+
+void TuningComponent::updateCenterSlider(float controlNote)
+{
+    transposeSlider.setValue((int)controlNote, juce::sendNotification);
 }

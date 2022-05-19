@@ -40,6 +40,50 @@ public:
     int getComboBoxIndex(juce::String& string);
 
 private:
+
+    
+
+
+    //GUI VALUES
+    int height = 0;
+    int width = 0;
+
+    int padding = 0;
+    int firstRowStartX = 0;
+    int firstRowStartY = 0;
+    int firstRowHeight = 0;
+    int secondRowHeight = 0;
+    int firstColumnWidth = 0;
+    int filterWidth = 0;
+    int adsrWidth = 0;
+    int secondColumnWidth = 0;
+
+    int fmRowHeight = 0;
+    int lfoHeight = 0;
+    int pitchwheelHeight = 0;
+    int labelHeight = 0;
+    int labelWidth = 0;
+    int labelStartX = 0;
+    int crossHeight = 0;
+
+    int secondRowStartX = 0;
+    int secondRowStartY = 0;
+
+    int thirdRowStartX = 0;
+    int thirdRowStartY = 0;
+    int thirdRowHeight = 0;
+    int volumeWidth = 0;
+    int tunerWidth = 0;
+
+    int volumeStartX = 0;
+    int topStartY = 0;
+    int volumeHeight = 0;
+
+
+    int oscChoiceWidth = 0;
+    int oscChoiceHeight = 0;
+
+
     juce::String leftString{ "additiveLeft" };
     juce::StringArray leftAdditiveIDs
     {
@@ -86,6 +130,7 @@ private:
     juce::Slider crossSlider;
     juce::Label crossLabel;
 
+    std::unique_ptr<Drawable> varikeyLogo;
 
     int leftOscValue = 1;
     int rightOscValue = 1;

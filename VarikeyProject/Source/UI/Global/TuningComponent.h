@@ -38,8 +38,15 @@ public:
     void setSliderLabels(int centerValue);
     int getArrayValue(int index, int centerValue){return (index + centerValue) % 12;}
     void updateSlidersFromArray(std::array<float, 12> newValues);
+    int getPresetIndex(juce::String& preset);
+    void updateCenterSlider(float controlNote);
 
 private:
+
+    juce::StringArray presetList{
+    "12-TET", "Just Intonation",
+    "Pythagorean", "1/4 Meantone",
+    "Werckmeister III", "Marimba 1", "Marimba 2", "Marimba 3", "Koto" };
 
     juce::AudioProcessorValueTreeState& vts;
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;

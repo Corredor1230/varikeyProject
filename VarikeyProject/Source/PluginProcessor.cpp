@@ -566,6 +566,9 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load(), isGlobalFilter(modAdsrR));
             voice->updateTuner(tuningArray, bassControlsTuning.load(), keyboardBreak.load(), scaleCenter.load());
 
+            if (bassControlsTuning.load()) 
+                currentMidiNote = voice->getMidiNote();
+
             lfo1Mod.setFreq(lfo1Freq.load());
             lfo1Mod.updateLfo(lfo1Shape.load(), lfo1Depth.load());
 
@@ -695,6 +698,11 @@ bool VarikeyProjectAudioProcessor::hasTremolo(int lfo1Route, int lfo2Route, int 
 void VarikeyProjectAudioProcessor::changeTuningPreset(int presetChoice, std::array<float, 12> preset)
 {
     noteTuning.setTuning(preset);
+}
+
+float VarikeyProjectAudioProcessor::getCurrentControlNote()
+{
+    return currentMidiNote;
 }
 
 //==============================================================================

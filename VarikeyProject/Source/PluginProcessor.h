@@ -70,6 +70,9 @@ public:
     bool isGlobalFilter(int modAdsrRoute);
     bool hasTremolo(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route);
     void changeTuningPreset(int presetChoice, std::array<float, 12> preset);
+    float getCurrentControlNote();
+
+    float currentMidiNote = 0;
 
 private:
 
@@ -134,6 +137,7 @@ private:
     float tremoloVolume = 0;
     float startGain = 0;
     float endGain = 0;
+
 
     NoteTuning noteTuning;
     HipLopFilter filter;
