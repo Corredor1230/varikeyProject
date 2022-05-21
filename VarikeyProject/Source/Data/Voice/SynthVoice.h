@@ -24,30 +24,35 @@
 #include "../Source/Data/Synth/Karplus.h"
 #include "../Source/Data/Synth/NoiseSynth.h"
 #include "../Source/Data/Process/Distortion.h"
-
-//class myVector {
-//    int numElements;
-//    void* memory;
-//    ´myVector(5) {
-//        memory = new double[2*5];
-//    }
-//
-//    void push(double newElement) {
-//        void* temp = new double[6]
-//            memcpy(temp, memory, 5);
-//        delete memeroy
-//            memory = temp;
-//    }
-//
-//};
+#include "../Source/Data/Process/ModRouting.h"
 
 class SynthVoice : public juce::SynthesiserVoice
 {
 public:
-    SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts) : tuningRef(someTuner)
-        , vts(vts) {
-        tuningCenterParam = vts.getParameter("scaleCenter");
-    }
+
+    enum parameterList
+    {
+        none = 0,
+        gen1NoiseMod = 1,
+        gen2NoiseMod,
+        noise1ToneMod,
+        noise2ToneMod,
+        mixMod,
+        distLeftMod,
+        distRightMod,
+        distOutLMod,
+        distOutRMod,
+        lopCutoffMod,
+        lopQMod,
+        hipCutoffMod,
+        hipQMod,
+        detuneMod,
+        vibFreqMod,
+        vibDepthMod,
+        volumeMod
+    };
+
+    SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts, ModRouting& modRouting);
     bool canPlaySound(juce::SynthesiserSound* sound) override;
     void startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition) override;
     void stopNote(float velocity, bool allowTailOff) override;
@@ -59,8 +64,8 @@ public:
     //Synth updaters
     void updateLeftGenerator(int genShape, float noiseLevel, int noiseShape);
     void updateRightGenerator(int genShape, float noiseLevel, int noiseShape);
-    void updateLeftAdditive(std::array<float, 8> additiveLeft);
-    void updateRightAdditive(std::array<float, 8> additiveRight);
+    void updateLeftAdditive(std::array<float, 8> &additiveLeft);
+    void updateRightAdditive(std::array<float, 8> &additiveRight);
     void updateLeftKarplus(float karpAttack, float karpRelease, float karpFeedback, int karpNoise);
     void updateRightKarplus(float karpAttack, float karpRelease, float karpFeedback, int karpNoise);
     void updateLeftNoise(float synthTone);
@@ -74,14 +79,14 @@ public:
     void updateHipFilter(bool isEnabled, float cutoff, float q);
     void updateAmpAdsr(float attack, float decay, float sustain, float release);
     void updateModAdsr(float attack, float decay, float sustain, float release, int route);
-    void updateLfo1(float freq, float depth, float shape, int route);
-    void updateLfo2(float freq, float depth, float shape, int route);
-    void updateLfo3(float freq, float depth, float shape, int route);
-    void updateLfo4(float freq, float depth, float shape, int route);
-    void updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter);
-    void updateTuner(std::array<float, 12> tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
+    void updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter, bool isGlobalHip);
+    void updateTuner(std::array<float, 12> &tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
     float freqToMidi(float freq);
     float getMidiNote();
+    //void updateLfo1(float freq, float depth, float shape, int route);
+    //void updateLfo2(float freq, float depth, float shape, int route);
+    //void updateLfo3(float freq, float depth, float shape, int route);
+    //void updateLfo4(float freq, float depth, float shape, int route);
 
 private:
 
@@ -108,12 +113,10 @@ private:
     Distortion distLeft;
     Distortion distRight;
 
-    HipLopFilter filter;
     juce::dsp::StateVariableTPTFilter<float> juceLopFilt;
     juce::dsp::StateVariableTPTFilter<float> juceHipFilt;
     bool lopEnabled = false;
     bool hipEnabled = false;
-    MapUI filtCtrl;
 
     AdsrData adsr;
     AdsrData modAdsr;
@@ -122,6 +125,7 @@ private:
     Oscillator lfo3Mod;
     Oscillator lfo4Mod;
     Oscillator vibrato;
+    ModRouting& modRouting;
 
 
     juce::AudioBuffer<float> synthBuffer;
@@ -200,6 +204,7 @@ private:
     float vibratoFrequency = 0;
     float vibratoDepth = 0;
     bool isVoiceFilt = false;
+    bool isVoiceHip = false;
 
 
     //Local

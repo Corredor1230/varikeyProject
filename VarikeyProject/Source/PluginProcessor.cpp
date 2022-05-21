@@ -27,11 +27,29 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
     synth.addSound(new SynthSound());
     for (int i = 0; i < numVoices; i++)
     {
-        auto ptr = new SynthVoice(noteTuning, vts);
+        auto ptr = new SynthVoice(noteTuning, vts, modRouting);
         /*ptr->setNoteTunner(&noteTuning);*/
         synth.addVoice(ptr);
     }
     juce::Decibels::decibelsToGain(10);
+
+    modRouting.setInModList((int)gen1NoiseMod, 0.f, 1.f, false);
+    modRouting.setInModList(gen2NoiseMod, 0.f, 1.f, false);
+    modRouting.setInModList(noise1ToneMod, 0.f, 1.f, false);
+    modRouting.setInModList(noise2ToneMod, 0.f, 1.f, false);
+    modRouting.setInModList(mixMod, -1.0f, 1.0f, true);
+    modRouting.setInModList(distLeftMod, 0.f, 100.f, false);
+    modRouting.setInModList(distOutLMod, 0.f, 1.f, false);
+    modRouting.setInModList(distRightMod, 0.f, 100.f, false);
+    modRouting.setInModList(distOutRMod, 0.f, 1.f, false);
+    modRouting.setInModList(lopCutoffMod, noteTuning.hertzToMidi(20.f), noteTuning.hertzToMidi(20000.f), false);
+    modRouting.setInModList(lopQMod, 0.1, 10.f, false);
+    modRouting.setInModList(hipCutoffMod, noteTuning.hertzToMidi(20.f), noteTuning.hertzToMidi(20000.f), false);
+    modRouting.setInModList(hipQMod, 0.1, 10.f, false);
+    modRouting.setInModList(detuneMod, -1.0f, 1.0f, true);
+    modRouting.setInModList(vibFreqMod, 0.f, 15.f, true);
+    modRouting.setInModList(vibDepthMod, 0.f, 1.f, false);
+    modRouting.setInModList(volumeMod, 0.f, 1.f, false);
 }
 
 //PARAMETER RANGES AND ADDITION TO VTS
@@ -63,6 +81,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         //Left
         createIntParameter(params, "leftGenShape", "Wave Shape 1", 0, 3, 0);
         createFloatParameter(params, "leftGenNoiseLevel", "Noise Level 1", 0.f, 1.f, 0.01f, 0.f, 1.4);
+
         createIntParameter(params, "leftGenNoiseShape", "Noise Shape 1", 0, 1, 1);
 
         //Right
@@ -114,9 +133,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         createFloatParameter(params, "leftDistOutput", "Output", 0.0f, 1.0f, 0.01f, 1.0f, 0.7);
         params.push_back(std::make_unique<juce::AudioParameterBool>("leftDistOnOff", "On/Off", false));
 
+
         //Right
 
-        createFloatParameter(params, "rightDistInput", "Input", 0.0f, 10.0f, 0.1f, 1.0f, 0.5);
+        createFloatParameter(params, "rightDistInput", "Input", 0.0f, 100.0f, 0.1f, 1.0f, 0.5);
         createFloatParameter(params, "rightDistOutput", "Output", 0.0f, 1.0f, 0.01f, 1.0f, 0.7);
         params.push_back(std::make_unique<juce::AudioParameterBool>("rightDistOnOff", "On/Off", false));
 
@@ -133,12 +153,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         //LOP
         createFloatParameter(params, "lopCutoff", "Cutoff LOP", 20.0f, 20000.0f, 1.0f, 1000.0f, 0.6);
         params.push_back(std::make_unique<juce::AudioParameterBool>("lopOnOff", "On/Off", false));
-        createFloatParameter(params, "lopQ", "Q LOP", 1.0f, 10.0f, 0.01f, 1.0f);
+        createFloatParameter(params, "lopQ", "Q LOP", 0.1f, 10.0f, 0.01f, 1.0f);
+
+
 
         //HIP
         createFloatParameter(params, "hipCutoff", "Cutoff HIP", 20.0f, 20000.0f, 1.0f, 1000.0f, 0.6);
         params.push_back(std::make_unique<juce::AudioParameterBool>("hipOnOff", "On/Off", false));
-        createFloatParameter(params, "hipQ", "Q HIP", 1.0f, 10.0f, 0.01f, 1.0f);
+        createFloatParameter(params, "hipQ", "Q HIP", 0.1f, 10.0f, 0.01f, 1.0f);
 
     //ADSR
         //Amp
@@ -191,7 +213,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         createFloatParameter(params, "vibDepth", "Vibrato Depth", 0.0f, 1.f, 0.001f, 0.0f);
         createFloatParameter(params, "volume", "Volume", -100.0f, 0.0f, 0.1f, -20.f);
 
-    //NOTE TUNING
+        //NOTE TUNING
         //Controls
         params.push_back(std::make_unique<juce::AudioParameterBool>("bassControlsTuning", "Bass Tuning", false));
         createIntParameter(params, "keyboardBreak", "Break", 1, 127, 48);
@@ -280,8 +302,6 @@ void VarikeyProjectAudioProcessor::changeProgramName (int index, const juce::Str
 void VarikeyProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     synth.setCurrentPlaybackSampleRate(sampleRate);
-    filter.init(sampleRate);
-    filter.buildUserInterface(&filtCtrl);
     lfo1Mod.init(sampleRate);
     lfo2Mod.init(sampleRate);
     lfo3Mod.init(sampleRate);
@@ -341,8 +361,9 @@ bool VarikeyProjectAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
 void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels = getTotalNumInputChannels(); // esto no se usa
+    //auto totalNumInputChannels = getTotalNumInputChannels(); // esto no se usa
     auto totalNumOutputChannels = getTotalNumOutputChannels();
+    modRouting.updateModRoutes(lfo1RouteCtrl, lfo2RouteCtrl, lfo3RouteCtrl, lfo4RouteCtrl, modAdsrR);
 
     buffer.clear();
 
@@ -440,13 +461,13 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
             loCut = lopCutoff.load();
             loQ = lopQ.load();
-            juceLopFilt.setCutoffFrequency(loCut);
-            juceLopFilt.setResonance(loQ);
+            //juceLopFilt.setCutoffFrequency(loCut);
+            //juceLopFilt.setResonance(loQ);
             loSwitch = lopOnOff.load();
             hiCut = hipCutoff.load();
             hiQ = hipQ.load();
-            juceHipFilt.setCutoffFrequency(hiCut);
-            juceHipFilt.setResonance(hiQ);
+            //juceHipFilt.setCutoffFrequency(hiCut);
+            //juceHipFilt.setResonance(hiQ);
             hiSwitch = hipOnOff.load();
 
 
@@ -505,6 +526,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             lfo4WaveCtrl = lfo4Shape.load();
             lfo4RouteCtrl = lfo4Route.load();
 
+
             //GLOBAL
             auto& detune = *vts.getRawParameterValue("detune");
             auto& vibFreq = *vts.getRawParameterValue("vibFreq");
@@ -559,27 +581,29 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateHipFilter(hipOnOff.load(), hipCutoff.load(), hipQ.load());
             voice->updateAmpAdsr(ampAdsrAtt.load(), ampAdsrDec.load(), ampAdsrSus.load(), ampAdsrRel.load());
             voice->updateModAdsr(modAdsrAtt.load(), modAdsrDec.load(), modAdsrSus.load(), modAdsrRel.load(), modAdsrRoute.load());
-            voice->updateLfo1(lfo1Freq.load(), lfo1Depth.load(), lfo1Shape.load(), lfo1Route.load());
-            voice->updateLfo2(lfo2Freq.load(), lfo2Depth.load(), lfo2Shape.load(), lfo2Route.load());
-            voice->updateLfo3(lfo3Freq.load(), lfo3Depth.load(), lfo3Shape.load(), lfo3Route.load());
-            voice->updateLfo4(lfo4Freq.load(), lfo4Depth.load(), lfo4Shape.load(), lfo4Route.load());
-            voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load(), isGlobalFilter(modAdsrR));
+            voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load(), isGlobalFilter(modAdsrR), isGlobalHip(modAdsrR));
             voice->updateTuner(tuningArray, bassControlsTuning.load(), keyboardBreak.load(), scaleCenter.load());
+            //voice->updateLfo1(lfo1Freq.load(), lfo1Depth.load(), lfo1Shape.load(), lfo1Route.load());
+            //voice->updateLfo2(lfo2Freq.load(), lfo2Depth.load(), lfo2Shape.load(), lfo2Route.load());
+            //voice->updateLfo3(lfo3Freq.load(), lfo3Depth.load(), lfo3Shape.load(), lfo3Route.load());
+            //voice->updateLfo4(lfo4Freq.load(), lfo4Depth.load(), lfo4Shape.load(), lfo4Route.load());
 
             if (bassControlsTuning.load()) 
                 currentMidiNote = voice->getMidiNote();
 
             lfo1Mod.setFreq(lfo1Freq.load());
-            lfo1Mod.updateLfo(lfo1Shape.load(), lfo1Depth.load());
+            lfo1Mod.updateLfo(lfo1Shape.load());
 
             lfo2Mod.setFreq(lfo2Freq.load());
-            lfo2Mod.updateLfo(lfo2Shape.load(), lfo2Depth.load());
+            lfo2Mod.updateLfo(lfo2Shape.load());
 
             lfo3Mod.setFreq(lfo3Freq.load());
-            lfo3Mod.updateLfo(lfo3Shape.load(), lfo3Depth.load());
+            lfo3Mod.updateLfo(lfo3Shape.load());
 
             lfo4Mod.setFreq(lfo4Freq.load());
-            lfo4Mod.updateLfo(lfo4Shape.load(), lfo4Depth.load());
+            lfo4Mod.updateLfo(lfo4Shape.load());
+
+            modRouting.updateModDepth(lfo1DepthCtrl, lfo2DepthCtrl, lfo3DepthCtrl, lfo4DepthCtrl);
 
             volumeDb = volume.load();
             linearVolume = juce::Decibels::decibelsToGain(volumeDb);
@@ -592,18 +616,28 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
     auto audioBlock = juce::dsp::AudioBlock<float>{ buffer };
     auto context = juce::dsp::ProcessContextReplacing<float>(audioBlock);
-    
-    //filtCtrl.setParamValue("lopCutoff", loCut);
-    //filtCtrl.setParamValue("lopQ", loQ);
-    //filtCtrl.setParamValue("lopOnOff", loSwitch);
-    //filtCtrl.setParamValue("hipCutoff", hiCut);
-    //filtCtrl.setParamValue("hipQ", hiQ);
-    //filtCtrl.setParamValue("hipOnOff", hiSwitch);
+
+    for (int i = 0; i < buffer.getNumSamples(); i++)
+    {
+        modRouting.updateModValues(lfo1Mod.getNextSample(), lfo2Mod.getNextSample(),
+            lfo3Mod.getNextSample(), lfo4Mod.getNextSample());
+        juceLopFilt.setCutoffFrequency(noteTuning.midiToHertz(
+            modRouting.modulateValue(lopCutoffMod, noteTuning.hertzToMidi(loCut))));
+        juceLopFilt.setResonance(modRouting.modulateValue(lopQMod, loQ));
+        juceHipFilt.setCutoffFrequency(noteTuning.midiToHertz(
+            modRouting.modulateValue(hipCutoffMod, noteTuning.hertzToMidi(hiCut))));
+        juceHipFilt.setResonance(modRouting.modulateValue(hipQMod, hiQ));
+    }
 
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+
     if (isGlobalFilter(modAdsrR))
     {
         if (loSwitch) juceLopFilt.process(context);
+    }
+
+    if (isGlobalHip(modAdsrR))
+    {
         if (hiSwitch) juceHipFilt.process(context);
     }
 
@@ -677,6 +711,15 @@ bool VarikeyProjectAudioProcessor::isGlobalFilter(int modAdsrRoute)
         return false;
     case 11:
         return false;
+    default:
+        return true;
+    }
+}
+
+bool VarikeyProjectAudioProcessor::isGlobalHip(int modAdsrRoute)
+{
+    switch (modAdsrRoute)
+    {
     case 12:
         return false;
     case 13:

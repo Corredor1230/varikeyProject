@@ -61,3 +61,9 @@ float NoteTuning::midiToHertz(const float midiNoteNumber)
     float hertz = 440.f * pow(2.f, (midiNoteNumber - 69.f) / 12.f);
     return hertz;
 }
+
+float NoteTuning::hertzToMidi(const float frequency)
+{
+    float midi = 12 * std::log2(frequency / 440) + 69;
+    return midi;
+}

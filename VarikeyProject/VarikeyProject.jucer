@@ -16,6 +16,8 @@
           <FILE id="busYld" name="AdsrData.h" compile="0" resource="0" file="Source/Data/Process/AdsrData.h"/>
           <FILE id="LzxzJE" name="Distortion.cpp" compile="1" resource="0" file="Source/Data/Process/Distortion.cpp"/>
           <FILE id="ezanMU" name="Distortion.h" compile="0" resource="0" file="Source/Data/Process/Distortion.h"/>
+          <FILE id="M4Aatj" name="LfoOsc.cpp" compile="1" resource="0" file="Source/Data/Process/LfoOsc.cpp"/>
+          <FILE id="g6pcYq" name="LfoOsc.h" compile="0" resource="0" file="Source/Data/Process/LfoOsc.h"/>
           <FILE id="GwtUMw" name="NoteTuning.cpp" compile="1" resource="0" file="Source/Data/Process/NoteTuning.cpp"/>
           <FILE id="TJLBKd" name="NoteTuning.h" compile="0" resource="0" file="Source/Data/Process/NoteTuning.h"/>
           <FILE id="BGOiBp" name="TuningPresets.cpp" compile="1" resource="0"
@@ -23,6 +25,8 @@
           <FILE id="EAxoET" name="TuningPresets.h" compile="0" resource="0" file="Source/Data/Process/TuningPresets.h"/>
           <FILE id="TeAC1Y" name="Oscillator.cpp" compile="1" resource="0" file="Source/Data/Process/Oscillator.cpp"/>
           <FILE id="eyRbeF" name="Oscillator.h" compile="0" resource="0" file="Source/Data/Process/Oscillator.h"/>
+          <FILE id="pRyR6v" name="ModRouting.cpp" compile="1" resource="0" file="Source/Data/Process/ModRouting.cpp"/>
+          <FILE id="SEe2xm" name="ModRouting.h" compile="0" resource="0" file="Source/Data/Process/ModRouting.h"/>
           <FILE id="eJHJ9B" name="HipLopFilter.h" compile="0" resource="0" file="Source/Data/Process/HipLopFilter.h"/>
         </GROUP>
         <GROUP id="{1C33791A-BEC2-88ED-EABA-9973DD45AA15}" name="Synth">

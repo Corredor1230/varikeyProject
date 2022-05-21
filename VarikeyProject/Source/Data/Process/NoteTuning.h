@@ -36,6 +36,8 @@ public:
 
     float midiToHertz(const float midiNoteNumber);
 
+    float hertzToMidi(const float frequency);
+
     int getModulus(const int midiNoteNumber);
 
     void setTuning(std::array<float, 12>& tuning);

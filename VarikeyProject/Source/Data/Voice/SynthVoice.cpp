@@ -10,7 +10,13 @@
 
 #include "SynthVoice.h"
 
-
+SynthVoice::SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts, ModRouting& modRouting)
+    : tuningRef(someTuner)
+    , vts(vts) 
+    , modRouting(modRouting)
+{
+    tuningCenterParam = vts.getParameter("scaleCenter");
+}
 
 bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
 {
@@ -95,14 +101,12 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
     karplusSynthRight.buildUserInterface(&karpCtrlRight);
 
 
-    lfo1Mod.init(sampleRate);
-    lfo2Mod.init(sampleRate);
-    lfo3Mod.init(sampleRate);
-    lfo4Mod.init(sampleRate);
+    //lfo1Mod.init(sampleRate);
+    //lfo2Mod.init(sampleRate);
+    //lfo3Mod.init(sampleRate);
+    //lfo4Mod.init(sampleRate);
     vibrato.init(sampleRate);
 
-    filter.init(sampleRate);
-    filter.buildUserInterface(&filtCtrl);
 
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
@@ -122,7 +126,7 @@ void SynthVoice::updateLeftGenerator(int genShape, float noiseLevel, int noiseSh
 {
     genCtrl.setParamValue("shape", genShape);
     leftNoiseLevel = noiseLevel;
-    //genCtrl.setParamValue("noiseLevel", noiseLevel);
+    genCtrl.setParamValue("noiseLevel", noiseLevel);
     genCtrl.setParamValue("noiseShape", noiseShape);
 }
 
@@ -133,7 +137,7 @@ void SynthVoice::updateRightGenerator(int genShape, float noiseLevel, int noiseS
     genCtrlRight.setParamValue("noiseShape", noiseShape);
 }
 
-void SynthVoice::updateLeftAdditive(std::array<float, 8> additiveLeft)
+void SynthVoice::updateLeftAdditive(std::array<float, 8> &additiveLeft)
 {
     additiveCtrl.setParamValue("first", additiveLeft[0]);
     additiveCtrl.setParamValue("second", additiveLeft[1]);
@@ -146,7 +150,7 @@ void SynthVoice::updateLeftAdditive(std::array<float, 8> additiveLeft)
 
 }
 
-void SynthVoice::updateRightAdditive(std::array<float, 8> additiveRight)
+void SynthVoice::updateRightAdditive(std::array<float, 8> &additiveRight)
 {
     additiveCtrlRight.setParamValue("first", additiveRight[0]);
     additiveCtrlRight.setParamValue("second", additiveRight[1]);
@@ -212,7 +216,6 @@ void SynthVoice::updateRightDist(float input, float output, bool isOn)
 void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
 {
     lopEnabled = isEnabled;
-    filtCtrl.setParamValue("lopOnOff", isEnabled);
     lopMid = freqToMidi(cutoff);
     //modAdsrSample = modAdsr.getNextSample();
     lopCutoff = std::fmin(20000,
@@ -221,22 +224,17 @@ void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
     (modAdsrRoute == 11) ? updateQ = std::fmax(0.1, q * modAdsrSample) : updateQ = q;
     juceLopFilt.setCutoffFrequency(lopCutoff);
     juceLopFilt.setResonance(updateQ);
-    filtCtrl.setParamValue("lopCutoff", lopCutoff);
-    filtCtrl.setParamValue("lopQ", q);
 }
 
 void SynthVoice::updateHipFilter(bool isEnabled, float cutoff, float q)
 {
     hipEnabled = isEnabled;
-    filtCtrl.setParamValue("hipOnOff", isEnabled);
     hipMid = freqToMidi(cutoff);
     hipCutoff = std::fmin(20000, std::fmax(20,
         (tuningRef.midiToHertz(hipMid * (modAdsrSample * 0.5 + 0.5) * (modAdsrRoute == 12)))));
     (modAdsrRoute == 13) ? updateHipQ = std::fmax(0.1, q * modAdsrSample) : updateHipQ = q;
     juceHipFilt.setCutoffFrequency(hipCutoff);
     juceHipFilt.setResonance(updateHipQ);
-    filtCtrl.setParamValue("hipCutoff", cutoff);
-    filtCtrl.setParamValue("hipQ", q);
 }
 
 void SynthVoice::updateAmpAdsr(float attack, float decay, float sustain, float release)
@@ -250,58 +248,18 @@ void SynthVoice::updateModAdsr(float attack, float decay, float sustain, float r
     modAdsrRoute = route;
 }
 
-void SynthVoice::updateLfo1(float freq, float depth, float shape, int route)
-{
-    lfo1Freq = freq;
-    lfo1Depth = depth;
-    lfo1Shape = shape;
-    lfo1Route = route;
-    lfo1Mod.setFreq(freq);
-    lfo1Mod.updateLfo(shape, depth);
 
-}
-
-void SynthVoice::updateLfo2(float freq, float depth, float shape, int route)
-{
-    lfo2Freq = freq;
-    lfo2Depth = depth;
-    lfo2Shape = shape;
-    lfo2Route = route;
-    lfo2Mod.setFreq(freq);
-    lfo2Mod.updateLfo(shape, depth);
-
-}
-
-void SynthVoice::updateLfo3(float freq, float depth, float shape, int route)
-{
-    lfo3Freq = freq;
-    lfo3Depth = depth;
-    lfo3Shape = shape;
-    lfo3Route = route;
-    lfo3Mod.setFreq(freq);
-    lfo3Mod.updateLfo(shape, depth);
-}
-
-void SynthVoice::updateLfo4(float freq, float depth, float shape, int route)
-{
-    lfo4Freq = freq;
-    lfo4Depth = depth;
-    lfo4Shape = shape;
-    lfo4Route = route;
-    lfo4Mod.setFreq(freq);
-    lfo4Mod.updateLfo(shape, depth);
-}
-
-void SynthVoice::updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter)
+void SynthVoice::updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter, bool isGlobalHip)
 {
     synthDetune = detune;
     vibrato.setFreq(vibFreq);
     vibrato.updateLfo(1, vibDepth);
     vibratoDepth = vibDepth;
     isGlobalFilter ? isVoiceFilt = false : isVoiceFilt = true;
+    isGlobalHip ? isVoiceHip = false : isVoiceHip = true;
 }
 
-void SynthVoice::updateTuner(std::array<float, 12> tuningSliders, bool inputBassTuning, int inputKeyboardBreak, int scaleCenter)
+void SynthVoice::updateTuner(std::array<float, 12> &tuningSliders, bool inputBassTuning, int inputKeyboardBreak, int scaleCenter)
 {
     tuningRef.setTuning(tuningSliders);
     keyboardBreak = inputKeyboardBreak;
@@ -336,10 +294,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     for (int i = 0; i < sampNumber; i++)
     {
         vibratoSample = vibrato.getNextSample();
-        lfo1Sample = lfo1Mod.getNextSample();
-        lfo2Sample = lfo2Mod.getNextSample();
-        lfo3Sample = lfo3Mod.getNextSample();
-        lfo4Sample = lfo4Mod.getNextSample();
     }
 
 
@@ -371,9 +325,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         {
         case 0:
             genCtrl.setParamValue("freq", oscFreq);
-            gen1NoiseLfo = ((lfo1Route == 1) * lfo1Sample + 
-                (lfo2Route == 1) * lfo2Sample + (lfo3Route == 1) * lfo3Sample + (lfo4Route == 1) * lfo4Sample) * lfoVolNormalizer;
-            genCtrl.setParamValue("noiseLevel", leftNoiseLevel - leftNoiseLevel * gen1NoiseLfo);
             genSynth.compute(sampNumber, nullptr, synthData);
             break;
         case 1:
@@ -509,12 +460,19 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
             }
         }
         if (lopEnabled) juceLopFilt.process(context);
-        if (hipEnabled) juceHipFilt.process(context);
     }
 
-
-
-    //if (isVoiceFilt) filter.compute(sampNumber, synthData, synthData);
+    if (isVoiceHip)
+    {
+        for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
+        {
+            for (int samp = 0; samp < sampNumber; samp++)
+            {
+                modAdsrSample = modAdsr.getNextSample();
+            }
+        }
+        if (hipEnabled) juceHipFilt.process(context);
+    }
 
     //Amp adsr control
     adsr.applyEnvelopeToBuffer(synthBuffer, 0, sampNumber);
@@ -546,46 +504,44 @@ float SynthVoice::getMidiNote()
     return controlNote % 12;
 }
 
-
-
-////Trying to avoid using a new buffer in Audio Thread
-//void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
+//void SynthVoice::updateLfo1(float freq, float depth, float shape, int route)
 //{
+//    lfo1Freq = freq;
+//    lfo1Depth = depth;
+//    lfo1Shape = shape;
+//    lfo1Route = route;
+//    lfo1Mod.setFreq(freq);
+//    lfo1Mod.updateLfo(shape, depth);
 //
-//    //SETUP
-//    //-------------------------------------------------------------
-//    // muy bien esto!
-//    if (!isVoiceActive())
-//        return;
+//}
 //
-//    float** synthData = outputBuffer.getArrayOfWritePointers();
-//    float newMidi = tuningRef.alterMidiPitch(getCurrentlyPlayingNote());
-//    float oscFreq = tuningRef.midiToHertz(newMidi);
+//void SynthVoice::updateLfo2(float freq, float depth, float shape, int route)
+//{
+//    lfo2Freq = freq;
+//    lfo2Depth = depth;
+//    lfo2Shape = shape;
+//    lfo2Route = route;
+//    lfo2Mod.setFreq(freq);
+//    lfo2Mod.updateLfo(shape, depth);
 //
-//    while (--numSamples >= 0)
-//    {
+//}
 //
-//        genCtrl.setParamValue("freq", oscFreq);
-//        genSynth.compute(numSamples, nullptr, synthData);
-//        startSample++;
-//    }
+//void SynthVoice::updateLfo3(float freq, float depth, float shape, int route)
+//{
+//    lfo3Freq = freq;
+//    lfo3Depth = depth;
+//    lfo3Shape = shape;
+//    lfo3Route = route;
+//    lfo3Mod.setFreq(freq);
+//    lfo3Mod.updateLfo(shape, depth);
+//}
 //
-//    while (--numSamples >= 0)
-//    {
-//        adsr.applyEnvelopeToBuffer(outputBuffer, startSample, numSamples);
-//        startSample++;
-//    }
-//
-//        for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)
-//        {    
-//            if (!adsr.isActive())
-//            {
-//                clearCurrentNote();
-//            }
-//    
-//            //clearCurrentNote();
-//        }
-//
-//
-//    
+//void SynthVoice::updateLfo4(float freq, float depth, float shape, int route)
+//{
+//    lfo4Freq = freq;
+//    lfo4Depth = depth;
+//    lfo4Shape = shape;
+//    lfo4Route = route;
+//    lfo4Mod.setFreq(freq);
+//    lfo4Mod.updateLfo(shape, depth);
 //}

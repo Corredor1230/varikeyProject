@@ -20,24 +20,25 @@ void Oscillator::setFreq(float freq)
 {
     auto cyclesPerSample = freq / currentSampleRate;
     angleDelta = cyclesPerSample * 2 * M_PI;
-        //juce::MathConstants<float>::twoPi *;
 }
 
 //forcedinline 
 void Oscillator::updateAngle() noexcept
 {
     currentAngle += angleDelta;
-    // currentAngle = mod(currentAngle + angDelta, 2 * M_PI);
     if (currentAngle >= M_PI * 2)
-        //juce::MathConstants<float>::twoPi)
         currentAngle -= M_PI * 2;
-        //juce::MathConstants<float>::twoPi;
 }
 
 void Oscillator::updateLfo(float waveValue, float depth)
 {
     waveShape = waveValue;
     lfoDepth = depth;
+}
+
+void Oscillator::updateLfo(float waveValue)
+{
+    waveShape = waveValue;
 }
 
 float Oscillator::getNextSample() 

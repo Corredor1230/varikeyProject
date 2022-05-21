@@ -9,7 +9,7 @@
 */
 
 #pragma once
-// otra cosa a notar es q internamente los samples son floats sin tanta razon, podrían ser doubles para q el acumulador fuera más preciso aun si retornaran floats
+
 #define _USE_MATH_DEFINES
 #include<cmath>
 #include<iostream>
@@ -21,14 +21,15 @@ public:
     void init(float sampleRate);
     void setFreq(float freq);
     void updateAngle() noexcept;
-    float getNextSample();
+    virtual float getNextSample();
     void updateLfo(float waveValue, float depth);
+    void updateLfo(float waveValue);
 
-private:
-    
     float currentAngle = 0.0;
     float angleDelta = 0.0;
     double currentSampleRate = 0.0;
     float waveShape = 1.0;
     float lfoDepth = 1.0;
+private:
+    
 };

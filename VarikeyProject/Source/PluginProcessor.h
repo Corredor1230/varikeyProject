@@ -16,6 +16,8 @@
 #include "Data/Voice/SynthSound.h"
 #include "Data/Process/HipLopFilter.h"
 #include "Data/Process/Oscillator.h"
+#include "Data/Process/ModRouting.h"
+#include "Data/Process/LfoOsc.h"
 
 //==============================================================================
 /**
@@ -28,12 +30,36 @@ public:
     ~VarikeyProjectAudioProcessor() override;
 
     //==============================================================================
+
+
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
 
    #ifndef JucePlugin_PreferredChannelConfigurations
     bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
    #endif
+
+    enum parameterList
+    {
+        none = 0,
+        gen1NoiseMod = 1,
+        gen2NoiseMod,
+        noise1ToneMod,
+        noise2ToneMod,
+        mixMod,
+        distLeftMod,
+        distRightMod,
+        distOutLMod,
+        distOutRMod,
+        lopCutoffMod,
+        lopQMod,
+        hipCutoffMod,
+        hipQMod,
+        detuneMod,
+        vibFreqMod,
+        vibDepthMod,
+        volumeMod
+    };
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
@@ -68,6 +94,7 @@ public:
         const juce::String& paramID, const juce::String& paramName, int minVal, int maxVal, int defaultVal);
 
     bool isGlobalFilter(int modAdsrRoute);
+    bool isGlobalHip(int modAdsrRoute);
     bool hasTremolo(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route);
     void changeTuningPreset(int presetChoice, std::array<float, 12> preset);
     float getCurrentControlNote();
@@ -140,14 +167,13 @@ private:
 
 
     NoteTuning noteTuning;
-    HipLopFilter filter;
     juce::dsp::StateVariableTPTFilter<float> juceLopFilt;
     juce::dsp::StateVariableTPTFilter<float> juceHipFilt;
-    MapUI filtCtrl;
-    Oscillator lfo1Mod;
-    Oscillator lfo2Mod;
-    Oscillator lfo3Mod;
-    Oscillator lfo4Mod;
+    LfoOsc lfo1Mod;
+    LfoOsc lfo2Mod;
+    LfoOsc lfo3Mod;
+    LfoOsc lfo4Mod;
+    ModRouting modRouting;
 
 
     //==============================================================================
