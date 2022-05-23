@@ -79,7 +79,7 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     crossSlider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
     crossSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 25);
     crossSlider.setRange(-1.0, 1.0, 0.01);
-    crossLabel.setText("Mix", juce::sendNotification);
+    crossLabel.setText("Crossfade", juce::sendNotification);
     crossLabel.setJustificationType(juce::Justification::centred);
 
     josefinSans.setFontSizeAndStyle(60.f, "plain", 1.f, 0.f);
@@ -335,7 +335,7 @@ void VarikeyProjectAudioProcessorEditor::resized()
 
     distLeft.setBounds(firstRowStartX, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
     distRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
-    crossLabel.setBounds(labelStartX, firstRowHeight, labelWidth, labelHeight);
+    crossLabel.setBounds(firstColumnWidth, firstRowHeight, secondColumnWidth, labelHeight);
     crossSlider.setBounds(firstColumnWidth, crossLabel.getBottom(), secondColumnWidth, crossHeight);
 
     filters.setBounds(firstRowStartX, secondRowStartY, filterWidth, secondRowHeight);

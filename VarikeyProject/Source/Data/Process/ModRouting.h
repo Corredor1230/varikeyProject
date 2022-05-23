@@ -19,6 +19,19 @@
 class ModRouting
 {
 public:
+    static const int paramNumber = 20;
+
+    struct RoutingState
+    {
+        std::array<float, paramNumber> mins;
+        std::array<float, paramNumber> maxs;
+        std::array<float, paramNumber> multiplier;
+        std::array<bool, paramNumber> onOffState;
+        std::array<bool, paramNumber> aroundVal;
+        std::array<int, paramNumber> route;
+        std::array<int, 5> used;
+    };
+
     ModRouting() {};
 
     void setInModList(int modIndex, float paramMin, float paramMax, bool modAroundValue);
@@ -28,11 +41,12 @@ public:
     void updateModRoutes(int lfo1, int lfo2, int lfo3, int lfo4, int adsr);
     void updateModValues(float lfo1, float lfo2, float lfo3, float lfo4);
     void updateModDepth(float lfo1, float lfo2, float lfo3, float lfo4);
-    void updateModValues(float &adsr);
+    void updateModValues(float adsr);
+    void setRoutingState(RoutingState& newState);
+    RoutingState getRoutingState();
 
 private:
 
-    static const int paramNumber = 20;
 
     float getRangeWidth(float minimum, float maximum);
     float getModMultiplier(int modIndex, float range, bool modAroundValue);
@@ -69,5 +83,5 @@ private:
     int modAdsrRoute = 0;
     float modAdsrSample = 0;
 
-
+    RoutingState currentState;
 };

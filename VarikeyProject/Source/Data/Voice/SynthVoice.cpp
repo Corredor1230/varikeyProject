@@ -15,7 +15,7 @@ SynthVoice::SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState
     , vts(vts) 
     , modRouting(modRouting)
 {
-    tuningCenterParam = vts.getParameter("scaleCenter");
+    adsrRouting.setRoutingState(modRouting.getRoutingState());
 }
 
 bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
@@ -125,15 +125,16 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
 void SynthVoice::updateLeftGenerator(int genShape, float noiseLevel, int noiseShape)
 {
     genCtrl.setParamValue("shape", genShape);
+    //genCtrl.setParamValue("noiseLevel", noiseLevel);
     leftNoiseLevel = noiseLevel;
-    genCtrl.setParamValue("noiseLevel", noiseLevel);
     genCtrl.setParamValue("noiseShape", noiseShape);
 }
 
 void SynthVoice::updateRightGenerator(int genShape, float noiseLevel, int noiseShape)
 {
     genCtrlRight.setParamValue("shape", genShape);
-    genCtrlRight.setParamValue("noiseLevel", noiseLevel);
+    //genCtrlRight.setParamValue("noiseLevel", noiseLevel);
+    rightNoiseLevel = noiseLevel;
     genCtrlRight.setParamValue("noiseShape", noiseShape);
 }
 
@@ -180,12 +181,14 @@ void SynthVoice::updateRightKarplus(float karpAttack, float karpRelease, float k
 
 void SynthVoice::updateLeftNoise(float synthTone)
 {
-    noiseCtrl.setParamValue("tone", synthTone);
+    //noiseCtrl.setParamValue("tone", synthTone);
+    leftNoiseTone = synthTone;
 }
 
 void SynthVoice::updateRightNoise(float synthTone)
 {
-    noiseCtrlRight.setParamValue("tone", synthTone);
+    //noiseCtrlRight.setParamValue("tone", synthTone);
+    rightNoiseTone = synthTone;
 }
 
 void SynthVoice::updateChoice(int leftChoice, int rightChoice, float synthMix)
@@ -193,15 +196,17 @@ void SynthVoice::updateChoice(int leftChoice, int rightChoice, float synthMix)
     leftSynthChoice = leftChoice;
     rightSynthChoice = rightChoice;
     leftRightMix = synthMix;
-    leftMixGain = ((leftRightMix - 1) / 2) * (-1);
-    rightMixGain = ((leftRightMix + 1) / 2);
+    //leftRightMix = modRouting.modulateValue(mixMod, synthMix);
+    //leftMixGain = ((leftRightMix - 1) / 2) * (-1);
+    //rightMixGain = ((leftRightMix + 1) / 2);
 }
 
 void SynthVoice::updateLeftDist(float input, float output, bool isOn)
 {
     leftDistInput = input;
     leftDistOutput = output;
-    distLeft.updateDistortion(leftDistInput, leftDistOutput);
+    distLeft.updateDistortion(modRouting.modulateValue(distLeftMod, leftDistInput),
+            modRouting.modulateValue(distOutLMod, leftDistOutput));
     leftDistIsOn = isOn;
 }
 
@@ -209,32 +214,23 @@ void SynthVoice::updateRightDist(float input, float output, bool isOn)
 {
     rightDistInput = input;
     rightDistOutput = output;
-    distRight.updateDistortion(rightDistInput, rightDistOutput);
+    distRight.updateDistortion(modRouting.modulateValue(distRightMod, rightDistInput),
+            modRouting.modulateValue(distOutRMod, rightDistOutput));
     rightDistIsOn = isOn;
 }
 
 void SynthVoice::updateLopFilter(bool isEnabled, float cutoff, float q)
 {
     lopEnabled = isEnabled;
-    lopMid = freqToMidi(cutoff);
-    //modAdsrSample = modAdsr.getNextSample();
-    lopCutoff = std::fmin(20000,
-        std::fmax(100,
-            (tuningRef.midiToHertz(lopMid * (modAdsrSample * 0.5 + 0.5) * (modAdsrRoute == 10)))));
-    (modAdsrRoute == 11) ? updateQ = std::fmax(0.1, q * modAdsrSample) : updateQ = q;
-    juceLopFilt.setCutoffFrequency(lopCutoff);
-    juceLopFilt.setResonance(updateQ);
+    lopCutoff = cutoff;
+    lopQ = q;
 }
 
 void SynthVoice::updateHipFilter(bool isEnabled, float cutoff, float q)
 {
     hipEnabled = isEnabled;
-    hipMid = freqToMidi(cutoff);
-    hipCutoff = std::fmin(20000, std::fmax(20,
-        (tuningRef.midiToHertz(hipMid * (modAdsrSample * 0.5 + 0.5) * (modAdsrRoute == 12)))));
-    (modAdsrRoute == 13) ? updateHipQ = std::fmax(0.1, q * modAdsrSample) : updateHipQ = q;
-    juceHipFilt.setCutoffFrequency(hipCutoff);
-    juceHipFilt.setResonance(updateHipQ);
+    hipCutoff = cutoff;
+    hipQ = q;
 }
 
 void SynthVoice::updateAmpAdsr(float attack, float decay, float sustain, float release)
@@ -252,8 +248,9 @@ void SynthVoice::updateModAdsr(float attack, float decay, float sustain, float r
 void SynthVoice::updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter, bool isGlobalHip)
 {
     synthDetune = detune;
-    vibrato.setFreq(vibFreq);
-    vibrato.updateLfo(1, vibDepth);
+    //vibrato.setFreq(modRouting.modulateValue(vibFreqMod, vibFreq));
+    //vibrato.updateLfo(1, modRouting.modulateValue(vibDepthMod, vibDepth));
+    vibratoFrequency = vibFreq;
     vibratoDepth = vibDepth;
     isGlobalFilter ? isVoiceFilt = false : isVoiceFilt = true;
     isGlobalHip ? isVoiceHip = false : isVoiceHip = true;
@@ -282,6 +279,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     rightBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     adsrBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
+    adsrRouting.setRoutingState(modRouting.getRoutingState());
 
     int sampNumber = synthBuffer.getNumSamples();
 
@@ -293,14 +291,29 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     for (int i = 0; i < sampNumber; i++)
     {
+        adsrRouting.updateModValues(modAdsr.getNextSample());
+        modRouting.updateModValues(modAdsr.getNextSample());
+        vibrato.setFreq(modRouting.modulateValue(vibFreqMod, vibratoFrequency));
+        vibrato.updateLfo(1, modRouting.modulateValue(vibDepthMod, vibratoDepth));
         vibratoSample = vibrato.getNextSample();
-    }
 
+    }
+    genCtrl.setParamValue("noiseLevel", modRouting.modulateValue(gen1NoiseMod, leftNoiseLevel));
+    genCtrlRight.setParamValue("noiseLevel", modRouting.modulateValue(gen2NoiseMod, rightNoiseLevel));
+    noiseCtrl.setParamValue("tone", modRouting.modulateValue(noise1ToneMod, leftNoiseTone));
+    noiseCtrlRight.setParamValue("tone", modRouting.modulateValue(noise2ToneMod, rightNoiseTone));
+
+    //distLeft.updateDistortion(modRouting.modulateValue(distLeftMod, distInLeft),
+    //    modRouting.modulateValue(distOutLMod, distOutLeft));
+    //distRight.updateDistortion(modRouting.modulateValue(distRightMod, distInRight),
+    //    modRouting.modulateValue(distOutRMod, distOutRight));
+
+    modAdsr.applyEnvelopeToBuffer(adsrBuffer, 0, sampNumber);
 
     //Updating our tuning in real time
     tunedMidi = tuningRef.alterMidiPitch(getCurrentlyPlayingNote());
     vibratoMidi = vibratoDepth * vibratoSample;
-    processedMidi = tunedMidi + vibratoMidi + synthDetune;
+    processedMidi = tunedMidi + vibratoMidi + modRouting.modulateValue(detuneMod, synthDetune);
 
     oscMidi = processedMidi;
 
@@ -312,7 +325,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     float** synthData = synthBuffer.getArrayOfWritePointers();
     float** rightData = rightBuffer.getArrayOfWritePointers();
 
-    auto audioBlock = juce::dsp::AudioBlock<float> {synthBuffer};
+    auto audioBlock = juce::dsp::AudioBlock<float>{ synthBuffer };
     auto context = juce::dsp::ProcessContextReplacing<float>(audioBlock);
 
     //OSCILLATORS
@@ -406,7 +419,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     else
     {
         tuningRef.updateScaleCenter(getCurrentlyPlayingNote() % 12);
-        tuningCenterParam->setValue(getCurrentlyPlayingNote() % 12);
         controlNote = getCurrentlyPlayingNote();
     }
 
@@ -439,38 +451,56 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     for (int i = 0; i < sampNumber; i++)
     {
-        for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
-        {
-            synthBuffer.applyGain(ch, i, 1, leftMixGain);
-            rightBuffer.applyGain(ch, i, 1, rightMixGain);
-            synthBuffer.addSample(ch, i, rightBuffer.getSample(ch, i));
-        }
+        endMix = modRouting.modulateValue(mixMod, leftRightMix);
+        leftMixGain = ((endMix - 1) / 2) * (-1);
+        rightMixGain = (endMix + 1) / 2;
+        //synthBuffer.applyGainRamp(i, 1, startMixL, leftMixGain);
+        //rightBuffer.applyGainRamp(i, 1, startMixR, rightMixGain);
+        //startMixL = leftMixGain;
+        //startMixR = rightMixGain;
     }
 
+    synthBuffer.applyGainRamp(0, sampNumber, startMixL, leftMixGain);
+    rightBuffer.applyGainRamp(0, sampNumber, startMixR, rightMixGain);
 
-    modAdsr.applyEnvelopeToBuffer(adsrBuffer, 0, sampNumber);
+    startMixL = leftMixGain;
+    startMixR = rightMixGain;
 
-    if (isVoiceFilt)
+
+    for (int i = 0; i < sampNumber; i++)
     {
         for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
         {
-            for (int samp = 0; samp < sampNumber; samp++)
-            {
-                modAdsrSample = modAdsr.getNextSample();
-            }
+            synthBuffer.addSample(ch, i, rightBuffer.getSample(ch, i));
+            //adsrRouting.updateModValues(modAdsr.getNextSample());
         }
+    }
+
+    //modAdsr.applyEnvelopeToBuffer(adsrBuffer, 0, sampNumber);
+
+    if (isVoiceFilt)
+    {
+        for (int samp = 0; samp < sampNumber; samp++)
+        {
+            //modAdsrSample = modAdsr.getNextSample();
+            juceLopFilt.setCutoffFrequency(tuningRef.midiToHertz(
+                adsrRouting.modulateValue(lopCutoffMod, tuningRef.hertzToMidi(lopCutoff))));
+            juceLopFilt.setResonance(adsrRouting.modulateValue(lopQMod, lopQ));
+        }
+
         if (lopEnabled) juceLopFilt.process(context);
     }
 
     if (isVoiceHip)
     {
-        for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
+        for (int samp = 0; samp < sampNumber; samp++)
         {
-            for (int samp = 0; samp < sampNumber; samp++)
-            {
-                modAdsrSample = modAdsr.getNextSample();
-            }
+            //modAdsrSample = modAdsr.getNextSample();
+            juceHipFilt.setCutoffFrequency(tuningRef.midiToHertz(
+                adsrRouting.modulateValue(hipCutoffMod, tuningRef.hertzToMidi(hipCutoff))));
+            juceHipFilt.setResonance(adsrRouting.modulateValue(hipQMod, hipQ));
         }
+
         if (hipEnabled) juceHipFilt.process(context);
     }
 

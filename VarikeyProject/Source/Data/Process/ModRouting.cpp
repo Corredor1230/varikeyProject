@@ -29,6 +29,12 @@ void ModRouting::updateModRoutes(int lfo1, int lfo2, int lfo3, int lfo4, int ads
     setCurrentRoutes(lfo4Route, 4);
     modAdsrRoute = adsr;
     setCurrentRoutes(modAdsrRoute, 5);
+
+    //for (int i = 0; i < paramNumber; i++)
+    //{
+    //    if (!isUsedRoute(i)) modState[i]
+    //}
+
 }
 
 void ModRouting::updateModValues(float lfo1, float lfo2, float lfo3, float lfo4)
@@ -47,9 +53,34 @@ void ModRouting::updateModDepth(float lfo1, float lfo2, float lfo3, float lfo4)
     lfo4Depth = lfo4;
 }
 
-void ModRouting::updateModValues(float& adsr)
+void ModRouting::updateModValues(float adsr)
 {
     modAdsrSample = adsr;
+}
+
+void ModRouting::setRoutingState(RoutingState& newState)
+{
+    paramMins = newState.mins;
+    paramMaxs = newState.maxs;
+    modMultiplier = newState.multiplier;
+    modState = newState.onOffState;
+    modAroundVal = newState.aroundVal;
+    currentRoute = newState.route;
+    usedRoutes = newState.used;
+}
+
+ModRouting::RoutingState ModRouting::getRoutingState()
+{
+    RoutingState returnState;
+    returnState.mins = paramMins;
+    returnState.maxs = paramMaxs;
+    returnState.multiplier = modMultiplier;
+    returnState.onOffState = modState;
+    returnState.aroundVal = modAroundVal;
+    returnState.route = currentRoute;
+    returnState.used = usedRoutes;
+
+    return returnState;
 }
 
 float ModRouting::getRangeWidth(float minimum, float maximum)
@@ -85,7 +116,10 @@ void ModRouting::setCurrentRoutes(int lfoRoute, int lfoIndex)
 float ModRouting::modulateValue(int modIndex, float currentValue)
 {
     if (modAroundVal[modIndex]) modMultiplier[modIndex] =
-        std::min((currentValue - paramMins[modIndex]), (paramMaxs[modIndex] - currentValue));
+        std::min
+        (
+            (currentValue - paramMins[modIndex]), (paramMaxs[modIndex] - currentValue)
+        );
     else modMultiplier[modIndex] = currentValue - paramMins[modIndex];
     if (modState[modIndex]) return getModulatedValue(modIndex, currentValue);
     else return currentValue;
@@ -93,50 +127,48 @@ float ModRouting::modulateValue(int modIndex, float currentValue)
 
 float ModRouting::getModulatedValue(int modIndex, float currentValue)
 {
-    float& current1Sample = lfo1Sample;
-    float& current2Sample = lfo2Sample;
-    float& current3Sample = lfo3Sample;
-    float& current4Sample = lfo4Sample;
-    float& currentAdsrSample = modAdsrSample;
-
     switch (currentRoute[modIndex])
     {
     case 1:
         if (modAroundVal[modIndex])
-            return getLimitedAroundValue(modIndex, currentValue, current1Sample, lfo1Depth);
+            return getLimitedAroundValue(modIndex, currentValue, lfo1Sample, lfo1Depth);
         else
-            return getLimitedBelowValue(modIndex, currentValue, current1Sample, lfo1Depth);
+            return getLimitedBelowValue(modIndex, currentValue, lfo1Sample, lfo1Depth);
     case 2:
         if (modAroundVal[modIndex])
-            return getLimitedAroundValue(modIndex, currentValue, current2Sample, lfo2Depth);
+            return getLimitedAroundValue(modIndex, currentValue, lfo2Sample, lfo2Depth);
         else
-            return getLimitedBelowValue(modIndex, currentValue, current2Sample, lfo2Depth);
+            return getLimitedBelowValue(modIndex, currentValue, lfo2Sample, lfo2Depth);
     case 3:
         if (modAroundVal[modIndex])
-            return getLimitedAroundValue(modIndex, currentValue, current3Sample, lfo3Depth);
+            return getLimitedAroundValue(modIndex, currentValue, lfo3Sample, lfo3Depth);
         else
-            return getLimitedBelowValue(modIndex, currentValue, current3Sample, lfo3Depth);
+            return getLimitedBelowValue(modIndex, currentValue, lfo3Sample, lfo3Depth);
     case 4:
         if (modAroundVal[modIndex])
-            return getLimitedAroundValue(modIndex, currentValue, current4Sample, lfo4Depth);
+            return getLimitedAroundValue(modIndex, currentValue, lfo4Sample, lfo4Depth);
         else
-            return getLimitedBelowValue(modIndex, currentValue, current4Sample, lfo4Depth);
+            return getLimitedBelowValue(modIndex, currentValue, lfo4Sample, lfo4Depth);
     case 5:
-        return std::max(paramMins[modIndex], std::min(paramMaxs[modIndex], currentValue * currentAdsrSample));
+        return std::max(paramMins[modIndex], std::min(paramMaxs[modIndex], currentValue * modAdsrSample));
     default:
         _ASSERT(NULL);
+        break;
     }
 }
 
 float ModRouting::getLimitedAroundValue(int modIndex, float currentValue, float& modSample, float modDepth)
 {
-    return std::max(paramMins[modIndex], std::min(paramMaxs[modIndex], currentValue + (modSample * modDepth * modMultiplier[modIndex])));
+    return std::max(paramMins[modIndex], std::min(paramMaxs[modIndex], 
+        currentValue + (modSample * modDepth * modMultiplier[modIndex])
+    ));
 }
 
 float ModRouting::getLimitedBelowValue(int modIndex, float currentValue, float& modSample, float modDepth)
 {
-    return std::max(paramMins[modIndex], std::min(paramMaxs[modIndex], currentValue - 
-        modDepth * (((modSample * modMultiplier[modIndex]) + modMultiplier[modIndex]) / 2)));  
+    return std::max(paramMins[modIndex], std::min(paramMaxs[modIndex], 
+        currentValue - modDepth * (((modSample * modMultiplier[modIndex]) + modMultiplier[modIndex]) / 2)
+    ));  
 }
 
 bool ModRouting::isUsedRoute(int routeIndex)
@@ -144,6 +176,6 @@ bool ModRouting::isUsedRoute(int routeIndex)
     for (int i = 0; i < usedRoutes.size(); i++)
     {
         if (usedRoutes[i] == routeIndex) return true;
-        else return false;
     }
+    return false;
 }

@@ -90,6 +90,8 @@ public:
 
 private:
 
+
+
     Generator genSynth;
     Generator genSynthRight;
     MapUI genCtrl;
@@ -120,12 +122,7 @@ private:
 
     AdsrData adsr;
     AdsrData modAdsr;
-    Oscillator lfo1Mod;
-    Oscillator lfo2Mod;
-    Oscillator lfo3Mod;
-    Oscillator lfo4Mod;
     Oscillator vibrato;
-    ModRouting& modRouting;
 
 
     juce::AudioBuffer<float> synthBuffer;
@@ -134,7 +131,9 @@ private:
 
     NoteTuning& tuningRef;
     juce::AudioProcessorValueTreeState& vts;
-    juce::RangedAudioParameter* tuningCenterParam;
+    ModRouting& modRouting;
+    ModRouting adsrRouting;
+    
 
     bool isPrepared{ false };
 
@@ -143,11 +142,6 @@ private:
     float rightNoiseLevel = 0;
     float leftNoiseTone = 0;
     float rightNoiseTone = 0;
-    float synthMix = 0;
-    float distInLeft = 0;
-    float distInRight = 0;
-    float distOutLeft = 0;
-    float distOutRight = 0;
 
     //FILTER
     float lopCutoff = 0;
@@ -163,7 +157,13 @@ private:
     int leftSynthChoice = 0;
     int rightSynthChoice = 1;
 
+    float synthMix = 0;
     float leftRightMix = -1.f;
+    float startMixL = 0.f;
+    float startMixR = 0.f;
+    float endMix = 0.f;
+    float endMixL = 0.f;
+    float endMixR = 0.f;
     float leftMixGain = 1.f;
     float rightMixGain = 1.f;
 
@@ -175,29 +175,8 @@ private:
     bool leftDistIsOn = false;
     bool rightDistIsOn = false;
 
-    //LFO
-    float lfo1Freq = 0.0f;
-    float lfo1Depth = 0.0f;
-    float lfo1Shape = 1.0f;
-
-    float lfo2Freq = 0.0f;
-    float lfo2Depth = 0.0f;
-    float lfo2Shape = 1.0f;
-
-    float lfo3Freq = 0.0f;
-    float lfo3Depth = 0.0f;
-    float lfo3Shape = 1.0f;
-
-    float lfo4Freq = 0.0f;
-    float lfo4Depth = 0.0f;
-    float lfo4Shape = 1.0f;
-
     //ROUTE
     int modAdsrRoute = 1;
-    int lfo1Route = 1;
-    int lfo2Route = 1;
-    int lfo3Route = 1;
-    int lfo4Route = 1;
 
     //GLOBAL
     float synthDetune = 0;
@@ -213,10 +192,6 @@ private:
     float synthStartSample = 0;
     float vibratoSample = 0;
     float modAdsrSample = 0;
-    float lfo1Sample = 0;
-    float lfo2Sample = 0;
-    float lfo3Sample = 0;
-    float lfo4Sample = 0;
 
     //Tuning
     float tunedMidi = 0;
@@ -235,8 +210,5 @@ private:
     float oscModShape = 0;
     float oscModDepth = 0;
     float modOscSample = 0;
-    float lfoSample = 0;
-
-    float lfoVolNormalizer = 1 / 2;
     float gen1NoiseLfo = 0;
 };

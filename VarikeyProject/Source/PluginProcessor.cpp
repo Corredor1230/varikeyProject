@@ -47,7 +47,7 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
     modRouting.setInModList(hipCutoffMod, noteTuning.hertzToMidi(20.f), noteTuning.hertzToMidi(20000.f), false);
     modRouting.setInModList(hipQMod, 0.1, 10.f, false);
     modRouting.setInModList(detuneMod, -1.0f, 1.0f, true);
-    modRouting.setInModList(vibFreqMod, 0.f, 15.f, true);
+    modRouting.setInModList(vibFreqMod, 0.f, 15.f, false);
     modRouting.setInModList(vibDepthMod, 0.f, 1.f, false);
     modRouting.setInModList(volumeMod, 0.f, 1.f, false);
 }
@@ -179,28 +179,28 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 
     //LFO
         //Lfo 1
-        createFloatParameter(params, "lfo1Freq", "Frequency 1", 0.0f, 15.0f, 0.01f, 0.0f, 0.5);
+        createFloatParameter(params, "lfo1Freq", "Frequency 1", 0.0f, 15.0f, 0.01f, 1.0f, 0.5);
         createFloatParameter(params, "lfo1Depth", "Depth 1", 0.0f, 1.0f, 0.01f, 0.0f);
         createFloatParameter(params, "lfo1Shape", "Shape 1", 1.0f, 100.0f, 0.1f, 1.0f);
         params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo1Route", "Route Lfo 1", 
             juce::StringArray(synthList), 0));
 
         //Lfo 2
-        createFloatParameter(params, "lfo2Freq", "Frequency 2", 0.0f, 15.0f, 0.01f, 0.0f, 0.5);
+        createFloatParameter(params, "lfo2Freq", "Frequency 2", 0.0f, 15.0f, 0.01f, 1.0f, 0.5);
         createFloatParameter(params, "lfo2Depth", "Depth 2", 0.0f, 1.0f, 0.01f, 0.0f);
         createFloatParameter(params, "lfo2Shape", "Shape 2", 1.0f, 100.0f, 0.1f, 1.0f);
         params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo2Route", "Route Lfo 2", 
             juce::StringArray(synthList), 0));
 
         //Lfo 3
-        createFloatParameter(params, "lfo3Freq", "Frequency 3", 0.0f, 15.0f, 0.01f, 0.0f, 0.5);
+        createFloatParameter(params, "lfo3Freq", "Frequency 3", 0.0f, 15.0f, 0.01f, 1.0f, 0.5);
         createFloatParameter(params, "lfo3Depth", "Depth 3", 0.0f, 1.0f, 0.01f, 0.0f);
         createFloatParameter(params, "lfo3Shape", "Shape 3", 1.0f, 100.0f, 0.1f, 1.0f);
         params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo3Route", "Route Lfo 3", 
             juce::StringArray(synthList), 0));
 
         //Lfo 4
-        createFloatParameter(params, "lfo4Freq", "Frequency 4", 0.0f, 15.0f, 0.01f, 0.0f, 0.5);
+        createFloatParameter(params, "lfo4Freq", "Frequency 4", 0.0f, 15.0f, 0.01f, 1.0f, 0.5);
         createFloatParameter(params, "lfo4Depth", "Depth 4", 0.0f, 1.0f, 0.01f, 0.0f);
         createFloatParameter(params, "lfo4Shape", "Shape 4", 1.0f, 100.0f, 0.1f, 1.0f);
         params.push_back(std::make_unique<juce::AudioParameterChoice>("lfo4Route", "Route Lfo 4", 
@@ -211,7 +211,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         createFloatParameter(params, "detune", "Detune", -1.0f, 1.0f, 0.01f, 0.0f);
         createFloatParameter(params, "vibFreq", "Vibrato Frequency", 0.0f, 15.f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "vibDepth", "Vibrato Depth", 0.0f, 1.f, 0.001f, 0.0f);
-        createFloatParameter(params, "volume", "Volume", -100.0f, 0.0f, 0.1f, -20.f);
+        createFloatParameter(params, "volume", "Volume", -100.0f, 0.0f, 0.1f, -20.f, 3);
 
         //NOTE TUNING
         //Controls
@@ -363,7 +363,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
     juce::ScopedNoDenormals noDenormals;
     //auto totalNumInputChannels = getTotalNumInputChannels(); // esto no se usa
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-    modRouting.updateModRoutes(lfo1RouteCtrl, lfo2RouteCtrl, lfo3RouteCtrl, lfo4RouteCtrl, modAdsrR);
+    //modRouting.updateModRoutes(lfo1RouteCtrl, lfo2RouteCtrl, lfo3RouteCtrl, lfo4RouteCtrl, modAdsrR);
 
     buffer.clear();
 
@@ -461,13 +461,9 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
             loCut = lopCutoff.load();
             loQ = lopQ.load();
-            //juceLopFilt.setCutoffFrequency(loCut);
-            //juceLopFilt.setResonance(loQ);
             loSwitch = lopOnOff.load();
             hiCut = hipCutoff.load();
             hiQ = hipQ.load();
-            //juceHipFilt.setCutoffFrequency(hiCut);
-            //juceHipFilt.setResonance(hiQ);
             hiSwitch = hipOnOff.load();
 
 
@@ -604,6 +600,8 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             lfo4Mod.updateLfo(lfo4Shape.load());
 
             modRouting.updateModDepth(lfo1DepthCtrl, lfo2DepthCtrl, lfo3DepthCtrl, lfo4DepthCtrl);
+            modRouting.updateModRoutes(lfo1Route.load(), lfo2Route.load(), lfo3Route.load(), 
+                lfo4Route.load(), modAdsrRoute.load());
 
             volumeDb = volume.load();
             linearVolume = juce::Decibels::decibelsToGain(volumeDb);
@@ -644,21 +642,16 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
     //if(isGlobalFilter(modAdsrR))
     //filter.compute(buffer.getNumSamples(), buffer.getArrayOfWritePointers(), buffer.getArrayOfWritePointers());
 
-    if (hasTremolo(lfo1RouteCtrl, lfo2RouteCtrl, lfo3RouteCtrl, lfo4RouteCtrl))
+    //if (hasTremolo(lfo1RouteCtrl, lfo2RouteCtrl, lfo3RouteCtrl, lfo4RouteCtrl))
+    //{
+    startGain = endGain;
+    for (int samp = 0; samp < buffer.getNumSamples(); samp++)
     {
-        startGain = endGain;
-        for (int samp = 0; samp < buffer.getNumSamples(); samp++)
-        {
-            lfo1Sample = lfo1Mod.getNextSample() * (lfo1RouteCtrl == 17);
-            lfo2Sample = lfo2Mod.getNextSample() * (lfo2RouteCtrl == 17);
-            lfo3Sample = lfo3Mod.getNextSample() * (lfo3RouteCtrl == 17);
-            lfo4Sample = lfo4Mod.getNextSample() * (lfo4RouteCtrl == 17);
-            tremoloVolume = (((lfo1Sample + lfo2Sample + lfo3Sample + lfo4Sample) + 1) / 2);
-            endGain = linearVolume * tremoloVolume;
-        }
-        buffer.applyGainRamp(0, buffer.getNumSamples(), startGain, endGain);
+        endGain = modRouting.modulateValue(volumeMod, linearVolume);
     }
-    else buffer.applyGain(linearVolume);
+    buffer.applyGainRamp(0, buffer.getNumSamples(), startGain, endGain);
+    //}
+    //else buffer.applyGain(linearVolume);
 
     //buffer.applyGain(linearVolume);
 
@@ -707,9 +700,9 @@ bool VarikeyProjectAudioProcessor::isGlobalFilter(int modAdsrRoute)
 {
     switch (modAdsrRoute)
     {
-    case 10:
+    case lopCutoffMod:
         return false;
-    case 11:
+    case lopQMod:
         return false;
     default:
         return true;
@@ -720,9 +713,9 @@ bool VarikeyProjectAudioProcessor::isGlobalHip(int modAdsrRoute)
 {
     switch (modAdsrRoute)
     {
-    case 12:
+    case hipCutoffMod:
         return false;
-    case 13:
+    case hipQMod:
         return false;
     default:
         return true;
