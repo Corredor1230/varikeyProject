@@ -39,7 +39,7 @@ private:
     juce::AudioProcessorValueTreeState& vts;
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 
-    juce::Label titleLabel = "FM Mod";
+    juce::Label titleLabel;
     juce::Label ratioLabel;
     juce::Label depthLabel;
 

@@ -9,9 +9,9 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include <faust/misc.h>
-#include <faust/dsp/dsp.h>
-#include <faust/gui/MapUI.h>
+#include <misc.h>
+#include <dsp/dsp.h>
+#include <gui/MapUI.h>
 #include "Data/Voice/SynthVoice.h"
 #include "Data/Voice/SynthSound.h"
 #include "Data/Process/HipLopFilter.h"

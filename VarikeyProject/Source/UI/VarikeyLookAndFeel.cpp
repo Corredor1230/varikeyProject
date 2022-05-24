@@ -18,7 +18,7 @@ VarikeyLookAndFeel::VarikeyLookAndFeel()
     setColourPalette(vaporwave);
     //These parameters define the font for most components
     //Modify them wisely!
-    josefinSans.setFontSizeAndStyle(22.0f, "medium", 1.0f, 0.0f);
+    josefinSans.setFontSizeAndStyle(13.0f, "medium", 1.0f, 0.0f);
     comboFonts.setFontSizeAndStyle(10.0f, "italic", 1.0f, 0.0f);
 
     customFont = josefinSans.getCurrentFont();
@@ -56,6 +56,8 @@ ColourPalette VarikeyLookAndFeel::getColourPalette(palette paletteType)
         clean.globalLight = almostWhite;
         clean.globalDark = almostBlack;
         return clean;
+        default:
+            return vaporwave;
     }
 }
 
@@ -194,7 +196,7 @@ juce::Font VarikeyLookAndFeel::getComboBoxFont(juce::ComboBox& comboBox)
 
 juce::BorderSize<int> VarikeyLookAndFeel::getLabelBorderSize(juce::Label& label)
 {
-    labelBorder = juce::BorderSize<int>::BorderSize(0, 0, 0, 0);
+    labelBorder = juce::BorderSize<int>(0, 0, 0, 0);
     label.setBorderSize(labelBorder);
     return label.getBorderSize();
 }

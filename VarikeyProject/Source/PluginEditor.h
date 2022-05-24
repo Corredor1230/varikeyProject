@@ -37,7 +37,7 @@ public:
     //==============================================================================
     void paint(juce::Graphics&) override;
     void resized() override;
-    int getComboBoxIndex(juce::String& string);
+    int getComboBoxIndex(juce::String string);
 
 private:
 
@@ -83,6 +83,8 @@ private:
     int oscChoiceWidth = 0;
     int oscChoiceHeight = 0;
 
+    int oscChoiceLeft = 0;
+    int oscChoiceRight = 0;
 
     juce::String leftString{ "additiveLeft" };
     juce::StringArray leftAdditiveIDs

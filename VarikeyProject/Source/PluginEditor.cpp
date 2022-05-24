@@ -39,6 +39,7 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
     setLookAndFeel(&varikeyLookAndFeel);
     addAndMakeVisible(tuner);
+    setResizable(true, false);
 
     varikeyLogo = Drawable::createFromImageData(BinaryData::Varikey_svg,
         BinaryData::Varikey_svgSize);
@@ -169,6 +170,9 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     getBounds().removeFromRight(5);
     getBounds().removeFromTop(5);
     getBounds().removeFromBottom(5);
+    
+    oscChoiceLeft = getComboBoxIndex(leftOscChoice.getText());
+    oscChoiceRight = getComboBoxIndex(rightOscChoice.getText());
 
 
 
@@ -350,7 +354,7 @@ void VarikeyProjectAudioProcessorEditor::resized()
     volumeSlider.setBounds(volumeStartX, volumeLabel.getBottom(), volumeWidth, volumeHeight);
 }
 
-int VarikeyProjectAudioProcessorEditor::getComboBoxIndex(juce::String& string)
+int VarikeyProjectAudioProcessorEditor::getComboBoxIndex(juce::String string)
 {
         if (string == "Generator")
             return 0;
