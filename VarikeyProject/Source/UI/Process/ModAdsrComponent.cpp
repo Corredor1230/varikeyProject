@@ -54,7 +54,7 @@ ModAdsrComponent::ModAdsrComponent(juce::AudioProcessorValueTreeState& vts) : vt
     };
     routeBox.addItemList(juce::StringArray(synthList), 1);
 
-    routeBox.setSelectedId(-1, juce::NotificationType::sendNotification);
+    //routeBox.setSelectedId(-1, juce::NotificationType::sendNotification);
 }
 
 ModAdsrComponent::~ModAdsrComponent()
@@ -75,7 +75,6 @@ void ModAdsrComponent::paint(juce::Graphics& g)
     int padding = 10;
     int titleHeight = height / 5.5;
     int sliderLabelHeight = height / 6;
-    int sliderLabelWidth = 50;
 
     int sliderWidth = (width / 4) - padding;
     int sliderHeight = height - titleHeight - sliderLabelHeight;
@@ -99,6 +98,7 @@ void ModAdsrComponent::paint(juce::Graphics& g)
     sustainSlider.setBounds(decaySlider.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
     releaseSlider.setBounds(sustainSlider.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
 
+    setUsedRoutes();
     setDisabledRoutes(routeBox);
 
 }
@@ -142,24 +142,33 @@ void ModAdsrComponent::setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndF
     setLookAndFeel(customLookAndFeel);
 }
 
-void ModAdsrComponent::setUsedRoutes(int lfo1, int lfo2, int lfo3, int lfo4)
+void ModAdsrComponent::updateRoutes(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route, int modAdsrRoute)
 {
-    lfo1R = lfo1 + 1;
-    lfo2R = lfo2 + 1;
-    lfo3R = lfo3 + 1;
-    lfo4R = lfo4 + 1;
+    lfo1R = lfo1Route + 1;
+    lfo2R = lfo2Route + 1;
+    lfo3R = lfo3Route + 1;
+    lfo4R = lfo4Route + 1;
+    modAR = modAdsrRoute + 1;
+    routeBox.setSelectedId(modAR);
+}
+
+void ModAdsrComponent::setUsedRoutes()
+{
+    if(usedRoutes[0] != lfo1R) routeBox.setItemEnabled(usedRoutes[0], true);
+    if(usedRoutes[1] != lfo2R) routeBox.setItemEnabled(usedRoutes[1], true);
+    if(usedRoutes[2] != lfo3R) routeBox.setItemEnabled(usedRoutes[2], true);
+    if(usedRoutes[3] != lfo4R) routeBox.setItemEnabled(usedRoutes[3], true);
+    usedRoutes[0] = lfo1R;
+    usedRoutes[1] = lfo2R;
+    usedRoutes[2] = lfo3R;
+    usedRoutes[3] = lfo4R;
 }
 
 void ModAdsrComponent::setDisabledRoutes(juce::ComboBox& box)
 {
-    for (int i = 0; i <= box.getNumItems(); i++)
+    for(int i = 0; i < 4; i++)
     {
-        box.setItemEnabled(i, true);
+        if(usedRoutes[i] != 0) box.setItemEnabled(usedRoutes[i], false);
     }
-
-    (lfo1R == 0) ? box.setItemEnabled(lfo1R, true) : box.setItemEnabled(lfo1R, false);
-    (lfo2R == 0) ? box.setItemEnabled(lfo2R, true) : box.setItemEnabled(lfo2R, false);
-    (lfo3R == 0) ? box.setItemEnabled(lfo3R, true) : box.setItemEnabled(lfo3R, false);
-    (lfo4R == 0) ? box.setItemEnabled(lfo4R, true) : box.setItemEnabled(lfo4R, false);
 
 }

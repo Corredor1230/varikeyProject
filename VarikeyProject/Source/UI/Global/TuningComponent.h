@@ -46,7 +46,7 @@ private:
     juce::StringArray presetList{
     "12-TET", "Just Intonation",
     "Pythagorean", "1/4 Meantone",
-    "Werckmeister III", "Marimba 1", "Marimba 2", "Marimba 3", "Koto" };
+    "Werckmeister III", "Marimba 1", "Marimba 2", "Marimba 3", "Slendro" };
 
     juce::AudioProcessorValueTreeState& vts;
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;

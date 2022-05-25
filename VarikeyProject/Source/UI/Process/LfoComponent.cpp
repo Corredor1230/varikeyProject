@@ -33,8 +33,6 @@ void LfoLookAndFeel::drawRotarySlider(Graphics& g, int x, int y, int width, int 
     auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
     auto lineW = jmin(8.0f, radius * 0.3f);
     auto arcRadius = radius - lineW * 0.5f;
-    auto centreX = width / 2;
-    auto centreY = height / 2;
 
     Path backgroundArc;
     backgroundArc.addCentredArc(bounds.getCentreX(),
@@ -130,8 +128,8 @@ LfoComponent::LfoComponent(juce::AudioProcessorValueTreeState& vts, juce::String
     routeBox.addItemList(juce::StringArray(synthList), 1);
     routeBox2.addItemList(juce::StringArray(synthList), 1);
 
-    routeBox.setSelectedId(-1, juce::NotificationType::sendNotification);
-    routeBox2.setSelectedId(-1, juce::NotificationType::sendNotification);
+    //routeBox.setSelectedId(-1, juce::NotificationType::sendNotification);
+    //routeBox2.setSelectedId(-1, juce::NotificationType::sendNotification);
 
 }
 
@@ -157,22 +155,12 @@ void LfoComponent::paint(juce::Graphics& g)
     //g.drawLine(width / 2 + 2, 5, width / 2 + 2, height, 1.0);
 
     int padding = 10;
-    int sliderLabel = height / 6;
-    int sliderLabelWidth = 50;
     int titleHeight = height / 5;
-
     int rotaryWidth = (width / 6) - padding;
-    int blockWidth = width / 6;
     int rotaryHeight = height - titleHeight * 2;
-    int rotaryDiameter = std::min(rotaryWidth, rotaryHeight) - padding;
-
-    int horizontalHeight = 25;
-    int sliderWidth = (width / 6);
     int sliderHeight = height - titleHeight * 1.5;
     int sliderStartX = padding;
-    int labelStartX = (padding * 2) / 1.1;
-    int labelStartY = titleHeight + sliderLabel + padding;
-    int topStartY = 3;
+
 
     lfo1Label.setText(lfoString + region1Index, juce::dontSendNotification);
     lfo1Label.setJustificationType(juce::Justification::centredLeft);
@@ -206,6 +194,7 @@ void LfoComponent::paint(juce::Graphics& g)
     routeLabel2.setBounds(freq2Label.getRight() + padding, padding / 1.5, rotaryWidth, titleHeight);
     routeBox2.setBounds(depth2Label.getRight() + padding, padding, width / 8, titleHeight - padding / 2);
 
+    setUsedRoutes();
     setDisabledRoutes(lfo1N, routeBox);
     setDisabledRoutes(lfo2N, routeBox2);
 
@@ -258,7 +247,7 @@ void LfoComponent::setRegionTitle(juce::String& region1, juce::String& region2)
     region2Index = region2;
 }
 
-void LfoComponent::setUsedRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route, int modAdsrRoute)
+void LfoComponent::updateRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route, int modAdsrRoute)
 {
     lfo1N = lfo1Num;
     lfo2N = lfo2Num;
@@ -266,8 +255,28 @@ void LfoComponent::setUsedRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lf
     lfo2R = lfo2Route + 1;
     lfo3R = lfo3Route + 1;
     lfo4R = lfo4Route + 1;
-    modAR = modAdsrRoute + 1;
+    modAdsrR = modAdsrRoute + 1;
+    loadCurrentSelections(lfo1Num, lfo2Num);
+}
 
+void LfoComponent::setUsedRoutes()
+{
+    if(usedRoutes[0] != lfo1R)
+        freeRoute(usedRoutes[0]);
+    if(usedRoutes[1] != lfo2R)
+        freeRoute(usedRoutes[1]);
+    if(usedRoutes[2] != lfo3R)
+        freeRoute(usedRoutes[2]);
+    if(usedRoutes[3] != lfo4R)
+        freeRoute(usedRoutes[3]);
+    if(usedRoutes[4] != modAdsrR)
+        freeRoute(usedRoutes[4]);
+    usedRoutes[0] = lfo1R;
+    usedRoutes[1] = lfo2R;
+    usedRoutes[2] = lfo3R;
+    usedRoutes[3] = lfo4R;
+    usedRoutes[4] = modAdsrR;
+    
 }
 
 void LfoComponent::setDisabledRoutes(int lfoNum, juce::ComboBox& box)
@@ -275,47 +284,70 @@ void LfoComponent::setDisabledRoutes(int lfoNum, juce::ComboBox& box)
     switch (lfoNum)
     {
     case 0:
-        jassertfalse;
-        break;
+            jassertfalse;
+            break;
     case 1:
-        for (int i = 0; i <= box.getNumItems(); i++)
-        {
-            box.setItemEnabled(i, true);
-        }
-        (lfo2R == 0) ? box.setItemEnabled(lfo2R, true) : box.setItemEnabled(lfo2R, false);
-        (lfo3R == 0) ? box.setItemEnabled(lfo3R, true) : box.setItemEnabled(lfo3R, false);
-        (lfo4R == 0) ? box.setItemEnabled(lfo4R, true) : box.setItemEnabled(lfo4R, false);
-        (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
-        break;
+            
+            for(int i = 0; i < 5; i++)
+            {
+                if(i != 0)
+                    if(usedRoutes[i] != 0) box.setItemEnabled(usedRoutes[i], false);
+            }
+            break;
     case 2:
-        for (int i = 0; i <= box.getNumItems(); i++)
-        {
-            box.setItemEnabled(i, true);
-        }
-        (lfo1R == 0) ? box.setItemEnabled(lfo1R, true) : box.setItemEnabled(lfo1R, false);
-        (lfo3R == 0) ? box.setItemEnabled(lfo3R, true) : box.setItemEnabled(lfo3R, false);
-        (lfo4R == 0) ? box.setItemEnabled(lfo4R, true) : box.setItemEnabled(lfo4R, false);
-        (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
-        break;
+            
+            for(int i = 0; i < 5; i++)
+            {
+                if(i != 1)
+                    if(usedRoutes[i] != 0) box.setItemEnabled(usedRoutes[i], false);
+            }
+            break;
     case 3:
-        for (int i = 0; i <= box.getNumItems(); i++)
-        {
-            box.setItemEnabled(i, true);
-        }
-        (lfo1R == 0) ? box.setItemEnabled(lfo1R, true) : box.setItemEnabled(lfo1R, false);
-        (lfo2R == 0) ? box.setItemEnabled(lfo2R, true) : box.setItemEnabled(lfo2R, false);
-        (lfo4R == 0) ? box.setItemEnabled(lfo4R, true) : box.setItemEnabled(lfo4R, false);
-        (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
-        break;
+            
+            for(int i = 0; i < 5; i++)
+            {
+                if(i != 2)
+                    if(usedRoutes[i] != 0) box.setItemEnabled(usedRoutes[i], false);
+            }
+            break;
     case 4:
-        for (int i = 0; i <= box.getNumItems(); i++)
-        {
-            box.setItemEnabled(i, true);
-        }
-        (lfo1R == 0) ? box.setItemEnabled(lfo1R, true) : box.setItemEnabled(lfo1R, false);
-        (lfo2R == 0) ? box.setItemEnabled(lfo2R, true) : box.setItemEnabled(lfo2R, false);
-        (lfo3R == 0) ? box.setItemEnabled(lfo3R, true) : box.setItemEnabled(lfo3R, false);
-        (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
-        break;
+            
+            for(int i = 0; i < 5; i++)
+            {
+                if(i != 3)
+                    if(usedRoutes[i] != 0) box.setItemEnabled(usedRoutes[i], false);
+            }
+            break;
     }
+}
+
+void LfoComponent::freeRoute(int newRoute)
+{
+    routeBox.setItemEnabled(newRoute, true);
+    routeBox2.setItemEnabled(newRoute, true);
+}
+
+void LfoComponent::loadCurrentSelections(int lfoNum1, int lfoNum2)
+{
+    switch(lfoNum1)
+    {
+        case 0:
+            break;
+        case 1:
+            routeBox.setSelectedId(lfo1R);
+            break;
+        case 2:
+            routeBox2.setSelectedId(lfo2R);
+            break;
+        case 3:
+            routeBox.setSelectedId(lfo3R);
+            break;
+        case 4:
+            routeBox2.setSelectedId(lfo4R);
+            break;
+        case 5:
+            break;
+            
+    }
+    
 }

@@ -162,9 +162,9 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     if (centerToggle.load()) 
         tuner.updateCenterSlider(audioProcessor.getCurrentControlNote());
 
-    lfo1.setUsedRoutes(1, 2, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
-    lfo2.setUsedRoutes(3, 4, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
-    modAdsr.setUsedRoutes(r1.load(), r2.load(), r3.load(), r4.load());
+    lfo1.updateRoutes(1, 2, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
+    lfo2.updateRoutes(3, 4, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
+    modAdsr.updateRoutes(r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
 
     getBounds().removeFromLeft(5);
     getBounds().removeFromRight(5);
@@ -174,10 +174,11 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     oscChoiceLeft = getComboBoxIndex(leftOscChoice.getText());
     oscChoiceRight = getComboBoxIndex(rightOscChoice.getText());
 
+    auto& leftOscCurrentChoice = *vts.getRawParameterValue("leftSynthChoice");
+    auto& rightOscCurrentChoice = *vts.getRawParameterValue("rightSynthChoice");
 
 
-
-    switch (getComboBoxIndex(leftOscChoice.getText()))
+    switch ((int)leftOscCurrentChoice.load())
     {
     case 0:
         genLeft.setVisible(true);
@@ -211,7 +212,7 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
         break;
     }
 
-    switch (getComboBoxIndex(rightOscChoice.getText()))
+    switch ((int)rightOscCurrentChoice.load())
     {
     case 0:
         genRight.setVisible(true);

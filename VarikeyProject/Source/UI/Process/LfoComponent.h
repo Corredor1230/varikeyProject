@@ -54,10 +54,15 @@ public:
     void setSliderParams(juce::Slider& slider, juce::Label& label, juce::String name, int style);
     void setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel);
     void setRegionTitle(juce::String& region1, juce::String& region2);
-    void setUsedRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route, int modAdsrRoute);
-    void setDisabledRoutes(int lfoNum, juce::ComboBox& box);
+    void updateRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route, int modAdsrRoute);
+
 
 private:
+    void setUsedRoutes();
+    void setDisabledRoutes(int lfoNum, juce::ComboBox& box);
+    void loadCurrentSelections(int lfoNum1, int lfoNum2);
+    
+    void freeRoute(int newRoute);
 
     juce::AudioProcessorValueTreeState& vts;
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
@@ -66,12 +71,15 @@ private:
 
     int lfo1N = 0;
     int lfo2N = 0;
+
+    std::array<int, 5> usedRoutes;
+    
     int lfo1R = 0;
     int lfo2R = 0;
     int lfo3R = 0;
     int lfo4R = 0;
-    int modAR = 0;
-
+    int modAdsrR = 0;
+    
     juce::Label titleLabel;
     juce::Label lfo1Label;
     juce::Label lfo2Label;

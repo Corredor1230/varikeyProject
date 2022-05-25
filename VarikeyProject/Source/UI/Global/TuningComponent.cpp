@@ -115,7 +115,7 @@ void TuningComponent::paint (juce::Graphics& g)
     juce::Colour toggleOff = getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickDisabledColourId);
     juce::Colour toggleOn = getLookAndFeel().findColour(juce::ToggleButton::ColourIds::tickColourId);
 
-    switch (keyBreakToggle.getToggleState())
+    switch ((int)keyBreakToggle.getToggleState())
     {
     case 0:
 
@@ -217,7 +217,6 @@ void TuningComponent::resized()
     int transposeHeight = height / 6;
     int transposeWidth = width - transposeTextBoxWidth - labelStartX - centerLabelWidth - padding - 1;
     int transposeStartX = sliderStartX + padding + transposeTextBoxWidth;
-    int transposeStartY = 3 * (height / 4);
 
     int sliderHeight = height - title - sliderLabel - transposeHeight;
 
@@ -327,7 +326,8 @@ int TuningComponent::getPresetIndex(juce::String preset)
     if (preset == "Marimba 1") return 5;
     if (preset == "Marimba 2") return 6;
     if (preset == "Marimba 3") return 7;
-    if (preset == "Koto") return 8;
+    if (preset == "Slendro") return 8;
+    else return 0;
 }
 
 void TuningComponent::updateCenterSlider(float controlNote)
