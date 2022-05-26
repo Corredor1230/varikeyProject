@@ -41,7 +41,7 @@ private:
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
 
-    juce::Label titleLabel = "Distortion";
+    juce::Label titleLabel;
     juce::Label inputLabel;
     juce::Label outputLabel;
 

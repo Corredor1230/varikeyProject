@@ -42,7 +42,7 @@ public:
     void updateModValues(float lfo1, float lfo2, float lfo3, float lfo4);
     void updateModDepth(float lfo1, float lfo2, float lfo3, float lfo4);
     void updateModValues(float adsr);
-    void setRoutingState(RoutingState& newState);
+    void setRoutingState(const RoutingState& newState);
     RoutingState getRoutingState();
 
 private:

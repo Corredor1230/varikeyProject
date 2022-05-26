@@ -170,7 +170,7 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     getBounds().removeFromTop(5);
     getBounds().removeFromBottom(5);
 
-
+    
 
 
     switch (getComboBoxIndex(leftOscChoice.getText()))
@@ -350,7 +350,7 @@ void VarikeyProjectAudioProcessorEditor::resized()
     volumeSlider.setBounds(volumeStartX, volumeLabel.getBottom(), volumeWidth, volumeHeight);
 }
 
-int VarikeyProjectAudioProcessorEditor::getComboBoxIndex(juce::String& string)
+int VarikeyProjectAudioProcessorEditor::getComboBoxIndex(const juce::String& string)
 {
         if (string == "Generator")
             return 0;

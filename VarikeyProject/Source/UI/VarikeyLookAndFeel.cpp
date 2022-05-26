@@ -38,7 +38,7 @@ ColourPalette VarikeyLookAndFeel::getColourPalette(palette paletteType)
 {
     switch (paletteType)
     {
-    case 0:
+    case vaporwave:
         ColourPalette vaporwave;
         vaporwave.activeElement = pink;
         vaporwave.inactiveElement= purp;
@@ -47,7 +47,7 @@ ColourPalette VarikeyLookAndFeel::getColourPalette(palette paletteType)
         vaporwave.globalLight = cyan;
         vaporwave.globalDark = black;
         return vaporwave;
-    case 1:
+    default:
         ColourPalette clean;
         clean.activeElement = orange;
         clean.inactiveElement = midGrey;
@@ -194,7 +194,7 @@ juce::Font VarikeyLookAndFeel::getComboBoxFont(juce::ComboBox& comboBox)
 
 juce::BorderSize<int> VarikeyLookAndFeel::getLabelBorderSize(juce::Label& label)
 {
-    labelBorder = juce::BorderSize<int>::BorderSize(0, 0, 0, 0);
+    labelBorder = juce::BorderSize<int>(0, 0, 0, 0);
     label.setBorderSize(labelBorder);
     return label.getBorderSize();
 }

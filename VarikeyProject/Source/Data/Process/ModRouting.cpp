@@ -58,7 +58,7 @@ void ModRouting::updateModValues(float adsr)
     modAdsrSample = adsr;
 }
 
-void ModRouting::setRoutingState(RoutingState& newState)
+void ModRouting::setRoutingState(const RoutingState& newState)
 {
     paramMins = newState.mins;
     paramMaxs = newState.maxs;
@@ -152,7 +152,7 @@ float ModRouting::getModulatedValue(int modIndex, float currentValue)
     case 5:
         return std::max(paramMins[modIndex], std::min(paramMaxs[modIndex], currentValue * modAdsrSample));
     default:
-        _ASSERT(NULL);
+            assert(false);
         break;
     }
 }

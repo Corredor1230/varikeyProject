@@ -37,7 +37,7 @@ public:
     //==============================================================================
     void paint(juce::Graphics&) override;
     void resized() override;
-    int getComboBoxIndex(juce::String& string);
+    int getComboBoxIndex(const juce::String& string);
 
 private:
 

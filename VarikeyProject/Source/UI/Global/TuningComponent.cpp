@@ -317,7 +317,7 @@ void TuningComponent::updateSlidersFromArray(std::array<float, 12> newValues)
     slider11.setValue(newValues[11], juce::sendNotification);
 }
 
-int TuningComponent::getPresetIndex(juce::String& preset)
+int TuningComponent::getPresetIndex(const juce::String& preset)
 {
     if (preset == "12-TET") return 0;
     if (preset == "Just Intonation") return 1;
@@ -328,6 +328,7 @@ int TuningComponent::getPresetIndex(juce::String& preset)
     if (preset == "Marimba 2") return 6;
     if (preset == "Marimba 3") return 7;
     if (preset == "Koto") return 8;
+    return 0;
 }
 
 void TuningComponent::updateCenterSlider(float controlNote)
