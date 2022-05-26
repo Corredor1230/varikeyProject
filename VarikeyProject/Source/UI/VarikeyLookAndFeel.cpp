@@ -18,7 +18,7 @@ VarikeyLookAndFeel::VarikeyLookAndFeel()
     setColourPalette(vaporwave);
     //These parameters define the font for most components
     //Modify them wisely!
-    josefinSans.setFontSizeAndStyle(13.0f, "medium", 1.0f, 0.0f);
+    josefinSans.setFontSizeAndStyle(22.0f, "medium", 1.0f, 0.0f);
     comboFonts.setFontSizeAndStyle(10.0f, "italic", 1.0f, 0.0f);
 
     customFont = josefinSans.getCurrentFont();

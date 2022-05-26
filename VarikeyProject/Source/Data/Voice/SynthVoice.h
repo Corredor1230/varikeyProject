@@ -12,9 +12,9 @@
 
 #include <JuceHeader.h>
 #include "SynthSound.h"
-#include <misc.h>
-#include <dsp/dsp.h>
-#include <gui/MapUI.h>
+#include <faust/misc.h>
+#include <faust/dsp/dsp.h>
+#include <faust/gui/MapUI.h>
 #include "../Source/Data/Process/AdsrData.h"
 #include "../Source/Data/Process/NoteTuning.h"
 #include "../Source/Data/Process/Oscillator.h"
