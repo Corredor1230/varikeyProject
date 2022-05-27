@@ -148,7 +148,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
             juce::StringArray(oscList), 0));
         params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "Right Synth", 
             juce::StringArray(oscList), 0));
-        createFloatParameter(params, "synthMix", "Synth Mix", -1.0f, 1.0f, 0.01f, 0.0f);
+        createFloatParameter(params, "synthMix", "Synth Mix", -1.0f, 1.0f, 0.01f, -1.0f);
 
 //PROCESSES
     //FILTER
