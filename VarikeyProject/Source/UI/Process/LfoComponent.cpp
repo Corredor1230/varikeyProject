@@ -267,7 +267,7 @@ void LfoComponent::setUsedRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lf
     lfo3R = lfo3Route + 1;
     lfo4R = lfo4Route + 1;
     modAR = modAdsrRoute + 1;
-
+    
 }
 
 void LfoComponent::setDisabledRoutes(int lfoNum, juce::ComboBox& box)

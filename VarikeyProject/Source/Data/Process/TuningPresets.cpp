@@ -24,6 +24,14 @@ std::array<float, 12> TuningPresets::getPreset(tuningPresets preset)
         return quarterMeantoneArray;
     case werckmeister:
         return werckmeisterArray;
+    case marimba1:
+        return marimba1Array;
+    case marimba2:
+        return marimba2Array;
+    case marimba3:
+        return marimba3Array;
+    case slendro:
+        return slendroArray;
     default:
         return equalArray;
     }
@@ -43,8 +51,21 @@ void TuningPresets::setPreset(tuningPresets preset = equalTemperament)
         currentPreset = quarterMeantoneArray;
     case werckmeister:
         currentPreset = werckmeisterArray;
+    case marimba1:
+        currentPreset = marimba1Array;
+        break;
+    case marimba2:
+        currentPreset = marimba2Array;
+        break;
+    case marimba3:
+        currentPreset = marimba3Array;
+        break;
+    case slendro:
+        currentPreset = slendroArray;
+        break;
     default:
         currentPreset = equalArray;
+        break;
     }
 }
 
@@ -66,6 +87,18 @@ void TuningPresets::setPreset(int preset = 0)
         break;
     case 4:
         currentPreset = werckmeisterArray;
+        break;
+    case 5:
+        currentPreset = marimba1Array;
+        break;
+    case 6:
+        currentPreset = marimba2Array;
+        break;
+    case 7:
+        currentPreset = marimba3Array;
+        break;
+    case 8:
+        currentPreset = slendroArray;
         break;
     default:
         currentPreset = equalArray;

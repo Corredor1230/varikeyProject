@@ -32,7 +32,7 @@ public:
         marimba1,
         marimba2,
         marimba3,
-        koto
+        slendro
     };
 
     std::array<float, 12> getPreset(tuningPresets preset);
@@ -49,5 +49,8 @@ private:
     presetArray pythagoreanArray{ 0, -0.1, 0.04, -0.06, 0.08, -0.02, 0.12, 0.02, -0.08, 0.06, -0.04, 0.1 };
     presetArray quarterMeantoneArray{ 0, -0.24, -0.07, 0.10, -0.14, 0.03, -0.21, -0.03, -0.27, -0.10, 0.07, -0.17 };
     presetArray werckmeisterArray{ 0, -0.10, -0.08, -0.06, -0.10, -0.02, 0.12, -0.04, -0.08, -0.12, -0.04, -0.08 };
-
+    presetArray marimba1Array{ 0, 0, +0.10, 0, +0.20, 0, -0.50, +0.20, 0, -0.10, 0, -0.20 };
+    presetArray marimba2Array{ 0, +0.40, 0, -0.15, +0.25, 0, -0.15, 0, -0.15, +0.25, 0, +0.05 };
+    presetArray marimba3Array{ 0, 0, -0.20, +0.40, 0, -0.10, 0, -0.30, +0.20, 0, -0.20, 0 };
+    presetArray slendroArray{ 0, 0, 0.20, 0, 0.86, 0, 0, 0.13, 0, 0.46, 0, 0 };
 };

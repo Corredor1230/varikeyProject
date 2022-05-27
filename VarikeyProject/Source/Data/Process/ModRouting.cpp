@@ -30,10 +30,10 @@ void ModRouting::updateModRoutes(int lfo1, int lfo2, int lfo3, int lfo4, int ads
     modAdsrRoute = adsr;
     setCurrentRoutes(modAdsrRoute, 5);
 
-    //for (int i = 0; i < paramNumber; i++)
-    //{
-    //    if (!isUsedRoute(i)) modState[i]
-    //}
+    for (int i = 0; i < paramNumber; i++)
+    {
+        if (!isUsedRoute(i)) modState[i] = false;
+    }
 
 }
 
@@ -152,7 +152,7 @@ float ModRouting::getModulatedValue(int modIndex, float currentValue)
     case 5:
         return std::max(paramMins[modIndex], std::min(paramMaxs[modIndex], currentValue * modAdsrSample));
     default:
-            assert(false);
+            //assert(false);
         break;
     }
 }

@@ -426,6 +426,9 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     //-------------------------------------------------------------
     //Filter with distortion
 
+    synthBuffer.applyGain(tempVelocity);
+    rightBuffer.applyGain(tempVelocity);
+
     if (leftDistIsOn)
     {
         for (int i = 0; i < sampNumber; i++)

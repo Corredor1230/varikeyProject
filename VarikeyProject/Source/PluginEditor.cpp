@@ -99,11 +99,19 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     leftOscChoice.addItemList(juce::StringArray(synthList), 1);
     leftOscChoice.setJustificationType(juce::Justification::centred);
     leftOscChoice.setTextWhenNothingSelected("Generator");
-    //leftOscChoice.setSelectedId(1);
+    leftOscChoice.setSelectedId(1);
     rightOscChoice.addItemList(juce::StringArray(synthList), 1);
     rightOscChoice.setJustificationType(juce::Justification::centred);
     rightOscChoice.setTextWhenNothingSelected("Generator");
-    //rightOscChoice.setSelectedId(1);
+    rightOscChoice.setSelectedId(1);
+
+    //auto& r1 = *vts.getRawParameterValue("lfo1Route");
+    //auto& r2 = *vts.getRawParameterValue("lfo2Route");
+    //auto& r3 = *vts.getRawParameterValue("lfo3Route");
+    //auto& r4 = *vts.getRawParameterValue("lfo4Route");
+    //auto& r5 = *vts.getRawParameterValue("modAdsrRoute");
+    //lfo1.setUsedRoutes(1, 2, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
+    //lfo2.setUsedRoutes(3, 4, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
 
     tuner.setCustomLookAndFeel(&varikeyLookAndFeel);
     additiveLeft.setCustomLookAndFeel(&varikeyLookAndFeel);
