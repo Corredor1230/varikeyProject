@@ -327,11 +327,12 @@ int TuningComponent::getPresetIndex(const juce::String& preset)
     if (preset == "Marimba 1") return 5;
     if (preset == "Marimba 2") return 6;
     if (preset == "Marimba 3") return 7;
-    if (preset == "Koto") return 8;
+    if (preset == "Slendro") return 8;
     return 0;
 }
 
-void TuningComponent::updateCenterSlider(float controlNote)
+void TuningComponent::updateCenterSlider(const int* controlNote)
 {
-    transposeSlider.setValue((int)controlNote, juce::sendNotification);
+    int ctrl = *controlNote;
+    transposeSlider.setValue(ctrl, juce::sendNotification);
 }

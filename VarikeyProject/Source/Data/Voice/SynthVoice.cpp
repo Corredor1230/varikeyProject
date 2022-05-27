@@ -531,10 +531,11 @@ float SynthVoice::freqToMidi(float freq)
     return ((12 * log(freq / 220.0) / log(2.0)) + 57.01);
 }
 
-float SynthVoice::getMidiNote()
+int SynthVoice::getMidiNote()
 {
-    if(controlNote!=0)
-    return controlNote % 12;
+    int controlMod = controlNote % 12;
+    if (controlNote != 0)
+        return controlMod;
 }
 
 //void SynthVoice::updateLfo1(float freq, float depth, float shape, int route)

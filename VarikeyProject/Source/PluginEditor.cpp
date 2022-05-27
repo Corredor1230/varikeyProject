@@ -166,7 +166,8 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     auto& r4 = *vts.getRawParameterValue("lfo4Route");
     auto& r5 = *vts.getRawParameterValue("modAdsrRoute");
     auto& centerToggle = *vts.getRawParameterValue("bassControlsTuning");
-    if (centerToggle.load()) 
+    if (centerToggle.load())
+        if(audioProcessor.getCurrentControlNote() != nullptr)
         tuner.updateCenterSlider(audioProcessor.getCurrentControlNote());
 
     lfo1.setUsedRoutes(1, 2, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());

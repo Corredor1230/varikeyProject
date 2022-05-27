@@ -82,7 +82,7 @@ public:
     void updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter, bool isGlobalHip);
     void updateTuner(std::array<float, 12> &tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
     float freqToMidi(float freq);
-    float getMidiNote();
+    int getMidiNote();
     //void updateLfo1(float freq, float depth, float shape, int route);
     //void updateLfo2(float freq, float depth, float shape, int route);
     //void updateLfo3(float freq, float depth, float shape, int route);

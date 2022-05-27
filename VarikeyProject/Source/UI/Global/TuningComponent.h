@@ -39,14 +39,14 @@ public:
     int getArrayValue(int index, int centerValue){return (index + centerValue) % 12;}
     void updateSlidersFromArray(std::array<float, 12> newValues);
     int getPresetIndex(const juce::String& preset);
-    void updateCenterSlider(float controlNote);
+    void updateCenterSlider(const int* controlNote);
 
 private:
 
     juce::StringArray presetList{
     "12-TET", "Just Intonation",
     "Pythagorean", "1/4 Meantone",
-    "Werckmeister III", "Marimba 1", "Marimba 2", "Marimba 3", "Koto" };
+    "Werckmeister III", "Marimba 1", "Marimba 2", "Marimba 3", "Slendro" };
 
     juce::AudioProcessorValueTreeState& vts;
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;

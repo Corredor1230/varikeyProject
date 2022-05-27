@@ -97,9 +97,10 @@ public:
     bool isGlobalHip(int modAdsrRoute);
     bool hasTremolo(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route);
     void changeTuningPreset(int presetChoice, std::array<float, 12> preset);
-    float getCurrentControlNote();
+    int* getCurrentControlNote();
 
-    float currentMidiNote = 0;
+    int currentVoiceNote = 0;
+    std::unique_ptr<int> currentMidiNote;
 
 private:
 

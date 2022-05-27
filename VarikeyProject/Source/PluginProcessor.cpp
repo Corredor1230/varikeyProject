@@ -50,6 +50,8 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
     modRouting.setInModList(vibFreqMod, 0.f, 15.f, false);
     modRouting.setInModList(vibDepthMod, 0.f, 1.f, false);
     modRouting.setInModList(volumeMod, 0.f, 1.f, false);
+
+    currentMidiNote = std::make_unique<int>(currentVoiceNote);
 }
 
 //PARAMETER RANGES AND ADDITION TO VTS
@@ -584,8 +586,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             //voice->updateLfo3(lfo3Freq.load(), lfo3Depth.load(), lfo3Shape.load(), lfo3Route.load());
             //voice->updateLfo4(lfo4Freq.load(), lfo4Depth.load(), lfo4Shape.load(), lfo4Route.load());
 
-            if (bassControlsTuning.load()) 
-                currentMidiNote = voice->getMidiNote();
+            //if (bassControlsTuning.load()) 
 
             lfo1Mod.setFreq(lfo1Freq.load());
             lfo1Mod.updateLfo(lfo1Shape.load());
@@ -605,6 +606,8 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
             volumeDb = volume.load();
             linearVolume = juce::Decibels::decibelsToGain(volumeDb);
+
+            currentVoiceNote = voice->getMidiNote();
 
         }
 
@@ -639,7 +642,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
         if (hiSwitch) juceHipFilt.process(context);
     }
 
-    buffer.applyGain(1.5);
+    buffer.applyGain(4);
 
     //if(isGlobalFilter(modAdsrR))
     //filter.compute(buffer.getNumSamples(), buffer.getArrayOfWritePointers(), buffer.getArrayOfWritePointers());
@@ -741,9 +744,9 @@ void VarikeyProjectAudioProcessor::changeTuningPreset(int presetChoice, std::arr
     noteTuning.setTuning(preset);
 }
 
-float VarikeyProjectAudioProcessor::getCurrentControlNote()
+int* VarikeyProjectAudioProcessor::getCurrentControlNote()
 {
-    return currentMidiNote;
+    return currentMidiNote.get();
 }
 
 //==============================================================================

@@ -42,9 +42,9 @@ FilterComponent::FilterComponent(juce::AudioProcessorValueTreeState& vts) : vts(
 
     hipCutoffSlider.setSkewFactorFromMidPoint(1000.0f);
     setSliderParams(lopQSlider, lopQLabel, "Q", rotary);
-    lopQSlider.setRange(1.0f, 10.0f, 0.1f);
+    lopQSlider.setRange(0.1f, 10.0f, 0.1f);
     setSliderParams(hipQSlider, hipQLabel, "Q", rotary);
-    hipQSlider.setRange(1.0f, 10.0f, 0.1f);
+    hipQSlider.setRange(0.1f, 10.0f, 0.1f);
 }
 
 FilterComponent::~FilterComponent()
