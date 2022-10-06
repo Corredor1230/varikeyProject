@@ -457,10 +457,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         endMix = modRouting.modulateValue(mixMod, leftRightMix);
         leftMixGain = ((endMix - 1) / 2) * (-1);
         rightMixGain = (endMix + 1) / 2;
-        //synthBuffer.applyGainRamp(i, 1, startMixL, leftMixGain);
-        //rightBuffer.applyGainRamp(i, 1, startMixR, rightMixGain);
-        //startMixL = leftMixGain;
-        //startMixR = rightMixGain;
     }
 
     synthBuffer.applyGainRamp(0, sampNumber, startMixL, leftMixGain);
@@ -475,17 +471,13 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
         {
             synthBuffer.addSample(ch, i, rightBuffer.getSample(ch, i));
-            //adsrRouting.updateModValues(modAdsr.getNextSample());
         }
     }
-
-    //modAdsr.applyEnvelopeToBuffer(adsrBuffer, 0, sampNumber);
 
     if (isVoiceFilt)
     {
         for (int samp = 0; samp < sampNumber; samp++)
         {
-            //modAdsrSample = modAdsr.getNextSample();
             juceLopFilt.setCutoffFrequency(tuningRef.midiToHertz(
                 adsrRouting.modulateValue(lopCutoffMod, tuningRef.hertzToMidi(lopCutoff))));
             juceLopFilt.setResonance(adsrRouting.modulateValue(lopQMod, lopQ));
@@ -498,7 +490,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     {
         for (int samp = 0; samp < sampNumber; samp++)
         {
-            //modAdsrSample = modAdsr.getNextSample();
             juceHipFilt.setCutoffFrequency(tuningRef.midiToHertz(
                 adsrRouting.modulateValue(hipCutoffMod, tuningRef.hertzToMidi(hipCutoff))));
             juceHipFilt.setResonance(adsrRouting.modulateValue(hipQMod, hipQ));
