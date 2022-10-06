@@ -10,6 +10,8 @@
 
 #include "SynthVoice.h"
 
+int SynthVoice::controlMidi = 0;
+
 SynthVoice::SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts, ModRouting& modRouting)
     : tuningRef(someTuner)
     , vts(vts) 
@@ -25,10 +27,9 @@ bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
 
 void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition)
 {
-    // recuerda los problemas de imprimir en el process block, creo q acá esta bien sin embargo
 
     //Note on for all synths
-    //By passing a note on to all of them at the same time,
+    //By passing a 'note on' msg to all of them at the same time,
     //it's possible to switch between synths in real time.
     genCtrl.setParamValue("gate", true);
     additiveCtrl.setParamValue("gate", true);
@@ -270,12 +271,9 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     //SETUP
     //-------------------------------------------------------------
-    // muy bien esto!
     if (!isVoiceActive())
         return;
 
-    // esto aun no me convence XD
-    // ando buscando soluciones para esto
     synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     rightBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
     adsrBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
@@ -302,11 +300,6 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     genCtrlRight.setParamValue("noiseLevel", modRouting.modulateValue(gen2NoiseMod, rightNoiseLevel));
     noiseCtrl.setParamValue("tone", modRouting.modulateValue(noise1ToneMod, leftNoiseTone));
     noiseCtrlRight.setParamValue("tone", modRouting.modulateValue(noise2ToneMod, rightNoiseTone));
-
-    //distLeft.updateDistortion(modRouting.modulateValue(distLeftMod, distInLeft),
-    //    modRouting.modulateValue(distOutLMod, distOutLeft));
-    //distRight.updateDistortion(modRouting.modulateValue(distRightMod, distInRight),
-    //    modRouting.modulateValue(distOutRMod, distOutRight));
 
     modAdsr.applyEnvelopeToBuffer(adsrBuffer, 0, sampNumber);
 
@@ -419,7 +412,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
     else
     {
         tuningRef.updateScaleCenter(getCurrentlyPlayingNote() % 12);
-        controlNote = getCurrentlyPlayingNote();
+        controlMidi = getCurrentlyPlayingNote() % 12;
     }
 
     //PROCESS
