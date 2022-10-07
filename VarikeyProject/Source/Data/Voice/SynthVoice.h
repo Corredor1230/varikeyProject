@@ -83,10 +83,8 @@ public:
     void updateTuner(std::array<float, 12> &tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
     float freqToMidi(float freq);
     int getMidiNote();
-    //void updateLfo1(float freq, float depth, float shape, int route);
-    //void updateLfo2(float freq, float depth, float shape, int route);
-    //void updateLfo3(float freq, float depth, float shape, int route);
-    //void updateLfo4(float freq, float depth, float shape, int route);
+
+    static int controlMidi;
 
 private:
 
@@ -212,3 +210,4 @@ private:
     float modOscSample = 0;
     float gen1NoiseLfo = 0;
 };
+
