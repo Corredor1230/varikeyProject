@@ -1,0 +1,7 @@
+06/10 
+
+1. Test Preset manager
+2. Separate vts for sound and tuning sections
+3. Implement colour palette dynamic changes
+4. Integrate preset manager
+5. Consider rewriting synth DSP functions to allow oversampling and sample processing
