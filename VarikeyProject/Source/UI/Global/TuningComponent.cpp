@@ -331,8 +331,8 @@ int TuningComponent::getPresetIndex(const juce::String& preset)
     return 0;
 }
 
-void TuningComponent::updateCenterSlider(const int* controlNote)
+void TuningComponent::updateCenterSlider(const int controlNote)
 {
-    int ctrl = *controlNote;
+    int ctrl = controlNote;
     transposeSlider.setValue(ctrl, juce::sendNotification);
 }

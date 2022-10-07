@@ -39,7 +39,7 @@ public:
     int getArrayValue(int index, int centerValue){return (index + centerValue) % 12;}
     void updateSlidersFromArray(std::array<float, 12> newValues);
     int getPresetIndex(const juce::String& preset);
-    void updateCenterSlider(const int* controlNote);
+    void updateCenterSlider(const int controlNote);
 
 private:
 
