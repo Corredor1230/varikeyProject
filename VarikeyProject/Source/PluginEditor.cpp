@@ -36,7 +36,8 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     , tuner(audioProcessor.vts)
     , pitchwheel(audioProcessor.vts)
 {
-    varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
+    //varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
+    
     setLookAndFeel(&varikeyLookAndFeel);
     addAndMakeVisible(tuner);
 
@@ -166,9 +167,13 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     auto& r4 = *vts.getRawParameterValue("lfo4Route");
     auto& r5 = *vts.getRawParameterValue("modAdsrRoute");
     auto& centerToggle = *vts.getRawParameterValue("bassControlsTuning");
+
+    //If the keyboard split is activated
     if (centerToggle.load())
-        if(audioProcessor.getCurrentControlNote() != nullptr)
-        tuner.updateCenterSlider(audioProcessor.getCurrentControlNote());
+        {
+            tuner.updateCenterSlider(audioProcessor.getCurrentControlNote());
+            tuner.repaint();
+        }
 
     lfo1.setUsedRoutes(1, 2, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
     lfo2.setUsedRoutes(3, 4, r1.load(), r2.load(), r3.load(), r4.load(), r5.load());
@@ -268,10 +273,6 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillRect(firstRowStartX + 5, firstRowHeight - 3, width - 10, 1);
 
     //First row lines
-    //g.fillRect(width / 2, firstRowHeight - oscChoiceHeight - padding - 2, 1, oscChoiceHeight + padding);
-    //g.fillRect(firstColumnWidth + 1, firstRowStartY + 5, 1, firstRowHeight - oscChoiceHeight * 1.7);
-    //g.fillRect(firstColumnWidth + secondColumnWidth + 1, firstRowStartY + 5, 1, firstRowHeight - oscChoiceHeight * 1.7);
-    //g.fillRect(firstColumnWidth + 1, firstRowHeight - oscChoiceHeight * 1.5, secondColumnWidth + 1, 1);
     g.fillRect(firstColumnWidth + 1, firstRowHeight + 5, 1, fmRowHeight - 10);
     g.fillRect(firstColumnWidth + secondColumnWidth + 1, firstRowHeight + 5, 1, fmRowHeight - 10);
 

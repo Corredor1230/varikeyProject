@@ -166,6 +166,9 @@ private:
 
     VarikeyLookAndFeel varikeyLookAndFeel;
 
+    VarikeyLookAndFeel::palette currentPalette = VarikeyLookAndFeel::palette::vaporwave;
+    VarikeyLookAndFeel::palette oldPalette;
+
 
     juce::AudioProcessorValueTreeState::ComboBoxAttachment leftOscAttachment;
     juce::AudioProcessorValueTreeState::ComboBoxAttachment rightOscAttachment;
