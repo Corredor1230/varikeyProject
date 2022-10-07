@@ -51,7 +51,6 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
     modRouting.setInModList(vibDepthMod, 0.f, 1.f, false);
     modRouting.setInModList(volumeMod, 0.f, 1.f, false);
 
-    currentMidiNote = std::make_unique<int>(currentVoiceNote);
 }
 
 //PARAMETER RANGES AND ADDITION TO VTS
@@ -744,10 +743,11 @@ void VarikeyProjectAudioProcessor::changeTuningPreset(int presetChoice, std::arr
     noteTuning.setTuning(preset);
 }
 
-int* VarikeyProjectAudioProcessor::getCurrentControlNote()
+int VarikeyProjectAudioProcessor::getCurrentControlNote()
 {
-    return currentMidiNote.get();
+    return SynthVoice::controlMidi;
 }
+
 
 //==============================================================================
 // This creates new instances of the plugin..
