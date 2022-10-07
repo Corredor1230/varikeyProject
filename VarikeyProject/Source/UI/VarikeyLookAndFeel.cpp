@@ -16,6 +16,7 @@ using namespace juce;
 VarikeyLookAndFeel::VarikeyLookAndFeel()
 {
     setColourPalette(vaporwave);
+
     //These parameters define the font for most components
     //Modify them wisely!
     josefinSans.setFontSizeAndStyle(22.0f, "medium", 1.0f, 0.0f);
@@ -47,13 +48,13 @@ ColourPalette VarikeyLookAndFeel::getColourPalette(palette paletteType)
         vaporwave.globalLight = cyan;
         vaporwave.globalDark = black;
         return vaporwave;
-    default:
+    case clean:
         ColourPalette clean;
         clean.activeElement = orange;
         clean.inactiveElement = midGrey;
-        clean.highlightElement = pale;
+        clean.highlightElement = almostWhite;
         clean.contrastDark = darkGrey;
-        clean.globalLight = almostWhite;
+        clean.globalLight = lightGrey;
         clean.globalDark = almostBlack;
         return clean;
     }
@@ -94,6 +95,7 @@ void VarikeyLookAndFeel::setSliderPalette(ColourPalette palette, float alpha)
 void VarikeyLookAndFeel::setColourPalette(palette paletteType)
 {
     currentPalette = getColourPalette(paletteType);
+    
 }
 
 /*
