@@ -15,7 +15,7 @@ using namespace juce;
 
 VarikeyLookAndFeel::VarikeyLookAndFeel()
 {
-    setColourPalette(vaporwave);
+    //setColourPalette(vaporwave);
 
     //These parameters define the font for most components
     //Modify them wisely!
