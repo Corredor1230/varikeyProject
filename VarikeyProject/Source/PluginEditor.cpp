@@ -36,9 +36,11 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     , tuner(audioProcessor.vts)
     , pitchwheel(audioProcessor.vts)
 {
-    //varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
     
+    varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
     setLookAndFeel(&varikeyLookAndFeel);
+    this->repaint();
+
     addAndMakeVisible(tuner);
 
     varikeyLogo = Drawable::createFromImageData(BinaryData::Varikey_svg,
