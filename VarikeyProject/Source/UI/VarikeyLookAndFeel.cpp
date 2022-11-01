@@ -95,7 +95,8 @@ void VarikeyLookAndFeel::setSliderPalette(ColourPalette palette, float alpha)
 void VarikeyLookAndFeel::setColourPalette(palette paletteType)
 {
     currentPalette = getColourPalette(paletteType);
-    
+    setSliderPalette(currentPalette);
+    setComponentPalette(currentPalette);
 }
 
 /*

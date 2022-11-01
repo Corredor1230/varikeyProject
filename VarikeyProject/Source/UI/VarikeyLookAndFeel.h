@@ -76,11 +76,11 @@ public:
     
     ColourPalette getColourPalette(palette paletteType = vaporwave);
     juce::Colour getColourFromPalette(paletteColours colour, float alpha = 1.0f);    
+    struct ColourPalette currentPalette;
 
 private: 
 
     palette currentEnumPalette;
-    struct ColourPalette currentPalette;
 
     //Colour Palettes
     float sliderAlpha = 1.0;
