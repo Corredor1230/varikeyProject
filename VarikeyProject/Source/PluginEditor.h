@@ -42,6 +42,7 @@ public:
 private:
 
     
+    VarikeyLookAndFeel varikeyLookAndFeel;
 
 
     //GUI VALUES
@@ -164,7 +165,6 @@ private:
     juce::Slider volumeSlider;
     juce::Label volumeLabel;
 
-    VarikeyLookAndFeel varikeyLookAndFeel;
 
     VarikeyLookAndFeel::palette currentPalette = VarikeyLookAndFeel::palette::vaporwave;
     VarikeyLookAndFeel::palette oldPalette;

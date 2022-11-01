@@ -37,7 +37,7 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     , pitchwheel(audioProcessor.vts)
 {
     
-    varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::vaporwave);
+    varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::clean);
     setLookAndFeel(&varikeyLookAndFeel);
     this->repaint();
 
