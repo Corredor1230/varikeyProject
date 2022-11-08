@@ -59,7 +59,7 @@ private:
     int adsrWidth = 0;
     int secondColumnWidth = 0;
 
-    int fmRowHeight = 0;
+    int distRowHeight = 0;
     int lfoHeight = 0;
     int pitchwheelHeight = 0;
     int labelHeight = 0;

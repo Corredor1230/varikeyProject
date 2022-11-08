@@ -275,8 +275,8 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillRect(firstRowStartX + 5, firstRowHeight - 3, width - 10, 1);
 
     //First row lines
-    g.fillRect(firstColumnWidth + 1, firstRowHeight + 5, 1, fmRowHeight - 10);
-    g.fillRect(firstColumnWidth + secondColumnWidth + 1, firstRowHeight + 5, 1, fmRowHeight - 10);
+    g.fillRect(firstColumnWidth + 1, firstRowHeight + 5, 1, distRowHeight - padding - 10);
+    g.fillRect(firstColumnWidth + secondColumnWidth + 1, firstRowHeight + 5, 1, distRowHeight - padding - 10);
 
     //LFO
     g.fillRect(modAdsr.getRight() + 5, secondRowStartY + lfoHeight + 2, lfo1.getWidth() / 2 - 15, 1);
@@ -290,6 +290,7 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
 
 void VarikeyProjectAudioProcessorEditor::resized()
 {
+
     height = getHeight();
     width = getWidth();
 
@@ -303,20 +304,20 @@ void VarikeyProjectAudioProcessorEditor::resized()
     adsrWidth = width / 2 - filterWidth;
     secondColumnWidth = width / 3;
 
-    fmRowHeight = (height / 9);
+    distRowHeight = (height / 9) + padding;
     lfoHeight = (3 * secondRowHeight) / 8;
     pitchwheelHeight = secondRowHeight - lfoHeight * 2;
     labelHeight = 18;
     labelWidth = 50;
     labelStartX = firstColumnWidth + (secondColumnWidth / 2) - (labelWidth / 2);
-    crossHeight = fmRowHeight - labelHeight;
+    crossHeight = distRowHeight - padding - labelHeight;
 
     secondRowStartX = 0;
     secondRowStartY = height / 3;
 
     thirdRowStartX = 0;
-    thirdRowStartY = firstRowHeight + fmRowHeight + secondRowHeight;
-    thirdRowHeight = height - firstRowHeight - fmRowHeight - secondRowHeight;
+    thirdRowStartY = firstRowHeight + (distRowHeight - padding) + secondRowHeight;
+    thirdRowHeight = height - firstRowHeight - (distRowHeight - padding) - secondRowHeight;
     volumeWidth = width / 12 + padding * 2;
     tunerWidth = 2 * firstColumnWidth + secondColumnWidth - volumeWidth;
 
@@ -345,8 +346,8 @@ void VarikeyProjectAudioProcessorEditor::resized()
     karpRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
     noiseRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowStartY, firstColumnWidth, firstRowHeight);
 
-    distLeft.setBounds(firstRowStartX, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
-    distRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowHeight - padding / 2, firstColumnWidth, fmRowHeight + padding);
+    distLeft.setBounds(firstRowStartX, firstRowHeight - padding / 2, firstColumnWidth, distRowHeight);
+    distRight.setBounds(firstColumnWidth + secondColumnWidth, firstRowHeight - padding / 2, firstColumnWidth, distRowHeight);
     crossLabel.setBounds(firstColumnWidth, firstRowHeight, secondColumnWidth, labelHeight);
     crossSlider.setBounds(firstColumnWidth, crossLabel.getBottom(), secondColumnWidth, crossHeight);
 
