@@ -69,16 +69,17 @@ private:
 
     int secondRowStartX = 0;
     int secondRowStartY = 0;
-
     int thirdRowStartX = 0;
     int thirdRowStartY = 0;
     int thirdRowHeight = 0;
     int volumeWidth = 0;
+    
     int tunerWidth = 0;
 
     int volumeStartX = 0;
     int topStartY = 0;
     int volumeHeight = 0;
+    int panHeight = 0;
 
 
     int oscChoiceWidth = 0;
@@ -164,6 +165,10 @@ private:
     TuningComponent tuner;
     juce::Slider volumeSlider;
     juce::Label volumeLabel;
+    juce::Slider panSlider;
+    juce::Label panLabel;
+
+    
 
 
     VarikeyLookAndFeel::palette currentPalette = VarikeyLookAndFeel::palette::vaporwave;
@@ -174,5 +179,6 @@ private:
     juce::AudioProcessorValueTreeState::ComboBoxAttachment rightOscAttachment;
     juce::AudioProcessorValueTreeState::SliderAttachment mixAttachment;
     juce::AudioProcessorValueTreeState::SliderAttachment volumeAttachment;
+    juce::AudioProcessorValueTreeState::SliderAttachment panAttachment;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VarikeyProjectAudioProcessorEditor)
 };

@@ -19,6 +19,7 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     , rightOscAttachment(audioProcessor.vts, "rightSynthChoice", rightOscChoice)
     , mixAttachment(audioProcessor.vts, "synthMix", crossSlider)
     , volumeAttachment(audioProcessor.vts, "volume", volumeSlider)
+    , panAttachment(audioProcessor.vts, "pan", panSlider)
     , additiveLeft(audioProcessor.vts, leftAdditiveIDs)
     , additiveRight(audioProcessor.vts, rightAdditiveIDs)
     , karpLeft(audioProcessor.vts, "leftKarpAtt", "leftKarpRel", "leftKarpFb", "leftKarpNoise")
@@ -36,8 +37,8 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     , tuner(audioProcessor.vts)
     , pitchwheel(audioProcessor.vts)
 {
-    
     varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::clean);
+    
     setLookAndFeel(&varikeyLookAndFeel);
     this->repaint();
 
@@ -73,11 +74,18 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
 
     addAndMakeVisible(volumeSlider);
     addAndMakeVisible(volumeLabel);
+    addAndMakeVisible(panSlider);
+    addAndMakeVisible(panLabel);
 
     volumeSlider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
     volumeSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 25);
     volumeLabel.setText("Volume", juce::dontSendNotification);
     volumeLabel.setJustificationType(juce::Justification::centred);
+
+    panSlider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    panSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 25);
+    panLabel.setText("Pan Width", juce::dontSendNotification);
+    panLabel.setJustificationType(juce::Justification::centred);
 
     crossSlider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
     crossSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 25);
@@ -134,7 +142,7 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     lfo2.setCustomLookAndFeel(&varikeyLookAndFeel);
     pitchwheel.setCustomLookAndFeel(&varikeyLookAndFeel);
 
-    setSize(700, 700);
+    setSize(700, 720);
 }
 
 VarikeyProjectAudioProcessorEditor::~VarikeyProjectAudioProcessorEditor()
@@ -321,9 +329,10 @@ void VarikeyProjectAudioProcessorEditor::resized()
     volumeWidth = width / 12 + padding * 2;
     tunerWidth = 2 * firstColumnWidth + secondColumnWidth - volumeWidth;
 
-    volumeStartX = tunerWidth - padding;
+    volumeStartX = tunerWidth;
     topStartY = 8 + padding / 2.5;
-    volumeHeight = thirdRowHeight - labelHeight - 1.7 * padding - topStartY;
+    volumeHeight = (thirdRowHeight * 13) / 32;
+    panHeight = thirdRowHeight - volumeHeight - labelHeight * 3.5;
 
 
     oscChoiceWidth = (secondColumnWidth / 2) - padding;
@@ -361,6 +370,8 @@ void VarikeyProjectAudioProcessorEditor::resized()
     tuner.setBounds(firstRowStartX, thirdRowStartY, tunerWidth, thirdRowHeight);
     volumeLabel.setBounds(volumeStartX, thirdRowStartY + topStartY, volumeWidth, labelHeight);
     volumeSlider.setBounds(volumeStartX, volumeLabel.getBottom(), volumeWidth, volumeHeight);
+    panLabel.setBounds(volumeStartX, volumeSlider.getBottom(), volumeWidth, labelHeight);
+    panSlider.setBounds(volumeStartX, panLabel.getBottom(), volumeWidth, panHeight);
 }
 
 int VarikeyProjectAudioProcessorEditor::getComboBoxIndex(const juce::String& string)
