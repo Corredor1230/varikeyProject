@@ -247,8 +247,12 @@ void LfoComponent::setSliderParams(juce::Slider& slider, juce::Label& label, juc
     }
 }
 
-void LfoComponent::setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel)
+void LfoComponent::setCustomLookAndFeel(VarikeyLookAndFeel* customLookAndFeel)
 {
+    if (customLookAndFeel != nullptr)
+    {
+        lfoLookAndFeel.setColourPalette(customLookAndFeel->getCurrentPalette());
+    }
     setLookAndFeel(&lfoLookAndFeel);
 }
 

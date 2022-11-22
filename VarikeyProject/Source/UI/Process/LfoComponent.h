@@ -52,7 +52,7 @@ public:
     void resized() override;
 
     void setSliderParams(juce::Slider& slider, juce::Label& label, juce::String name, int style);
-    void setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel);
+    void setCustomLookAndFeel(VarikeyLookAndFeel* customLookAndFeel);
     void setRegionTitle(juce::String& region1, juce::String& region2);
     void setUsedRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route, int modAdsrRoute);
     void setDisabledRoutes(int lfoNum, juce::ComboBox& box);
