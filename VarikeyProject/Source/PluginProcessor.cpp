@@ -212,7 +212,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         createFloatParameter(params, "detune", "Detune", -1.0f, 1.0f, 0.01f, 0.0f);
         createFloatParameter(params, "vibFreq", "Vibrato Frequency", 0.0f, 15.f, 0.01f, 0.0f, 0.3);
         createFloatParameter(params, "vibDepth", "Vibrato Depth", 0.0f, 1.f, 0.001f, 0.0f);
-        createFloatParameter(params, "volume", "Volume", -100.0f, 0.0f, 0.1f, -20.f, 3);
+        createFloatParameter(params, "volume", "Volume", -100.0f, 0.0f, 0.1f, -10.f, 3);
+        createFloatParameter(params, "pan", "pan", 0.f, 100.f, 0.1f, 25.f, 1.0f);
 
         //NOTE TUNING
         //Controls
@@ -562,6 +563,8 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
             auto& scaleCenter = *vts.getRawParameterValue("scaleCenter");
 
+            auto& panWidth = *vts.getRawParameterValue("pan");
+
             voice->updateLeftGenerator(leftGenShape.load(), leftGenNoiseLevel.load(), leftGenNoiseShape.load());
             voice->updateRightGenerator(rightGenShape.load(), rightGenNoiseLevel.load(), rightGenNoiseShape.load());
             voice->updateLeftAdditive(additiveLeft);
@@ -580,6 +583,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateModAdsr(modAdsrAtt.load(), modAdsrDec.load(), modAdsrSus.load(), modAdsrRel.load(), modAdsrRoute.load());
             voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load(), isGlobalFilter(modAdsrR), isGlobalHip(modAdsrR));
             voice->updateTuner(tuningArray, bassControlsTuning.load(), keyboardBreak.load(), scaleCenter.load());
+            voice->updatePan(panWidth.load());
             //voice->updateLfo1(lfo1Freq.load(), lfo1Depth.load(), lfo1Shape.load(), lfo1Route.load());
             //voice->updateLfo2(lfo2Freq.load(), lfo2Depth.load(), lfo2Shape.load(), lfo2Route.load());
             //voice->updateLfo3(lfo3Freq.load(), lfo3Depth.load(), lfo3Shape.load(), lfo3Route.load());
