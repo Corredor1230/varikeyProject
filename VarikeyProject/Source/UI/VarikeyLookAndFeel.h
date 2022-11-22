@@ -13,7 +13,10 @@
 #include<JuceHeader.h>
 #include"LookAndFeelElements/Fonts/EmbeddedFonts.h"
 
-
+//The ColourPalette struct contains the data for all colors used in a ColourPalette.
+//So this shouldn't be a struct that you pass around when inheriting this class
+//Or when creating getters or setters. For that particular purpose,
+//the palette enum contained within the VarikeyLookAndFeel class will be more than enough.
 struct ColourPalette
 {
     std::array<int, 3> activeElement;
@@ -75,8 +78,11 @@ public:
         const Slider::SliderStyle style, Slider& slider) override;
     
     ColourPalette getColourPalette(palette paletteType = vaporwave);
+    ColourPalette currentPalette;
+
     juce::Colour getColourFromPalette(paletteColours colour, float alpha = 1.0f);    
-    struct ColourPalette currentPalette;
+
+    palette getCurrentPalette();
 
 private: 
 
