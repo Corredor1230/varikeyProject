@@ -106,15 +106,22 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     juce::String lfo2Region2 = "4";
     lfo2.setRegionTitle(lfo2Region1, lfo2Region2);
 
+    lfo1.setComboBoxOffset(comboBoxIndexOffset);
+    lfo2.setComboBoxOffset(comboBoxIndexOffset);
+    tuner.setComboBoxOffset(comboBoxIndexOffset);
+    modAdsr.setComboBoxOffset(comboBoxIndexOffset);
+
     std::initializer_list<const char*> synthList{ "Generator", "Additive", "Karplus", "Noise" };
-    leftOscChoice.addItemList(juce::StringArray(synthList), 1);
+    leftOscChoice.addItemList(juce::StringArray(synthList), comboBoxIndexOffset);
     leftOscChoice.setJustificationType(juce::Justification::centred);
-    leftOscChoice.setTextWhenNothingSelected("Generator");
-    leftOscChoice.setSelectedId(1);
-    rightOscChoice.addItemList(juce::StringArray(synthList), 1);
+    leftOscChoice.setTextWhenNothingSelected("Nothing");
+    auto& leftSynthChoice = *vts.getRawParameterValue("leftSynthChoice");
+    auto& rightSynthChoice = *vts.getRawParameterValue("rightSynthChoice");
+    leftOscChoice.setSelectedId(leftSynthChoice.load() + comboBoxIndexOffset);
+    rightOscChoice.addItemList(juce::StringArray(synthList), comboBoxIndexOffset);
     rightOscChoice.setJustificationType(juce::Justification::centred);
-    rightOscChoice.setTextWhenNothingSelected("Generator");
-    rightOscChoice.setSelectedId(1);
+    rightOscChoice.setTextWhenNothingSelected("Nothing");
+    rightOscChoice.setSelectedId(rightSynthChoice.load() + comboBoxIndexOffset);
 
     //auto& r1 = *vts.getRawParameterValue("lfo1Route");
     //auto& r2 = *vts.getRawParameterValue("lfo2Route");

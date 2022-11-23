@@ -39,6 +39,8 @@ public:
     void resized() override;
     int getComboBoxIndex(const juce::String& string);
 
+    const int comboBoxIndexOffset = 1;
+
 private:
 
     
