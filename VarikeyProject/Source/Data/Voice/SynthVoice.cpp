@@ -27,6 +27,7 @@ bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
 
 void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition)
 {
+    voicePan = (rand.nextFloat() * 2.f) - 1.f;
 
     //Note on for all synths
     //By passing a 'note on' msg to all of them at the same time,
@@ -43,6 +44,7 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
 
     adsr.noteOn();
     modAdsr.noteOn();
+
 
     //Copies velocity to global tempVelocity variable for real time control
     tempVelocity = velocity;
@@ -266,6 +268,12 @@ void SynthVoice::updateTuner(std::array<float, 12> &tuningSliders, bool inputBas
 
 }
 
+void SynthVoice::updatePan(float width)
+{
+    panWidth = width / 100;
+    panGain = voicePan * panWidth;
+}
+
 void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
 {
 
@@ -465,6 +473,22 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         {
             synthBuffer.addSample(ch, i, rightBuffer.getSample(ch, i));
         }
+    }
+
+    for (int ch = 0; ch < synthBuffer.getNumChannels(); ch++)
+    {
+        if (ch == 0)
+        {
+            synthBuffer.applyGainRamp(ch, 0, sampNumber, (-oldPanGainL / 2) + 0.5, (-panGain / 2) + 0.5);
+            oldPanGainL = panGain;
+        }
+        if (ch == 1)
+        {
+            synthBuffer.applyGainRamp(ch, 0, sampNumber, (oldPanGainR / 2) + 0.5, (panGain / 2) + 0.5);
+            //synthBuffer.applyGainRamp(ch, 0, sampNumber, 0, 0);
+            oldPanGainR = panGain;
+        }
+        
     }
 
     if (isVoiceFilt)

@@ -81,10 +81,12 @@ public:
     void updateModAdsr(float attack, float decay, float sustain, float release, int route);
     void updateGlobal(float detune, float vibFreq, float vibDepth, float volume, bool isGlobalFilter, bool isGlobalHip);
     void updateTuner(std::array<float, 12> &tuningSliders, bool bassTuning, int keyboardBreak, int scaleCenter);
+    void updatePan(float panWidth);
     float freqToMidi(float freq);
     int getMidiNote();
 
     static int controlMidi;
+    float panWidth;
 
 private:
 
@@ -126,6 +128,8 @@ private:
     juce::AudioBuffer<float> synthBuffer;
     juce::AudioBuffer<float> rightBuffer;
     juce::AudioBuffer<float> adsrBuffer;
+
+    juce::Random rand;
 
     NoteTuning& tuningRef;
     juce::AudioProcessorValueTreeState& vts;
@@ -209,5 +213,11 @@ private:
     float oscModDepth = 0;
     float modOscSample = 0;
     float gen1NoiseLfo = 0;
+
+
+    float voicePan = 0;
+    float oldPanGainL = 0;
+    float oldPanGainR = 0;
+    float panGain = 0;
 };
 
