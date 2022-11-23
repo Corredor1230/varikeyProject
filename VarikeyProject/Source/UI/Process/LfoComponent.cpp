@@ -127,11 +127,15 @@ LfoComponent::LfoComponent(juce::AudioProcessorValueTreeState& vts, juce::String
         "detune", "vibFreq", "vibDepth", 
         "volume"
     };
-    routeBox.addItemList(juce::StringArray(synthList), 1);
-    routeBox2.addItemList(juce::StringArray(synthList), 1);
 
-    routeBox.setSelectedId(-1, juce::NotificationType::sendNotification);
-    routeBox2.setSelectedId(-1, juce::NotificationType::sendNotification);
+    auto& routeBoxIndex = *vts.getRawParameterValue(route1ID);
+    auto& routeBox2Index = *vts.getRawParameterValue(route2ID);
+
+    routeBox.addItemList(juce::StringArray(synthList), comboBoxOffset);
+    routeBox2.addItemList(juce::StringArray(synthList), comboBoxOffset);
+
+    routeBox.setSelectedId(routeBoxIndex.load() + comboBoxOffset, juce::NotificationType::sendNotification);
+    routeBox2.setSelectedId(routeBox2Index.load() + comboBoxOffset, juce::NotificationType::sendNotification);
 
 }
 
@@ -322,4 +326,9 @@ void LfoComponent::setDisabledRoutes(int lfoNum, juce::ComboBox& box)
         (modAR == 0) ? box.setItemEnabled(modAR, true) : box.setItemEnabled(modAR, false);
         break;
     }
+}
+
+void LfoComponent::setComboBoxOffset(int offset)
+{
+    comboBoxOffset = offset;
 }

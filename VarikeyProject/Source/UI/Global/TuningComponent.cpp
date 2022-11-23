@@ -92,7 +92,9 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     setSliderParams(slider10, label10, "10", vertical);
     setSliderParams(slider11, label11, "11", vertical);
 
-    presetSelector.setSelectedItemIndex(0, juce::sendNotification);
+    auto& comboBoxIndex = *vts.getRawParameterValue("tuningPreset");
+
+    presetSelector.setSelectedItemIndex(comboBoxIndex.load() + comboBoxOffset, juce::sendNotification);
     oldValue = getPresetIndex(presetSelector.getText());
 }
 
@@ -335,4 +337,9 @@ void TuningComponent::updateCenterSlider(const int controlNote)
 {
     int ctrl = controlNote;
     transposeSlider.setValue(ctrl, juce::sendNotification);
+}
+
+void TuningComponent::setComboBoxOffset(int offset)
+{
+    comboBoxOffset = offset;
 }

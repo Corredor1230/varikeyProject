@@ -35,6 +35,8 @@ public:
     void setCustomLookAndFeel(juce::LookAndFeel_V4* customLookAndFeel);
     void setUsedRoutes(int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route);
     void setDisabledRoutes(juce::ComboBox& box);
+    void setComboBoxOffset(int offset);
+
 private:
 
     juce::AudioProcessorValueTreeState& vts;
@@ -44,6 +46,8 @@ private:
     int lfo2R = 0;
     int lfo3R = 0;
     int lfo4R = 0;
+
+    int comboBoxOffset = 0;
 
     double maximumSliderValue = 5000.0;
     double sliderInterval = 0.1;

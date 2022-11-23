@@ -52,9 +52,11 @@ ModAdsrComponent::ModAdsrComponent(juce::AudioProcessorValueTreeState& vts) : vt
         "detune", "vibFreq", "vibDepth",
         "volume"
     };
-    routeBox.addItemList(juce::StringArray(synthList), 1);
+    routeBox.addItemList(juce::StringArray(synthList), comboBoxOffset);
 
-    routeBox.setSelectedId(-1, juce::NotificationType::sendNotification);
+    auto& comboBoxIndex = *vts.getRawParameterValue("modAdsrRoute");
+
+    routeBox.setSelectedId(comboBoxIndex.load() + comboBoxOffset, juce::NotificationType::sendNotification);
 }
 
 ModAdsrComponent::~ModAdsrComponent()
@@ -162,4 +164,9 @@ void ModAdsrComponent::setDisabledRoutes(juce::ComboBox& box)
     (lfo3R == 0) ? box.setItemEnabled(lfo3R, true) : box.setItemEnabled(lfo3R, false);
     (lfo4R == 0) ? box.setItemEnabled(lfo4R, true) : box.setItemEnabled(lfo4R, false);
 
+}
+
+void ModAdsrComponent::setComboBoxOffset(int offset)
+{
+    comboBoxOffset = offset;
 }

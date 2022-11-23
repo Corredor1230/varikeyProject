@@ -40,6 +40,7 @@ public:
     void updateSlidersFromArray(std::array<float, 12> newValues);
     int getPresetIndex(const juce::String& preset);
     void updateCenterSlider(const int controlNote);
+    void setComboBoxOffset(int offset);
 
 private:
 
@@ -53,6 +54,7 @@ private:
     TuningPresets presets;
     std::array<float, 12> currentPreset;
     int oldValue = 0;
+    int comboBoxOffset = 0;
 
     void setSliderParams(juce::Slider& slider, juce::Label& label, std::string name, int style);
     //juce::Font tuningFont;

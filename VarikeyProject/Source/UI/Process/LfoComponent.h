@@ -56,8 +56,11 @@ public:
     void setRegionTitle(juce::String& region1, juce::String& region2);
     void setUsedRoutes(int lfo1Num, int lfo2Num, int lfo1Route, int lfo2Route, int lfo3Route, int lfo4Route, int modAdsrRoute);
     void setDisabledRoutes(int lfoNum, juce::ComboBox& box);
+    void setComboBoxOffset(int offset);
 
 private:
+
+    int comboBoxOffset = 0;
 
     juce::AudioProcessorValueTreeState& vts;
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
