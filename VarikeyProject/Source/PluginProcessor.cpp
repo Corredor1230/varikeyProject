@@ -143,9 +143,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
 
 
     //CHOICE
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("leftSynthChoice", "Left Synth", 
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("leftSynthChoice", "leftSynthChoice", 
             juce::StringArray(oscList), 0));
-        params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "Right Synth", 
+        params.push_back(std::make_unique<juce::AudioParameterChoice>("rightSynthChoice", "rightSynthChoice", 
             juce::StringArray(oscList), 0));
         createFloatParameter(params, "synthMix", "Synth Mix", -1.0f, 1.0f, 0.01f, -1.0f);
 
