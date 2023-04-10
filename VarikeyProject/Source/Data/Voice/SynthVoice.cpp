@@ -323,8 +323,8 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 
     //-------------------------------------------------------------
 
-    float** synthData = synthBuffer.getArrayOfWritePointers();
-    float** rightData = rightBuffer.getArrayOfWritePointers();
+    float** synthData = (float**)synthBuffer.getArrayOfWritePointers();
+    float** rightData = (float**)rightBuffer.getArrayOfWritePointers();
 
     auto audioBlock = juce::dsp::AudioBlock<float>{ synthBuffer };
     auto context = juce::dsp::ProcessContextReplacing<float>(audioBlock);
