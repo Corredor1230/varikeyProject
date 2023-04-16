@@ -22,6 +22,7 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
                        )
 #endif
 , vts(*this, nullptr, "Params", buildParams())
+, tuningVts(*this, nullptr, "TuningParams", buildTuningParams())
 {
     int numVoices = 8;
     synth.addSound(new SynthSound());
@@ -214,22 +215,29 @@ juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor
         createFloatParameter(params, "vibDepth", "Vibrato Depth", 0.0f, 1.f, 0.001f, 0.0f);
         createFloatParameter(params, "volume", "Volume", -100.0f, 0.0f, 0.1f, -10.f, 3);
         createFloatParameter(params, "pan", "pan", 0.f, 100.f, 0.1f, 25.f, 1.0f);
-
-        //NOTE TUNING
-        //Controls
-        params.push_back(std::make_unique<juce::AudioParameterBool>("bassControlsTuning", "Bass Tuning", false));
-        createIntParameter(params, "keyboardBreak", "Break", 1, 127, 48);
-
-        //Sliders
-        std::string tuning = "tuning";
-        for (int i = 0; i < 12; i++)
-        {
-            createFloatParameter(params, tuning + std::to_string(i), std::to_string(i) + "Tuner", -1.0f, 1.0f, 0.01f, 0.0f);
-        }
-        createIntParameter(params, "scaleCenter", "Scale Center", 0, 11, 0);
-        createIntParameter(params, "tuningPreset", "Tuning Preset", 0, 8, 0);
     
 
+
+    return { params.begin(), params.end() };
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout VarikeyProjectAudioProcessor::buildTuningParams()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+//NOTE TUNING
+    //Controls
+    params.push_back(std::make_unique<juce::AudioParameterBool>("bassControlsTuning", "Bass Tuning", false));
+    createIntParameter(params, "keyboardBreak", "Break", 1, 127, 48);
+
+    //Sliders
+    std::string tuning = "tuning";
+    for (int i = 0; i < 12; i++)
+    {
+        createFloatParameter(params, tuning + std::to_string(i), std::to_string(i) + "Tuner", -1.0f, 1.0f, 0.01f, 0.0f);
+    }
+    createIntParameter(params, "scaleCenter", "Scale Center", 0, 11, 0);
+    createIntParameter(params, "tuningPreset", "Tuning Preset", 0, 8, 0);
 
     return { params.begin(), params.end() };
 }
@@ -533,20 +541,20 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
             //TUNING
             std::array<float, 12> tuningArray;
-            auto& bassControlsTuning = *vts.getRawParameterValue("bassControlsTuning");
-            auto& keyboardBreak = *vts.getRawParameterValue("keyboardBreak");
-            auto& tuning0 = *vts.getRawParameterValue("tuning0");
-            auto& tuning1 = *vts.getRawParameterValue("tuning1");
-            auto& tuning2 = *vts.getRawParameterValue("tuning2");
-            auto& tuning3 = *vts.getRawParameterValue("tuning3");
-            auto& tuning4 = *vts.getRawParameterValue("tuning4");
-            auto& tuning5 = *vts.getRawParameterValue("tuning5");
-            auto& tuning6 = *vts.getRawParameterValue("tuning6");
-            auto& tuning7 = *vts.getRawParameterValue("tuning7");
-            auto& tuning8 = *vts.getRawParameterValue("tuning8");
-            auto& tuning9 = *vts.getRawParameterValue("tuning9");
-            auto& tuning10 = *vts.getRawParameterValue("tuning10");
-            auto& tuning11 = *vts.getRawParameterValue("tuning11");
+            auto& bassControlsTuning = *tuningVts.getRawParameterValue("bassControlsTuning");
+            auto& keyboardBreak = *tuningVts.getRawParameterValue("keyboardBreak");
+            auto& tuning0 = *tuningVts.getRawParameterValue("tuning0");
+            auto& tuning1 = *tuningVts.getRawParameterValue("tuning1");
+            auto& tuning2 = *tuningVts.getRawParameterValue("tuning2");
+            auto& tuning3 = *tuningVts.getRawParameterValue("tuning3");
+            auto& tuning4 = *tuningVts.getRawParameterValue("tuning4");
+            auto& tuning5 = *tuningVts.getRawParameterValue("tuning5");
+            auto& tuning6 = *tuningVts.getRawParameterValue("tuning6");
+            auto& tuning7 = *tuningVts.getRawParameterValue("tuning7");
+            auto& tuning8 = *tuningVts.getRawParameterValue("tuning8");
+            auto& tuning9 = *tuningVts.getRawParameterValue("tuning9");
+            auto& tuning10 = *tuningVts.getRawParameterValue("tuning10");
+            auto& tuning11 = *tuningVts.getRawParameterValue("tuning11");
             tuningArray[0] = tuning0.load();
             tuningArray[1] = tuning1.load();
             tuningArray[2] = tuning2.load();
@@ -561,7 +569,7 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             tuningArray[11] = tuning11.load();
             noteTuning.setTuning(tuningArray);
 
-            auto& scaleCenter = *vts.getRawParameterValue("scaleCenter");
+            auto& scaleCenter = *tuningVts.getRawParameterValue("scaleCenter");
 
             auto& panWidth = *vts.getRawParameterValue("pan");
 
@@ -584,12 +592,6 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
             voice->updateGlobal(detune.load(), vibFreq.load(), vibDepth.load(), volume.load(), isGlobalFilter(modAdsrR), isGlobalHip(modAdsrR));
             voice->updateTuner(tuningArray, bassControlsTuning.load(), keyboardBreak.load(), scaleCenter.load());
             voice->updatePan(panWidth.load());
-            //voice->updateLfo1(lfo1Freq.load(), lfo1Depth.load(), lfo1Shape.load(), lfo1Route.load());
-            //voice->updateLfo2(lfo2Freq.load(), lfo2Depth.load(), lfo2Shape.load(), lfo2Route.load());
-            //voice->updateLfo3(lfo3Freq.load(), lfo3Depth.load(), lfo3Shape.load(), lfo3Route.load());
-            //voice->updateLfo4(lfo4Freq.load(), lfo4Depth.load(), lfo4Shape.load(), lfo4Route.load());
-
-            //if (bassControlsTuning.load()) 
 
             lfo1Mod.setFreq(lfo1Freq.load());
             lfo1Mod.updateLfo(lfo1Shape.load());
@@ -647,22 +649,12 @@ void VarikeyProjectAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer
 
     buffer.applyGain(4);
 
-    //if(isGlobalFilter(modAdsrR))
-    //filter.compute(buffer.getNumSamples(), buffer.getArrayOfWritePointers(), buffer.getArrayOfWritePointers());
-
-    //if (hasTremolo(lfo1RouteCtrl, lfo2RouteCtrl, lfo3RouteCtrl, lfo4RouteCtrl))
-    //{
     startGain = endGain;
     for (int samp = 0; samp < buffer.getNumSamples(); samp++)
     {
         endGain = modRouting.modulateValue(volumeMod, linearVolume);
     }
     buffer.applyGainRamp(0, buffer.getNumSamples(), startGain, endGain);
-    //}
-    //else buffer.applyGain(linearVolume);
-
-    //buffer.applyGain(linearVolume);
-
 
 }
 
@@ -680,18 +672,42 @@ juce::AudioProcessorEditor* VarikeyProjectAudioProcessor::createEditor()
 //==============================================================================
 void VarikeyProjectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    auto state = vts.copyState();
-    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    juce::ValueTree firstTree = vts.copyState();
+    firstTree.setProperty("name", "vts", nullptr);
+
+    juce::ValueTree secondTree = tuningVts.copyState();
+    secondTree.setProperty("name", "tuningVts", nullptr);
+
+    juce::ValueTree parentTree("PluginState");
+    parentTree.addChild(firstTree, -1, nullptr);
+    parentTree.addChild(secondTree, -1, nullptr);
+
+    std::unique_ptr<XmlElement> xml(parentTree.createXml());
     copyXmlToBinary(*xml, destData);
+
 }
 
 void VarikeyProjectAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
-    if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName(vts.state.getType()))
-            vts.replaceState(juce::ValueTree::fromXml(*xmlState));
+    if (xmlState != nullptr)
+    {
+
+        juce::ValueTree parentTree = juce::ValueTree::fromXml(*xmlState);
+
+        if (parentTree.hasType("PluginState"))
+        {
+            juce::ValueTree firstTree = parentTree.getChildWithName("vts");
+            juce::ValueTree secondTree = parentTree.getChildWithName("tuningVts");
+
+            if (firstTree.isValid() && secondTree.isValid())
+            {
+                vts.replaceState(firstTree);
+                tuningVts.replaceState(secondTree);
+            }
+        }
+    }
 }
 
 void VarikeyProjectAudioProcessor::createFloatParameter(std::vector < std::unique_ptr<juce::RangedAudioParameter>>& params,

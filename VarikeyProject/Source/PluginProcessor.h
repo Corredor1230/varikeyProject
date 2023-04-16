@@ -86,6 +86,7 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     juce::AudioProcessorValueTreeState vts;
+    juce::AudioProcessorValueTreeState tuningVts;
 
     void createFloatParameter(std::vector < std::unique_ptr<juce::RangedAudioParameter>>& params,
         const juce::String& paramID, const juce::String& paramName, float minValue, float maxValue, float interval,
@@ -106,6 +107,7 @@ private:
 
 
     juce::AudioProcessorValueTreeState::ParameterLayout buildParams();
+    juce::AudioProcessorValueTreeState::ParameterLayout buildTuningParams();
     juce::Synthesiser synth;
     std::array<float, 12> tuning;
     juce::StringArray tuningId{
