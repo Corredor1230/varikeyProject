@@ -673,10 +673,10 @@ juce::AudioProcessorEditor* VarikeyProjectAudioProcessor::createEditor()
 void VarikeyProjectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     juce::ValueTree firstTree = vts.copyState();
-    firstTree.setProperty("name", "vts", nullptr);
+    firstTree.setProperty("vts", "PluginState", nullptr);
 
     juce::ValueTree secondTree = tuningVts.copyState();
-    secondTree.setProperty("name", "tuningVts", nullptr);
+    secondTree.setProperty("tuningVts", "PluginState", nullptr);
 
     juce::ValueTree parentTree("PluginState");
     parentTree.addChild(firstTree, -1, nullptr);
