@@ -52,7 +52,7 @@ public:
         volumeMod
     };
 
-    SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts, ModRouting& modRouting);
+    SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts, juce::AudioProcessorValueTreeState& tuningVts, ModRouting& modRouting);
     bool canPlaySound(juce::SynthesiserSound* sound) override;
     void startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition) override;
     void stopNote(float velocity, bool allowTailOff) override;
@@ -86,7 +86,7 @@ public:
     int getMidiNote();
 
     static int controlMidi;
-    float panWidth;
+    float panWidth = 0.0f;
 
 private:
 
@@ -133,6 +133,7 @@ private:
 
     NoteTuning& tuningRef;
     juce::AudioProcessorValueTreeState& vts;
+    juce::AudioProcessorValueTreeState& tuningVts;
     ModRouting& modRouting;
     ModRouting adsrRouting;
     

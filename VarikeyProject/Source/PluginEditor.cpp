@@ -34,7 +34,7 @@ VarikeyProjectAudioProcessorEditor::VarikeyProjectAudioProcessorEditor(VarikeyPr
     , lfo2(audioProcessor.vts, "lfo3Freq", "lfo4Freq", "lfo3Depth", 
         "lfo4Depth", "lfo3Shape", "lfo4Shape", "lfo3Route", "lfo4Route")
     , modAdsr(audioProcessor.vts)
-    , tuner(audioProcessor.vts)
+    , tuner(audioProcessor.tuningVts)
     , pitchwheel(audioProcessor.vts)
 {
     varikeyLookAndFeel.setColourPalette(VarikeyLookAndFeel::palette::clean);
@@ -183,7 +183,7 @@ void VarikeyProjectAudioProcessorEditor::paint (juce::Graphics& g)
     auto& r3 = *vts.getRawParameterValue("lfo3Route");
     auto& r4 = *vts.getRawParameterValue("lfo4Route");
     auto& r5 = *vts.getRawParameterValue("modAdsrRoute");
-    auto& centerToggle = *vts.getRawParameterValue("bassControlsTuning");
+    auto& centerToggle = *tuningVts.getRawParameterValue("bassControlsTuning");
 
     //If the keyboard split is activated
     if (centerToggle.load())

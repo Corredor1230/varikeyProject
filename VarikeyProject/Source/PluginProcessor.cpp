@@ -28,7 +28,7 @@ VarikeyProjectAudioProcessor::VarikeyProjectAudioProcessor()
     synth.addSound(new SynthSound());
     for (int i = 0; i < numVoices; i++)
     {
-        auto ptr = new SynthVoice(noteTuning, vts, modRouting);
+        auto ptr = new SynthVoice(noteTuning, vts, tuningVts, modRouting);
         /*ptr->setNoteTunner(&noteTuning);*/
         synth.addVoice(ptr);
     }
@@ -673,10 +673,10 @@ juce::AudioProcessorEditor* VarikeyProjectAudioProcessor::createEditor()
 void VarikeyProjectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     juce::ValueTree firstTree = vts.copyState();
-    firstTree.setProperty("name", "vts", nullptr);
+    firstTree.setProperty("Params", "vts", nullptr);
 
     juce::ValueTree secondTree = tuningVts.copyState();
-    secondTree.setProperty("name", "tuningVts", nullptr);
+    secondTree.setProperty("TuningParams", "tuningVts", nullptr);
 
     juce::ValueTree parentTree("PluginState");
     parentTree.addChild(firstTree, -1, nullptr);

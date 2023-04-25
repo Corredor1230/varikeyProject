@@ -1,6 +1,7 @@
 **/JuceLibraryCode/**
 **/Builds/**
 **/bin/**
+*.rpp
 
 # Xcode noise
 *.pbxuser

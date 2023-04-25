@@ -118,6 +118,7 @@ private:
 
     VarikeyProjectAudioProcessor& audioProcessor;
     juce::AudioProcessorValueTreeState& vts = audioProcessor.vts;
+    juce::AudioProcessorValueTreeState& tuningVts = audioProcessor.tuningVts;
 
     //Colours
     float alphaValue = 0.8;

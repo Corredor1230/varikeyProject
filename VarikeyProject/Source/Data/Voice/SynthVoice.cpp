@@ -12,9 +12,10 @@
 
 int SynthVoice::controlMidi = 0;
 
-SynthVoice::SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts, ModRouting& modRouting)
+SynthVoice::SynthVoice(NoteTuning& someTuner, juce::AudioProcessorValueTreeState& vts, juce::AudioProcessorValueTreeState& tuningVts, ModRouting& modRouting)
     : tuningRef(someTuner)
     , vts(vts) 
+    , tuningVts(tuningVts)
     , modRouting(modRouting)
 {
     adsrRouting.setRoutingState(modRouting.getRoutingState());
