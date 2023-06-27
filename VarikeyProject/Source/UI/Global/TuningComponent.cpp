@@ -76,7 +76,7 @@ TuningComponent::TuningComponent(juce::AudioProcessorValueTreeState& vts) : vts(
     keyBreakValue.setEditable(true);
     //keyBreakValue.setColour(juce::Label::ColourIds::outlineColourId, 
     //    slider0.findColour(juce::Slider::ColourIds::trackColourId));
-    keyBreakValue.setText("48", juce::dontSendNotification);
+    keyBreakValue.setText(keybreakSlider.getTextFromValue(keybreakSlider.getValue()), juce::dontSendNotification);
     keyBreakValue.setJustificationType(juce::Justification::centredLeft);
 
     setSliderParams(slider0, label0, "0", vertical);
