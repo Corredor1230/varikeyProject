@@ -30,6 +30,11 @@ void Oscillator::updateAngle() noexcept
         currentAngle -= M_PI * 2;
 }
 
+void Oscillator::resetPhase()
+{
+    currentAngle = 0.f;
+}
+
 void Oscillator::updateLfo(float waveValue, float depth)
 {
     waveShape = waveValue;
