@@ -21,6 +21,7 @@ public:
     void init(float sampleRate);
     void setFreq(float freq);
     void updateAngle() noexcept;
+    void resetPhase();
     virtual float getNextSample();
     void updateLfo(float waveValue, float depth);
     void updateLfo(float waveValue);
